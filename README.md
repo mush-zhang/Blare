@@ -54,7 +54,10 @@ User can install the base regular expression matching library and adapt BLARE co
 
 ## Instruction
 
-We evaluate the performance of BLARE on two production workloads and one open-sourced workload. We have included the open-source workload: [US Accident Dataset](https://www.kaggle.com/datasets/sobhanmoosavi/us-accidents) and the regular expressions in the repository. 
+We evaluate the performance of BLARE on two production workloads and one open-sourced workload. We have included the open-source workload: [US Accident Dataset](https://www.kaggle.com/datasets/sobhanmoosavi/us-accidents) and the regular expressions in the repository.
+
+**[TODO] Will add Makefile soon**
+
 Compile and run the original experiment scripts for the paper with the following commands:
 
 - BALRE on Google-RE2
