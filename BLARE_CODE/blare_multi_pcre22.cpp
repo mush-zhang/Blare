@@ -161,6 +161,7 @@ bool SplitMatchSingle (const std::string & line, jp::VecNum* vec_num, jp::RegexM
 
     return match;
 }
+
 bool MultiMatchSingle (const std::string & line, jp::VecNum* vec_num, std::vector<jp::Regex> & c_regs, jp::RegexMatch & reg0, const std::vector<std::string> prefixes, const std::vector<std::string> & regs, bool prefix_first, std::vector<size_t> & prev_prefix_pos) {
     bool match = false;
     if (regs.empty()) {
