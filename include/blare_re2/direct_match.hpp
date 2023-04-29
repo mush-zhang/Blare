@@ -4,8 +4,8 @@
 #include <re2/re2.h>
 #include <chrono>
 
-#ifndef BLARE_RE2_DIRECT_HPP_
-#define BLARE_RE2_DIRECT_HPP_
+#ifndef BLARE_RE2_DIRECT_MATCH_HPP_
+#define BLARE_RE2_DIRECT_MATCH_HPP_
 
 std::pair<double, int> Re2Direct (const std::vector<std::string> & lines, std::string reg_string) {
     auto start = std::chrono::high_resolution_clock::now();
@@ -20,4 +20,4 @@ std::pair<double, int> Re2Direct (const std::vector<std::string> & lines, std::s
     return std::make_pair(elapsed_seconds.count(), count);
 }
 
-#endif // BLARE_RE2_DIRECT_HPP_
+#endif // BLARE_RE2_DIRECT_MATCH_HPP_

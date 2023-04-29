@@ -2,12 +2,11 @@
 
 #include <re2/re2.h>
 
-#include "blare/misc.hpp"
-#include "blare/split_regex.hpp"
+#include <misc/misc.hpp>
+#include <misc/split_regex.hpp>
+#include <blare_re2/split_match_multiway.hpp>
 
-#include "blare/re2_multi.hpp"
-
-std::pair<double, int> MultiSplitMatchTest (const std::vector<std::string> & lines, std::string reg_string) {
+std::pair<double, int> SplitMatchMultiWayRe2 (const std::vector<std::string> & lines, std::string reg_string) {
     auto start = std::chrono::high_resolution_clock::now();
     int count = 0;
 

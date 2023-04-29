@@ -4,10 +4,9 @@
 #include <re2/re2.h>
 #include <boost/random.hpp>
 
-#include "blare/misc.hpp"
-#include "blare/split_regex.hpp"
-
-#include "blare/re2_blare.hpp"
+#include <misc/misc.hpp>
+#include <misc/split_regex.hpp>
+#include <blare_re2/blare.hpp>
 
 bool MultiMatchSingle (const std::string & line, std::vector<std::shared_ptr<RE2>> & c_regs, std::shared_ptr<RE2> & reg0, const std::vector<std::string> prefixes, const std::vector<std::string> & regs, bool prefix_first, std::vector<size_t> & prev_prefix_pos) {
     std::string sm;
@@ -135,7 +134,7 @@ bool FullMatchSingle (const std::string & line, RE2 & reg) {
     return RE2::PartialMatch(line, reg, &sm);
 }
 
-std::tuple<double, int, unsigned int> Re2Blare (const std::vector<std::string> & lines, std::string reg_string) {
+std::tuple<double, int, unsigned int> BlareRe2 (const std::vector<std::string> & lines, std::string reg_string) {
     auto start = std::chrono::high_resolution_clock::now();
     int count = 0;
     unsigned int idx = 0;
