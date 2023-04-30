@@ -214,9 +214,9 @@ std::tuple<double, int, unsigned int> BlareICU (const std::vector<UnicodeString>
 
     for (; idx < skip_size; idx++) {
         switch(dist(gen)) {
-            case kSplitMatch: count += SplitMatchSingle(lines[idx], matcher_suffix, r); break;
-            case kMultiMatch: count += MultiMatchSingle(lines[idx], matchers, matcher0, prefixes, regs, prefix_first, prev_prefix_pos); break;
-            case kDirectMatch: count += FullMatchSingle(lines[idx], matcher_full); break;
+            case ARM::kSplitMatch: count += SplitMatchSingle(lines[idx], matcher_suffix, r); break;
+            case ARM::kMultiMatch: count += MultiMatchSingle(lines[idx], matchers, matcher0, prefixes, regs, prefix_first, prev_prefix_pos); break;
+            case ARM::kDirectMatch: count += FullMatchSingle(lines[idx], matcher_full); break;
         }
     }
 
@@ -245,9 +245,9 @@ std::tuple<double, int, unsigned int> BlareICU (const std::vector<UnicodeString>
             // Pull the lever of the chosen bandit
             auto single_start = std::chrono::high_resolution_clock::now();
             switch(chosen_bandit) {
-                case kSplitMatch: count += SplitMatchSingle(lines[idx], matcher_suffix, r); break;
-                case kMultiMatch: count += MultiMatchSingle(lines[idx], matchers, matcher0, prefixes, regs, prefix_first, prev_prefix_pos); break;
-                case kDirectMatch: count += FullMatchSingle(lines[idx], matcher_full); break;
+                case ARM::kSplitMatch: count += SplitMatchSingle(lines[idx], matcher_suffix, r); break;
+                case ARM::kMultiMatch: count += MultiMatchSingle(lines[idx], matchers, matcher0, prefixes, regs, prefix_first, prev_prefix_pos); break;
+                case ARM::kDirectMatch: count += FullMatchSingle(lines[idx], matcher_full); break;
             }
             
             auto single_end = std::chrono::high_resolution_clock::now();
@@ -275,7 +275,7 @@ std::tuple<double, int, unsigned int> BlareICU (const std::vector<UnicodeString>
 
     auto chosen_bandit = argmax(pred_results);
     switch(chosen_bandit) {
-        case kSplitMatch: {
+        case ARM::kSplitMatch: {
             auto prefix = std::get<0>(r);
             auto suffix = std::get<2>(r);
             if (std::get<1>(r).isEmpty()) {
@@ -340,7 +340,7 @@ std::tuple<double, int, unsigned int> BlareICU (const std::vector<UnicodeString>
             }
             break;
         }
-        case kMultiMatch: {
+        case ARM::kMultiMatch: {
             if (regs.empty()) {
                 for (; idx < lines.size(); idx++) {
                     count += lines[idx].indexOf(prefixes[0]) != -1;
@@ -417,7 +417,7 @@ std::tuple<double, int, unsigned int> BlareICU (const std::vector<UnicodeString>
             }
             break;
         }
-        case kDirectMatch: {
+        case ARM::kDirectMatch: {
             for (; idx < lines.size(); idx++) {
                 matcher_full->reset(lines[idx]);
                 count += matcher_full->find(status);

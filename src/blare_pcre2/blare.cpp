@@ -202,9 +202,9 @@ std::tuple<double, int, unsigned int> BlarePCRE2 (const std::vector<std::string>
     
     for (; idx < skip_size; idx++) {
         switch(dist(gen)) {
-            case kSplitMatch: count += SplitMatchSingle(lines[idx], &vec_num, rm_direct, rm_split_front, rm_split_end, rm_split_whole, r); break;
-            case kMultiMatch: count += MultiMatchSingle(lines[idx], &vec_num, c_regs, reg0, prefixes, regs, prefix_first, prev_prefix_pos); break;
-            case kDirectMatch: count += FullMatchSingle(lines[idx], &vec_num, rm_direct); break;
+            case ARM::kSplitMatch: count += SplitMatchSingle(lines[idx], &vec_num, rm_direct, rm_split_front, rm_split_end, rm_split_whole, r); break;
+            case ARM::kMultiMatch: count += MultiMatchSingle(lines[idx], &vec_num, c_regs, reg0, prefixes, regs, prefix_first, prev_prefix_pos); break;
+            case ARM::kDirectMatch: count += FullMatchSingle(lines[idx], &vec_num, rm_direct); break;
         }
     }
 
@@ -233,9 +233,9 @@ std::tuple<double, int, unsigned int> BlarePCRE2 (const std::vector<std::string>
             // Pull the lever of the chosen bandit
             auto single_start = std::chrono::high_resolution_clock::now();
             switch(chosen_bandit) {
-                case kSplitMatch: count += SplitMatchSingle(lines[idx], &vec_num, rm_direct, rm_split_front, rm_split_end, rm_split_whole, r); break;
-                case kMultiMatch: count += MultiMatchSingle(lines[idx], &vec_num, c_regs, reg0, prefixes, regs, prefix_first, prev_prefix_pos); break;
-                case kDirectMatch: count += FullMatchSingle(lines[idx], &vec_num, rm_direct); break;
+                case ARM::kSplitMatch: count += SplitMatchSingle(lines[idx], &vec_num, rm_direct, rm_split_front, rm_split_end, rm_split_whole, r); break;
+                case ARM::kMultiMatch: count += MultiMatchSingle(lines[idx], &vec_num, c_regs, reg0, prefixes, regs, prefix_first, prev_prefix_pos); break;
+                case ARM::kDirectMatch: count += FullMatchSingle(lines[idx], &vec_num, rm_direct); break;
             }
             
             auto single_end = std::chrono::high_resolution_clock::now();
@@ -265,7 +265,7 @@ std::tuple<double, int, unsigned int> BlarePCRE2 (const std::vector<std::string>
     auto chosen_bandit = argmax(pred_results);
     std::string sm;
     switch(chosen_bandit) {
-        case kSplitMatch: {
+        case ARM::kSplitMatch: {
             auto prefix = std::get<0>(r);
             auto suffix = std::get<2>(r);
             if (std::get<1>(r).empty()) {
@@ -326,7 +326,7 @@ std::tuple<double, int, unsigned int> BlarePCRE2 (const std::vector<std::string>
             }
             break;
         }
-        case kMultiMatch: {
+        case ARM::kMultiMatch: {
             if (regs.empty()) {
                 for (; idx < lines.size(); idx++) {
                     count += lines[idx].find(prefixes[0]) != std::string::npos;
@@ -396,7 +396,7 @@ std::tuple<double, int, unsigned int> BlarePCRE2 (const std::vector<std::string>
             }
             break;
         }
-        case kDirectMatch: {
+        case ARM::kDirectMatch: {
             for (; idx < lines.size(); idx++) {
                 count += rm_direct.setSubject(lines[idx]).setNumberedSubstringVector(&vec_num).match();
             } 
