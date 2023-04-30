@@ -1,7 +1,6 @@
-// multi-armed bandit with Thompson Sampling
 #include <iostream>
 #include <fstream>
-#include <filesystem>
+// #include <filesystem>
 #include <unistd.h>
 #include <vector>
 #include <cassert>
@@ -16,17 +15,14 @@
 #include <limits>
 #include <ctime>
 
+#include <boost/regex.hpp>
 #include <boost/random.hpp>
 #include <boost/random/discrete_distribution.hpp>
 #include <boost/random/mersenne_twister.hpp>
 
-#include "jpcre2.hpp"
-
 // Define base_generator as a Mersenne Twister. This is needed only to make the
 // code a bit less verbose.
 typedef boost::mt19937 base_generator;
-
-typedef jpcre2::select<char> jp;
 
 std::tuple<std::string, std::string, std::string> split_regex(const std::string &line) {
     std::size_t pos = 0;
@@ -44,7 +40,6 @@ std::tuple<std::string, std::string, std::string> split_regex(const std::string 
                 pos++;
             }
             prefix = line.substr(0, reg_start_pos);
-
             regex = line.substr(reg_start_pos, reg_end_pos+1-reg_start_pos);
             suffix = line.substr(reg_end_pos+1);
             
@@ -105,69 +100,13 @@ std::tuple<std::vector<std::string>, std::vector<std::string>, bool> split_regex
     return std::tuple<std::vector<std::string>, std::vector<std::string>, bool>(const_strings, regexes, prefix_first);
 }
 
-bool FullMatchSingle (const std::string & line, jp::VecNum* vec_num, jp::RegexMatch & rm) {
-    return rm.setSubject(line).setNumberedSubstringVector(vec_num).match();
-}
-
-bool SplitMatchSingle (const std::string & line, jp::VecNum* vec_num, jp::RegexMatch & rm_free, jp::RegexMatch & rm_front, jp::RegexMatch & rm_end, jp::RegexMatch & rm_whole, const std::tuple<std::string, std::string, std::string> & r) {
-    bool match = false;
-    auto prefix = std::get<0>(r);
-    auto suffix = std::get<2>(r);
-    if (std::get<1>(r).empty()) {
-        match = line.find(prefix) != std::string::npos;
-    } else if (prefix.empty()) {
-        if (suffix.empty()) {
-            match = rm_free.setSubject(line).setNumberedSubstringVector(vec_num).match();
-        } else {
-            std::size_t pos = 0;
-            while ((pos = line.find(suffix, pos)) != std::string::npos) {
-                std::string curr_in = line.substr(0, pos); 
-                if (rm_end.setSubject(curr_in).setNumberedSubstringVector(vec_num).match()) {
-                    match = true;
-                    break;
-                }
-                pos++;
-            }
-        }
-    } else if (suffix.empty()) {
-        std::size_t pos = 0;
-        while ((pos = line.find(prefix, pos)) != std::string::npos) {
-            // for accuracy, should use line = line.substr(pos+1) next time
-            std::string curr_in = line.substr(pos + prefix.length()); 
-            if (rm_front.setSubject(curr_in).setNumberedSubstringVector(vec_num).match()) {
-                match = true;
-                break;
-            }
-            pos++;
-        }                      
-    } else {
-        std::size_t pos = 0;
-        while ((pos = line.find(prefix, pos)) != std::string::npos) {
-            std::size_t reg_start_pos = pos + prefix.length();
-            std::size_t reg_end_pos = reg_start_pos;
-            while ((reg_end_pos = line.find(suffix, reg_end_pos)) != std::string::npos) {
-                std::string curr_in = line.substr(reg_start_pos, reg_end_pos - reg_start_pos ); 
-                
-                if (rm_whole.setSubject(curr_in).setNumberedSubstringVector(vec_num).match()) {
-                    match = true;
-                    goto NEXT_LINE;
-                }
-                reg_end_pos++;
-            }
-            pos++;
-        }
-        NEXT_LINE:;   
-    }
-
-    return match;
-}
-
-bool MultiMatchSingle (const std::string & line, jp::VecNum* vec_num, std::vector<jp::Regex> & c_regs, jp::RegexMatch & reg0, const std::vector<std::string> prefixes, const std::vector<std::string> & regs, bool prefix_first, std::vector<size_t> & prev_prefix_pos) {
+bool MultiMatchSingle (const std::string & line, std::vector<std::shared_ptr<boost::regex>> & c_regs, std::shared_ptr<boost::regex> & reg0, const std::vector<std::string> prefixes, const std::vector<std::string> & regs, bool prefix_first, std::vector<size_t> & prev_prefix_pos) {
+    boost::smatch what;
     bool match = false;
     if (regs.empty()) {
         return line.find(prefixes[0]) != std::string::npos;
     } else if (prefixes.empty()) {
-        return match = reg0.setSubject(line).setNumberedSubstringVector(vec_num).match();
+        return boost::regex_search(line, what, *reg0);
     } else {
         size_t pos = 0;
         size_t curr_prefix_pos = 0;
@@ -177,8 +116,7 @@ bool MultiMatchSingle (const std::string & line, jp::VecNum* vec_num, std::vecto
             for (; prefix_idx < prefixes.size(); ) {
                 // find pos of prefix before reg
                 if ((curr_prefix_pos = line.find(prefixes[prefix_idx], pos)) == std::string::npos) {
-                    // if (prefix_idx == 0)
-                    if (prefix_idx == 0 || prev_prefix_pos[prefix_idx] == 0)
+                    if (prefix_idx == 0 || prev_prefix_pos[prefix_idx] == 0 || reg_idx == 0)
                         goto CONTINUE_OUTER_SINGLE;
                     else {
                         prefix_idx--;
@@ -186,7 +124,7 @@ bool MultiMatchSingle (const std::string & line, jp::VecNum* vec_num, std::vecto
                         pos = prev_prefix_pos[prefix_idx]+1;
                         continue;
                     }
-                }
+                }  
                 pos = curr_prefix_pos + prefixes[prefix_idx].size();
                 prev_prefix_pos[prefix_idx] = curr_prefix_pos;
                 if (prefix_idx == prev_prefix_pos.size()-1 || prev_prefix_pos[prefix_idx+1] >= pos) {
@@ -197,35 +135,98 @@ bool MultiMatchSingle (const std::string & line, jp::VecNum* vec_num, std::vecto
             for (; reg_idx < prev_prefix_pos.size()-1; reg_idx++) {
                 size_t prev_prefix_end_pos = prev_prefix_pos[reg_idx] + prefixes[reg_idx].size();
                 auto curr = line.substr(prev_prefix_end_pos, prev_prefix_pos[reg_idx+1] - prev_prefix_end_pos);
-                jp::RegexMatch rm_temp(&c_regs[reg_idx]);
-                if (!rm_temp.setSubject(curr).setNumberedSubstringVector(vec_num).match()){
+                if (!boost::regex_match(curr, what, *(c_regs[reg_idx]))){
                     pos = prev_prefix_pos[reg_idx]+1;
                     prefix_idx = reg_idx;
                     goto MATCH_LOOP_SINGLE;
                 }
             }
             if (prefixes.size() == regs.size() && prefix_first) {
-                auto curr = line.substr(pos);
-                jp::RegexMatch rm_temp(&c_regs.back());
-                if (!rm_temp.setSubject(curr).setNumberedSubstringVector(vec_num).match()) {
+                auto start = line.begin() + pos;
+                auto end = line.end();
+                if (!boost::regex_search(start, end, what, *(c_regs.back()), boost::regex_constants::match_continuous)) {
                     prefix_idx = prev_prefix_pos.size() -1;
                     pos = prev_prefix_pos[prefix_idx]+1;
                     goto MATCH_LOOP_SINGLE;
-                } 
+                }
             }
             if (!prefix_first) {
                 auto curr = line.substr(0,prev_prefix_pos[0]);
-                if (!reg0.setSubject(curr).setNumberedSubstringVector(vec_num).match()){
+                if (!boost::regex_search(curr, what, *reg0)){
                     prefix_idx = 0;
                     pos = prev_prefix_pos[prefix_idx]+1;
                     goto MATCH_LOOP_SINGLE;
                 }
             }
-            match = true;            
+            match = true;                
         CONTINUE_OUTER_SINGLE:;
         std::fill(prev_prefix_pos.begin(), prev_prefix_pos.end(), 0);
     }
     return match;
+}
+
+bool SplitMatchSingle (const std::string & line, boost::regex & reg, const std::tuple<std::string, std::string, std::string> & r) {
+    bool match = false;
+    boost::smatch what;
+    auto prefix = std::get<0>(r);
+    auto suffix = std::get<2>(r);
+    if (std::get<1>(r).empty()) {
+        match = line.find(prefix) != std::string::npos;
+    } else if (prefix.empty()) {
+        if (suffix.empty()) {
+            match = boost::regex_search(line, what, reg);
+        } else {
+            std::size_t pos = 0;
+            while ((pos = line.find(suffix, pos)) != std::string::npos) {
+                auto start = line.begin();
+                auto end = line.begin() + pos;
+                while (boost::regex_search(start, end, what, reg, boost::regex_constants::match_continuous)) {
+                    if (what.suffix().str().empty()) {
+                        match = true;
+                        goto NEXT_LINE2;
+                    } else {
+                        start = what.suffix().first;
+                    }
+                }
+                pos++;
+            }
+            NEXT_LINE2:;
+        }
+    } else if (suffix.empty()) {
+        std::size_t pos = 0;
+        while ((pos = line.find(prefix, pos)) != std::string::npos) {
+            // for accuracy, should use line = line.substr(pos+1) next time
+            auto start = line.begin() + pos + prefix.length();
+            auto end = line.end();
+            if (boost::regex_search(start, end, what, reg, boost::regex_constants::match_continuous)) {
+                match = true;
+                break;
+            }
+            pos++;
+        }                       
+    } else {
+        std::size_t pos = 0;
+        while ((pos = line.find(prefix, pos)) != std::string::npos) {
+            std::size_t reg_start_pos = pos + prefix.length();
+            std::size_t reg_end_pos = reg_start_pos;
+            while ((reg_end_pos = line.find(suffix, reg_end_pos)) != std::string::npos) {
+                if (boost::regex_match(line.substr(reg_start_pos, reg_end_pos - reg_start_pos ), what, reg)) {
+                    match = true;
+                    goto NEXT_LINE;
+                }
+                reg_end_pos++;
+            }
+            pos++;
+        } 
+        NEXT_LINE:;  
+    }
+
+    return match;
+}
+
+bool FullMatchSingle (const std::string & line, boost::regex & reg) {
+    boost::smatch what;
+    return boost::regex_search(line, what, reg);
 }
 
 // argmax returns the index of maximum element in vector v.
@@ -246,38 +247,27 @@ std::tuple<double, int, unsigned int> Blare (const std::vector<std::string> & li
     unsigned int idx = 0;
 
     // pre_compile regs
-    jp::Regex reg(reg_string, jpcre2::JIT_COMPILE);
-    jp::RegexMatch rm_direct(&reg);
+    boost::regex reg_full{reg_string};
 
     auto r = split_regex(reg_string);
-    jp::Regex re1(std::get<1>(r), PCRE2_ANCHORED, jpcre2::JIT_COMPILE);
-    jp::Regex re2(std::get<1>(r), PCRE2_ENDANCHORED, jpcre2::JIT_COMPILE);
-    jp::Regex re3(std::get<1>(r), PCRE2_ANCHORED | PCRE2_ENDANCHORED, jpcre2::JIT_COMPILE);
-    jp::RegexMatch rm_split_front(&re1);
-    jp::RegexMatch rm_split_end(&re2);
-    jp::RegexMatch rm_split_whole(&re3);
+    boost::regex reg_suffix{std::get<1>(r)};
 
-    jp::VecNum vec_num;
 
+    // Assumes prefix at first
     auto r_multi = split_regex_multi(reg_string);
     std::vector<std::string> prefixes = std::get<0>(r_multi);
     std::vector<std::string> regs_temp = std::get<1>(r_multi);
-    std::vector<std::string> regs = std::get<1>(r_multi);
+    auto regs = std::get<1>(r_multi);
     bool prefix_first = std::get<2>(r_multi);
-    jp::Regex re0(regs_temp[0], PCRE2_ENDANCHORED, jpcre2::JIT_COMPILE);
-    jp::RegexMatch reg0 = jp::RegexMatch(&re0);
+    std::shared_ptr<boost::regex> reg0;
     if (!prefix_first) {
+        reg0 = std::shared_ptr<boost::regex>(new boost::regex{regs_temp[0]+"$"});
         regs_temp.erase(regs_temp.begin());
     }
-    std::vector<jp::Regex> c_regs;
-    for (auto i = 0; i < regs_temp.size(); i++) {
-        if (i == regs_temp.size() - 1 && regs_temp.size() == prefixes.size()) {
-            jp::Regex re(regs_temp[i], PCRE2_ANCHORED, jpcre2::JIT_COMPILE);
-            c_regs.push_back(re);
-        } else {
-            jp::Regex re(regs_temp[i], PCRE2_ANCHORED | PCRE2_ENDANCHORED, jpcre2::JIT_COMPILE);
-            c_regs.push_back(re);
-        }
+    std::vector<std::shared_ptr<boost::regex>> c_regs;
+    for (const auto & reg : regs_temp) {
+        std::shared_ptr<boost::regex> c_reg(new boost::regex{reg});
+        c_regs.push_back(c_reg);
     }
     std::vector<size_t> prev_prefix_pos(prefixes.size(), 0);
 
@@ -299,10 +289,11 @@ std::tuple<double, int, unsigned int> Blare (const std::vector<std::string> & li
     auto arm_num = 3;
 
     for (; idx < skip_size; idx++) {
+        // switch(b(rng)) {
         switch(dist(gen)) {
-            case 0: count += SplitMatchSingle(lines[idx], &vec_num, rm_direct, rm_split_front, rm_split_end, rm_split_whole, r); break;
-            case 1: count += MultiMatchSingle(lines[idx], &vec_num, c_regs, reg0, prefixes, regs, prefix_first, prev_prefix_pos); break;
-            case 2: count += FullMatchSingle(lines[idx], &vec_num, rm_direct); break;
+            case 0: count += SplitMatchSingle(lines[idx], reg_suffix, r); break;
+            case 1: count += MultiMatchSingle(lines[idx], c_regs, reg0, prefixes, regs, prefix_first, prev_prefix_pos); break;
+            case 2: count += FullMatchSingle(lines[idx], reg_full); break;
         }
     }
 
@@ -331,9 +322,9 @@ std::tuple<double, int, unsigned int> Blare (const std::vector<std::string> & li
             // Pull the lever of the chosen bandit
             auto single_start = std::chrono::high_resolution_clock::now();
             switch(chosen_bandit) {
-                case 0: count += SplitMatchSingle(lines[idx], &vec_num, rm_direct, rm_split_front, rm_split_end, rm_split_whole, r); break;
-                case 1: count += MultiMatchSingle(lines[idx], &vec_num, c_regs, reg0, prefixes, regs, prefix_first, prev_prefix_pos); break;
-                case 2: count += FullMatchSingle(lines[idx], &vec_num, rm_direct); break;
+                case 0: count += SplitMatchSingle(lines[idx], reg_suffix, r); break;
+                case 1: count += MultiMatchSingle(lines[idx], c_regs, reg0, prefixes, regs, prefix_first, prev_prefix_pos); break;
+                case 2: count += FullMatchSingle(lines[idx], reg_full); break;
             }
             
             auto single_end = std::chrono::high_resolution_clock::now();
@@ -346,20 +337,19 @@ std::tuple<double, int, unsigned int> Blare (const std::vector<std::string> & li
             if (wins[chosen_bandit] >= sample_size / arm_num) 
                 break;
 
-
             // Update the prior distribution of the chosen bandit
             auto alpha = 1 + wins[chosen_bandit];
             auto beta = 1 + trials[chosen_bandit] - wins[chosen_bandit];
             prior_dists[chosen_bandit] = boost::random::beta_distribution<>(alpha, beta);
         }
         auto winning_strategy = argmax(std::vector<double>{(wins[0]*1.0)/trials[0], (wins[1]*1.0)/trials[1], (wins[2]*1.0)/trials[2]});
+        // pred_results[j] = winning_strategy;
         pred_results[winning_strategy]++;
         if (pred_results[winning_strategy] >= iteration_num / arm_num) 
             break;
     }
-
     auto chosen_bandit = argmax(pred_results);
-    std::string sm;
+    boost::smatch what;
     switch(chosen_bandit) {
         case 0: {
             auto prefix = std::get<0>(r);
@@ -371,28 +361,34 @@ std::tuple<double, int, unsigned int> Blare (const std::vector<std::string> & li
             } else if (prefix.empty()) {
                 if (suffix.empty()) {
                     for (; idx < lines.size(); idx++) {
-                        count += rm_direct.setSubject(lines[idx]).setNumberedSubstringVector(&vec_num).match();
+                        count += boost::regex_search(lines[idx], what, reg_suffix);
                     }
                 } else {
                     for (; idx < lines.size(); idx++) {
                         std::size_t pos = 0;
                         while ((pos = lines[idx].find(suffix, pos)) != std::string::npos) {
-                            std::string curr_in = lines[idx].substr(0, pos); 
-
-                            if (rm_split_end.setSubject(curr_in).setNumberedSubstringVector(&vec_num).match()) {
-                                count++;
-                                break;
+                            auto start = lines[idx].begin();
+                            auto end = lines[idx].begin()+pos;
+                            while (boost::regex_search(start, end, what, reg_suffix, boost::regex_constants::match_continuous)) {
+                                if (what.suffix().str().empty()) {
+                                    count++;
+                                    goto NEXT_LINE2;
+                                } else {
+                                    start = what.suffix().first;
+                                }
                             }
                             pos++;
                         }
+                        NEXT_LINE2:;
                     }
                 }
             } else if (suffix.empty()) {
                 for (; idx < lines.size(); idx++) {
                     std::size_t pos = 0;
                     while ((pos = lines[idx].find(prefix, pos)) != std::string::npos) {
-                        std::string curr_in = lines[idx].substr(pos + prefix.length()); 
-                        if (rm_split_front.setSubject(curr_in).setNumberedSubstringVector(&vec_num).match()) {
+                        auto start = lines[idx].begin() + pos + prefix.length();
+                        auto end = lines[idx].end();
+                        if (boost::regex_search(start, end, what, reg_suffix, boost::regex_constants::match_continuous)) {
                             count++;
                             break;
                         }
@@ -406,16 +402,14 @@ std::tuple<double, int, unsigned int> Blare (const std::vector<std::string> & li
                         std::size_t reg_start_pos = pos + prefix.length();
                         std::size_t reg_end_pos = reg_start_pos;
                         while ((reg_end_pos = lines[idx].find(suffix, reg_end_pos)) != std::string::npos) {
-                            std::string curr_in = lines[idx].substr(reg_start_pos, reg_end_pos - reg_start_pos ); 
-                            
-                            if (rm_split_whole.setSubject(curr_in).setNumberedSubstringVector(&vec_num).match()) {
+                            if (boost::regex_match(lines[idx].substr(reg_start_pos, reg_end_pos - reg_start_pos), what, reg_suffix)) {
                                 count++;
                                 goto NEXT_LINE;
                             }
                             reg_end_pos++;
                         }
                         pos++;
-                    }
+                    } 
                     NEXT_LINE:;
                 }
                 
@@ -428,10 +422,12 @@ std::tuple<double, int, unsigned int> Blare (const std::vector<std::string> & li
                     count += lines[idx].find(prefixes[0]) != std::string::npos;
                 }
             } else if (prefixes.empty()) {
+                boost::regex reg{regs[0]};
                 for (; idx < lines.size(); idx++) {
-                    count += reg0.setSubject(lines[idx]).setNumberedSubstringVector(&vec_num).match();
+                    count += boost::regex_search(lines[idx], what, reg);
                 }
             } else {
+                std::vector<size_t> prev_prefix_pos(prefixes.size(), 0);
                 for (; idx < lines.size(); idx++) {
                     auto line = lines[idx];
                     size_t pos = 0;
@@ -442,15 +438,15 @@ std::tuple<double, int, unsigned int> Blare (const std::vector<std::string> & li
                         for (; prefix_idx < prefixes.size(); ) {
                             // find pos of prefix before reg
                             if ((curr_prefix_pos = line.find(prefixes[prefix_idx], pos)) == std::string::npos) {
-                                if (prefix_idx == 0 || prev_prefix_pos[prefix_idx] == 0) {
+                                if (prefix_idx == 0 || prev_prefix_pos[prefix_idx] == 0 || reg_idx == 0)
                                     goto CONTINUE_OUTER_BLARE;
-                                } else {
+                                else {
                                     prefix_idx--;
                                     reg_idx--;
                                     pos = prev_prefix_pos[prefix_idx]+1;
                                     continue;
                                 }
-                            }
+                            }  
                             pos = curr_prefix_pos + prefixes[prefix_idx].size();
                             prev_prefix_pos[prefix_idx] = curr_prefix_pos;
                             if (prefix_idx == prev_prefix_pos.size()-1 || prev_prefix_pos[prefix_idx+1] >= pos) {
@@ -461,8 +457,7 @@ std::tuple<double, int, unsigned int> Blare (const std::vector<std::string> & li
                         for (; reg_idx < prev_prefix_pos.size()-1; reg_idx++) {
                             size_t prev_prefix_end_pos = prev_prefix_pos[reg_idx] + prefixes[reg_idx].size();
                             auto curr = line.substr(prev_prefix_end_pos, prev_prefix_pos[reg_idx+1] - prev_prefix_end_pos);
-                            jp::RegexMatch rm_temp(&c_regs[reg_idx]);
-                            if (!rm_temp.setSubject(curr).setNumberedSubstringVector(&vec_num).match()){
+                            if (!boost::regex_match(curr, what, *(c_regs[reg_idx]))){
                                 pos = prev_prefix_pos[reg_idx]+1;
                                 prefix_idx = reg_idx;
                                 goto MATCH_LOOP_BLARE;
@@ -470,16 +465,15 @@ std::tuple<double, int, unsigned int> Blare (const std::vector<std::string> & li
                         }
                         if (prefixes.size() == regs.size() && prefix_first) {
                             auto curr = line.substr(pos);
-                            jp::RegexMatch rm_temp(&c_regs.back());
-                            if (!rm_temp.setSubject(curr).setNumberedSubstringVector(&vec_num).match()) {
+                            if (!boost::regex_search(curr, what, *(c_regs.back()), boost::regex_constants::match_continuous)) {
                                 prefix_idx = prev_prefix_pos.size() -1;
                                 pos = prev_prefix_pos[prefix_idx]+1;
                                 goto MATCH_LOOP_BLARE;
-                            }
+                            } 
                         }
                         if (!prefix_first) {
                             auto curr = line.substr(0,prev_prefix_pos[0]);
-                            if (!reg0.setSubject(curr).setNumberedSubstringVector(&vec_num).match()){
+                            if (!boost::regex_search(curr, what, *reg0)){
                                 prefix_idx = 0;
                                 pos = prev_prefix_pos[prefix_idx]+1;
                                 goto MATCH_LOOP_BLARE;
@@ -494,12 +488,13 @@ std::tuple<double, int, unsigned int> Blare (const std::vector<std::string> & li
         }
         case 2: {
             for (; idx < lines.size(); idx++) {
-                count += rm_direct.setSubject(lines[idx]).setNumberedSubstringVector(&vec_num).match();
+                count += boost::regex_search(lines[idx], what, reg_full);
             } 
             break;
         }
     }
 
+    
     auto end = std::chrono::high_resolution_clock::now();
     auto elapsed_seconds = std::chrono::duration_cast<std::chrono::duration<double>>(end - start);
     std::cout << "Blare: " << count << std::endl;
@@ -507,15 +502,13 @@ std::tuple<double, int, unsigned int> Blare (const std::vector<std::string> & li
     return std::make_tuple(elapsed_seconds.count(), count, chosen_bandit);
 }
 
-std::pair<double, int> Pcre2FullAll (const std::vector<std::string> & lines, std::string reg_string) {
+std::pair<double, int> BoostFullAll (const std::vector<std::string> & lines, std::string reg_string) {
     auto start = std::chrono::high_resolution_clock::now();
     int count = 0;
-    jp::VecNum vec_num;
-    jp::Regex re(reg_string, jpcre2::JIT_COMPILE);
-    jp::RegexMatch rm(&re);
-
+    boost::smatch what;
+    boost::regex reg{reg_string};
     for (const auto & line : lines) {
-        count += rm.setSubject(line).setNumberedSubstringVector(&vec_num).match();
+        count += boost::regex_search(line, what, reg);
     }
     auto end = std::chrono::high_resolution_clock::now();
     auto elapsed_seconds = std::chrono::duration_cast<std::chrono::duration<double>>(end - start);
@@ -531,7 +524,8 @@ std::pair<double, int> SplitMatchAll (const std::vector<std::string> & lines, st
 
     auto prefix = std::get<0>(r);
     auto suffix = std::get<2>(r);
-    jp::VecNum vec_num;
+    boost::regex reg{std::get<1>(r)};
+    boost::smatch what;
 
     if (std::get<1>(r).empty()) {
         for (const auto & line : lines) {
@@ -539,36 +533,36 @@ std::pair<double, int> SplitMatchAll (const std::vector<std::string> & lines, st
         }
     } else if (prefix.empty()) {
         if (suffix.empty()) {
-            jp::Regex re(std::get<1>(r), jpcre2::JIT_COMPILE);
-            jp::RegexMatch rm(&re);
-
             for (const auto & line : lines) {
-                count += rm.setSubject(line).setNumberedSubstringVector(&vec_num).match();
+                count += boost::regex_search(line, what, reg);
             }
         } else {
-            jp::Regex re(std::get<1>(r), PCRE2_ENDANCHORED, jpcre2::JIT_COMPILE);
-            jp::RegexMatch rm(&re);
             for (const auto & line : lines) {
                 std::size_t pos = 0;
                 while ((pos = line.find(suffix, pos)) != std::string::npos) {
-                    std::string curr_in = line.substr(0, pos); 
-                    if (rm.setSubject(curr_in).setNumberedSubstringVector(&vec_num).match()) {
-                        count++;
-                        break;
+                    auto start = line.begin();
+                    auto end = line.begin() + pos;
+                    while (boost::regex_search(start, end, what, reg, boost::regex_constants::match_continuous)) {
+                        if (what.suffix().str().empty()) {
+                            count++;
+                            goto NEXT_LINE2;
+                        } else {
+                            start = what.suffix().first;
+                        }
                     }
                     pos++;
                 }
-            }    
+                NEXT_LINE2:;
+            }
+            
         }
     } else if (suffix.empty()) {
-        jp::Regex re(std::get<1>(r), PCRE2_ANCHORED, jpcre2::JIT_COMPILE);
-        jp::RegexMatch rm(&re);
         for (const auto & line : lines) {
             std::size_t pos = 0;
             while ((pos = line.find(prefix, pos)) != std::string::npos) {
-                // for accuracy, should use line = line.substr(pos+1) next time
-                std::string curr_in = line.substr(pos + prefix.length()); 
-                if (rm.setSubject(curr_in).setNumberedSubstringVector(&vec_num).match()) {
+                auto start = line.begin() + pos + prefix.length();
+                auto end = line.end();
+                if (boost::regex_search(start, end, what, reg, boost::regex_constants::match_continuous)) {
                     count++;
                     break;
                 }
@@ -576,33 +570,28 @@ std::pair<double, int> SplitMatchAll (const std::vector<std::string> & lines, st
             }                       
         }   
     } else {
-        jp::Regex re(std::get<1>(r), PCRE2_ANCHORED | PCRE2_ENDANCHORED, jpcre2::JIT_COMPILE);
-        jp::RegexMatch rm(&re);
         for (const auto & line : lines) {
-            
             std::size_t pos = 0;
             while ((pos = line.find(prefix, pos)) != std::string::npos) {
                 std::size_t reg_start_pos = pos + prefix.length();
                 std::size_t reg_end_pos = reg_start_pos;
                 while ((reg_end_pos = line.find(suffix, reg_end_pos)) != std::string::npos) {
-                    std::string curr_in = line.substr(reg_start_pos, reg_end_pos - reg_start_pos ); 
-                    
-                    if (rm.setSubject(curr_in).setNumberedSubstringVector(&vec_num).match()) {
+                    if (boost::regex_match(line.substr(reg_start_pos, reg_end_pos - reg_start_pos ), what, reg)) {
                         count++;
                         goto NEXT_LINE;
                     }
                     reg_end_pos++;
                 }
                 pos++;
-            }
-            NEXT_LINE:; 
+            } 
+            NEXT_LINE:;                      
         }
     }
 
     auto end = std::chrono::high_resolution_clock::now();
     auto elapsed_seconds = std::chrono::duration_cast<std::chrono::duration<double>>(end - start);
 
-    std::cout << "split: " << reg_string << " " << count << std::endl;
+    std::cout << "split: " << reg_string << " " << count  << std::endl;
 
     return std::make_pair(elapsed_seconds.count(), count);
 }
@@ -612,36 +601,36 @@ std::pair<double, int> MultiSplitMatchTest (const std::vector<std::string> & lin
     auto start = std::chrono::high_resolution_clock::now();
     int count = 0;
 
-    jp::VecNum vec_num;
+    auto r = split_regex_multi(reg_string);
 
-    auto r_multi = split_regex_multi(reg_string);
-    std::vector<std::string> prefixes = std::get<0>(r_multi);
-    std::vector<std::string> regs = std::get<1>(r_multi);
-    std::vector<std::string> regs_temp = std::get<1>(r_multi);
-    bool prefix_first = std::get<2>(r_multi);
-    jp::Regex re0(regs_temp[0], PCRE2_ENDANCHORED, jpcre2::JIT_COMPILE);
-    jp::RegexMatch reg0 = jp::RegexMatch(&re0);
+    std::vector<std::string> prefixes = std::get<0>(r);
+    std::vector<std::string> regs = std::get<1>(r);
+    std::vector<std::string> regs_temp = std::get<1>(r);
+
+    bool prefix_first = std::get<2>(r);
+    std::shared_ptr<boost::regex> reg0;
+
+
     if (!prefix_first) {
+        reg0 = std::shared_ptr<boost::regex>(new boost::regex{regs_temp[0]+"$"});
         regs_temp.erase(regs_temp.begin());
     }
-    std::vector<jp::Regex> c_regs;
-    for (auto i = 0; i < regs_temp.size(); i++) {
-        if (i == regs_temp.size() - 1 && regs_temp.size() == prefixes.size()) {
-            jp::Regex re(regs_temp[i], PCRE2_ANCHORED, jpcre2::JIT_COMPILE);
-            c_regs.push_back(re);
-        } else {
-            jp::Regex re(regs_temp[i], PCRE2_ANCHORED | PCRE2_ENDANCHORED, jpcre2::JIT_COMPILE);
-            c_regs.push_back(re);
-        }
+    std::vector<std::shared_ptr<boost::regex>> c_regs;
+    for (const auto & reg : regs_temp) {
+        std::shared_ptr<boost::regex> c_reg(new boost::regex{reg});
+        c_regs.push_back(c_reg);
     }
 
-    if (regs.empty()) {
+    boost::smatch what;
+
+    if (regs_temp.empty()) {
         for (const auto & line : lines) {
             count += line.find(prefixes[0]) != std::string::npos;
         }
     } else if (prefixes.empty()) {
+        boost::regex reg{regs_temp[0]};
         for (const auto & line : lines) {
-            count += reg0.setSubject(line).setNumberedSubstringVector(&vec_num).match();
+            count += boost::regex_search(line, what, reg);
         }
     } else {
         std::vector<size_t> prev_prefix_pos(prefixes.size(), 0);
@@ -654,15 +643,15 @@ std::pair<double, int> MultiSplitMatchTest (const std::vector<std::string> & lin
                 for (; prefix_idx < prefixes.size(); ) {
                     // find pos of prefix before reg
                     if ((curr_prefix_pos = line.find(prefixes[prefix_idx], pos)) == std::string::npos) {
-                        if (prefix_idx == 0 || prev_prefix_pos[prefix_idx] == 0) {
+                        if (prefix_idx == 0 || prev_prefix_pos[prefix_idx] == 0 || reg_idx == 0)
                             goto CONTINUE_OUTER;
-                        } else {
+                        else {
                             prefix_idx--;
                             reg_idx--;
                             pos = prev_prefix_pos[prefix_idx]+1;
                             continue;
                         }
-                    }
+                    }  
                     pos = curr_prefix_pos + prefixes[prefix_idx].size();
                     prev_prefix_pos[prefix_idx] = curr_prefix_pos;
                     if (prefix_idx == prev_prefix_pos.size()-1 || prev_prefix_pos[prefix_idx+1] >= pos) {
@@ -673,17 +662,16 @@ std::pair<double, int> MultiSplitMatchTest (const std::vector<std::string> & lin
                 for (; reg_idx < prev_prefix_pos.size()-1; reg_idx++) {
                     size_t prev_prefix_end_pos = prev_prefix_pos[reg_idx] + prefixes[reg_idx].size();
                     auto curr = line.substr(prev_prefix_end_pos, prev_prefix_pos[reg_idx+1] - prev_prefix_end_pos);
-                    jp::RegexMatch rm_temp(&c_regs[reg_idx]);
-                    if (!rm_temp.setSubject(curr).setNumberedSubstringVector(&vec_num).match()){
-                        pos = prev_prefix_pos[reg_idx]+1;
+                    if (!boost::regex_match(curr, what, *(c_regs[reg_idx]))){
+                        pos = prev_prefix_pos[reg_idx+1]+1;
                         prefix_idx = reg_idx;
                         goto MATCH_LOOP;
                     }
                 }
                 if (prefixes.size() == regs.size() && prefix_first) {
-                    auto curr = line.substr(pos);
-                    jp::RegexMatch rm_temp(&c_regs.back());
-                    if (!rm_temp.setSubject(curr).setNumberedSubstringVector(&vec_num).match()) {
+                    auto start = line.begin() + pos;
+                    auto end = line.end();
+                    if (!boost::regex_search(start, end, what, *(c_regs.back()), boost::regex_constants::match_continuous)) {
                         prefix_idx = prev_prefix_pos.size() -1;
                         pos = prev_prefix_pos[prefix_idx]+1;
                         goto MATCH_LOOP;
@@ -691,13 +679,13 @@ std::pair<double, int> MultiSplitMatchTest (const std::vector<std::string> & lin
                 }
                 if (!prefix_first) {
                     auto curr = line.substr(0,prev_prefix_pos[0]);
-                    if (!reg0.setSubject(curr).setNumberedSubstringVector(&vec_num).match()){
+                    if (!boost::regex_search(curr, what, *reg0)){
                         prefix_idx = 0;
                         pos = prev_prefix_pos[prefix_idx]+1;
                         goto MATCH_LOOP;
                     }
                 }
-                count++;            
+                count++;      
             CONTINUE_OUTER:;
             std::fill(prev_prefix_pos.begin(), prev_prefix_pos.end(), 0);
         }
@@ -710,7 +698,6 @@ std::pair<double, int> MultiSplitMatchTest (const std::vector<std::string> & lin
         std::cout << "[" << p << "]\t";  
     }
     std::cout << std::endl;
-
 
     std::cout << "Multi Split " << count << std::endl;
 
@@ -728,6 +715,7 @@ std::vector<std::string> read_sys_y() {
         std::cerr << "Could not open the file - '" << data_file << "'" << std::endl;
         return lines;
     }
+    int i = 0;
     while (getline(data_in, line)){
         line.erase(std::remove(line.begin(), line.end(), '\r'), line.end());
         std::stringstream streamData(line);
@@ -750,7 +738,7 @@ std::vector<std::string> read_sys_y() {
 std::vector<std::string> read_traffic() {
     std::string line;
     std::vector<std::string> lines;
-    std::string data_file = "US_Accidents_Dec21_updated.csv";
+    std::string data_file = "../BLARE_DATA/US_Accidents_Dec21_updated.csv";
     std::ifstream data_in(data_file);
     if (!data_in.is_open()) {
         std::cerr << "Could not open the file - '" << data_file << "'" << std::endl;
@@ -774,10 +762,19 @@ std::vector<std::string> read_traffic() {
 
 std::vector<std::string> read_db_x() {
     std::string line;
+
     std::vector<std::string> lines;
-    std::string path = "db_x";
-    for (const auto & entry : std::filesystem::directory_iterator(path)) {
-        std::string data_file = entry.path();
+    std::string path = "extracted/";
+
+    std::string names_file = "db_x_files.txt";
+    std::string curr_fname;
+    std::ifstream fname_in(names_file);
+    if (!fname_in.is_open()) {
+        std::cerr << "Could not open the file - '" << names_file << "'" << std::endl;
+        return lines;
+    }
+    while (getline(fname_in, curr_fname)){
+        std::string data_file= path+curr_fname;
         std::ifstream data_in(data_file);
         if (!data_in.is_open()) {
             std::cerr << "Could not open the file - '" << data_file << "'" << std::endl;
@@ -790,15 +787,18 @@ std::vector<std::string> read_db_x() {
         }
         data_in.close();
     }
+    fname_in.close();
+
     return lines;
 }
 
-int main(int argc, char** argv) {
-    std::string line;
 
+int main(int argc, char** argv) {
+
+    std::string line;
     // read all regexes
     std::vector<std::string> regexes;
-    std::string reg_file = "regexes_test.txt";
+    std::string reg_file = "../BLARE_DATA/regexes_traffic.txt";
 
     std::ifstream reg_in(reg_file);
     if (!reg_in.is_open()) {
@@ -812,14 +812,17 @@ int main(int argc, char** argv) {
     reg_in.close();
 
 
-    auto lines = read_sys_y();
-    // auto lines = read_traffic();
+    // auto lines = read_sys_y();
+    auto lines = read_traffic();
     // auto lines = read_db_x();
+
     std::cout << lines.size() <<  std::endl;
 
     int num_repeat = 10;
-    std::ofstream r_file("/datadrive/newblare_sys_y_pcre2.csv", std::ofstream::out);
+
+    std::ofstream r_file("boost_traffic.csv", std::ofstream::out);
     r_file << "regex\ttrue_strategy\tave_stratey\tmid_ave_strategy\tnum_wrong\tblare_time\tmid_blare_time\tmulti_split_time\tmid_multi_split_time\tsm_time\tmid_sm_time\tdirect_time\tmid_direct_time\tmatch_num_blare\tmatch_num_multi_split\tmatch_num_split\tmatch_num_direct" << std::endl;
+
     for (const std::string & r : regexes) {
         std::vector<double> elapsed_time_blare;
         std::vector<double> elapsed_time_direct;
@@ -831,7 +834,7 @@ int main(int argc, char** argv) {
         int match_count_split;
         int match_count_multi;
         for (int i = 0; i < num_repeat; i++) {
-            std::pair<double, int> result_direct = Pcre2FullAll(lines, r);
+            std::pair<double, int> result_direct = BoostFullAll(lines, r);
             std::pair<double, int> result_split = SplitMatchAll(lines, r);
             std::tuple<double, int, unsigned int> result_blare = Blare(lines, r);
             std::pair<double, int> result_multi = MultiSplitMatchTest(lines, r);
@@ -847,6 +850,7 @@ int main(int argc, char** argv) {
             match_count_split = result_split.second;
             match_count_multi = result_multi.second;
         }
+
         std::sort(elapsed_time_direct.begin(), elapsed_time_direct.end());
         auto ave_direct = std::accumulate(elapsed_time_direct.begin(), elapsed_time_direct.end(), 0.0) / elapsed_time_blare.size();
         auto mid_ave_direct = std::accumulate(elapsed_time_direct.begin()+1, elapsed_time_direct.end()-1, 0.0) / (num_repeat-2);
@@ -856,7 +860,7 @@ int main(int argc, char** argv) {
         auto mid_ave_multi = std::accumulate(elapsed_time_multi.begin()+1, elapsed_time_multi.end()-1, 0.0) / (num_repeat-2);
         
         std::sort(elapsed_time_split.begin(), elapsed_time_split.end());
-        auto ave_split = std::accumulate(elapsed_time_split.begin(), elapsed_time_split.end(), 0.0) / elapsed_time_blare.size();        
+        auto ave_split = std::accumulate(elapsed_time_split.begin(), elapsed_time_split.end(), 0.0) / elapsed_time_multi.size();        
         auto mid_ave_split = std::accumulate(elapsed_time_split.begin()+1, elapsed_time_split.end()-1, 0.0) / (num_repeat-2);
         
         std::sort(elapsed_time_blare.begin(), elapsed_time_blare.end());
@@ -866,14 +870,14 @@ int main(int argc, char** argv) {
 
         auto ave_stratgy =  std::accumulate(strategies.begin(), strategies.end(), 0.0) / strategies.size();
         auto mid_ave_strategy = std::accumulate(strategies.begin()+1, strategies.end()-1, 0.0) / (strategies.size()-2);
-        auto true_strategy = ave_split < ave_multi ? 0 : 1;
+        auto true_strategy = argmin(std::vector<double>{mid_ave_split, mid_ave_multi, mid_ave_direct});
 
         auto strategy_diff = std::abs(true_strategy-ave_stratgy) * num_repeat;
 
-        std::cout << "Blare: " << ave_blare << std::endl;
-        std::cout << "Direct: " << ave_direct << std::endl;
-        std::cout << "SplitM: " << ave_split << std::endl;
-        std::cout << "MultiSplit: " << ave_multi << std::endl;
+        std::cout << "Blare: " << ave_blare << " " << match_count_blare << std::endl;
+        std::cout << "Direct: " << ave_direct << " " << match_count_direct << std::endl;
+        std::cout << "SplitM: " << ave_split << " " << match_count_split << std::endl;
+        std::cout << "MultiSplit: " << ave_multi << " " << match_count_multi << std::endl;
 
         r_file << r << "\t";
         r_file << true_strategy << "\t"  << ave_stratgy << "\t" << mid_ave_strategy << "\t" << strategy_diff << "\t";
@@ -884,5 +888,4 @@ int main(int argc, char** argv) {
         r_file << match_count_blare << "\t" << match_count_multi << "\t" << match_count_split << "\t" << match_count_direct << std::endl;
     }
     r_file.close();    
-    
 }

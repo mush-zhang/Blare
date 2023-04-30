@@ -1,4 +1,3 @@
-// multi-armed bandit with Thompson Sampling
 #include <iostream>
 #include <fstream>
 #include <filesystem>
@@ -100,7 +99,6 @@ std::tuple<std::vector<std::string>, std::vector<std::string>, bool> split_regex
     }
     return std::tuple<std::vector<std::string>, std::vector<std::string>, bool>(const_strings, regexes, prefix_first);
 }
-
 
 bool MultiMatchSingle (const std::string & line, std::vector<std::shared_ptr<RE2>> & c_regs, std::shared_ptr<RE2> & reg0, const std::vector<std::string> prefixes, const std::vector<std::string> & regs, bool prefix_first, std::vector<size_t> & prev_prefix_pos) {
     std::string sm;
@@ -224,63 +222,6 @@ bool SplitMatchSingle (const std::string & line, RE2 & reg, const std::tuple<std
     return match;
 }
 
-bool SplitMatchReverseSingle (const std::string & line, RE2 & reg, const std::tuple<std::string, std::string, std::string> & r) {
-    bool match = false;
-    std::string sm;
-    auto prefix = std::get<0>(r);
-    auto suffix = std::get<2>(r);
-    if (std::get<1>(r).empty()) {
-        match = line.find(prefix) != std::string::npos;
-    } else if (prefix.empty()) {
-        if (suffix.empty()) {
-            match = RE2::PartialMatch(line, reg, &sm);
-        } else {
-            std::size_t pos = 0;
-            while ((pos = line.find(suffix, pos)) != std::string::npos) {
-                std::string curr_in = line.substr(0, pos); 
-                re2::StringPiece input(curr_in);
-                while (RE2::FindAndConsume(&input, reg, &sm)) {
-                    if (input.ToString().empty()) {
-                        match = true;
-                        goto NEXT_LINE2;
-                    } 
-                }
-                pos++;
-            }
-            NEXT_LINE2:;
-        }
-    } else if (suffix.empty()) {
-        std::size_t pos = 0;
-        while ((pos = line.find(prefix, pos)) != std::string::npos) {
-            // for accuracy, should use line = line.substr(pos+1) next time
-            std::string curr_in = line.substr(pos + prefix.length()); 
-            re2::StringPiece input(curr_in);
-            if (RE2::Consume(&input, reg, &sm)) {
-                match = true;
-                break;
-            }
-            pos++;
-        }                       
-    } else {
-        std::size_t pos = 0;
-        while ((pos = line.find(suffix, pos)) != std::string::npos) {
-            std::size_t reg_end_pos = pos;
-            std::size_t reg_start_pos = 0;
-            while (reg_start_pos <= reg_end_pos && (reg_start_pos = line.find(prefix, reg_start_pos)) != std::string::npos) {
-                if (RE2::FullMatch(line.substr(reg_start_pos, reg_end_pos - reg_start_pos ), reg, &sm)) {
-                    match = true;
-                    goto NEXT_LINE;
-                }
-                reg_start_pos++;
-            }
-            pos++;
-        } 
-        NEXT_LINE:;  
-    }
-
-    return match;
-}
-
 bool FullMatchSingle (const std::string & line, RE2 & reg) {
     std::string sm;
     return RE2::PartialMatch(line, reg, &sm);
@@ -313,9 +254,8 @@ std::tuple<double, int, unsigned int> Blare (const std::vector<std::string> & li
     // Assumes prefix at first
     auto r_multi = split_regex_multi(reg_string);
     std::vector<std::string> prefixes = std::get<0>(r_multi);
-    std::vector<std::string> regs = std::get<1>(r_multi);
     std::vector<std::string> regs_temp = std::get<1>(r_multi);
-
+    auto regs = std::get<1>(r_multi);
     bool prefix_first = std::get<2>(r_multi);
     std::shared_ptr<RE2> reg0;
     if (!prefix_first) {
@@ -340,19 +280,18 @@ std::tuple<double, int, unsigned int> Blare (const std::vector<std::string> & li
         sample_size = 10000;
 
     base_generator gen(static_cast<std::uint32_t>(std::time(0)));
-    boost::random::uniform_int_distribution<> dist{0, 3};
+    boost::random::uniform_int_distribution<> dist{0, 2};
 
     // auto pred_results = std::vector<int>(iteration_num);
-    std::vector<int> pred_results{0, 0, 0, 0};
-    auto arm_num = 4;
+    std::vector<int> pred_results{0, 0, 0};
+    auto arm_num = 3;
 
     for (; idx < skip_size; idx++) {
         // switch(b(rng)) {
         switch(dist(gen)) {
             case 0: count += SplitMatchSingle(lines[idx], reg_suffix, r); break;
             case 1: count += MultiMatchSingle(lines[idx], c_regs, reg0, prefixes, regs, prefix_first, prev_prefix_pos); break;
-            case 2: count += SplitMatchReverseSingle(lines[idx], reg_suffix, r); break;
-            case 3: count += FullMatchSingle(lines[idx], reg_full); break;
+            case 2: count += FullMatchSingle(lines[idx], reg_full); break;
         }
     }
 
@@ -383,8 +322,7 @@ std::tuple<double, int, unsigned int> Blare (const std::vector<std::string> & li
             switch(chosen_bandit) {
                 case 0: count += SplitMatchSingle(lines[idx], reg_suffix, r); break;
                 case 1: count += MultiMatchSingle(lines[idx], c_regs, reg0, prefixes, regs, prefix_first, prev_prefix_pos); break;
-                case 2: count += SplitMatchReverseSingle(lines[idx], reg_suffix, r); break;
-                case 3: count += FullMatchSingle(lines[idx], reg_full); break;
+                case 2: count += FullMatchSingle(lines[idx], reg_full); break;
             }
             
             auto single_end = std::chrono::high_resolution_clock::now();
@@ -402,7 +340,7 @@ std::tuple<double, int, unsigned int> Blare (const std::vector<std::string> & li
             auto beta = 1 + trials[chosen_bandit] - wins[chosen_bandit];
             prior_dists[chosen_bandit] = boost::random::beta_distribution<>(alpha, beta);
         }
-        auto winning_strategy = argmax(std::vector<double>{(wins[0]*1.0)/trials[0], (wins[1]*1.0)/trials[1], (wins[2]*1.0)/trials[2], (wins[3]*1.0)/trials[3]});
+        auto winning_strategy = argmax(std::vector<double>{(wins[0]*1.0)/trials[0], (wins[1]*1.0)/trials[1], (wins[2]*1.0)/trials[2]});
         // pred_results[j] = winning_strategy;
         pred_results[winning_strategy]++;
         if (pred_results[winning_strategy] >= iteration_num / arm_num) 
@@ -429,7 +367,7 @@ std::tuple<double, int, unsigned int> Blare (const std::vector<std::string> & li
                         while ((pos = lines[idx].find(suffix, pos)) != std::string::npos) {
                             std::string curr_in = lines[idx].substr(0, pos); 
                             re2::StringPiece input(curr_in);
-                            while (RE2::FindAndConsume(&input, reg_suffix, &sm)) {
+                            while (RE2::Consume(&input, reg_suffix, &sm)) {
                                 if (input.ToString().empty()) {
                                     count++;
                                     goto NEXT_LINE2;
@@ -546,70 +484,6 @@ std::tuple<double, int, unsigned int> Blare (const std::vector<std::string> & li
             break;
         }
         case 2: {
-            auto prefix = std::get<0>(r);
-            auto suffix = std::get<2>(r);
-            if (std::get<1>(r).empty()) {
-                for (; idx < lines.size(); idx++) {
-                    count += lines[idx].find(prefix) != std::string::npos;
-                }
-            } else if (prefix.empty()) {
-                if (suffix.empty()) {
-                    for (; idx < lines.size(); idx++) {
-                        count += RE2::PartialMatch(lines[idx], reg_suffix, &sm);
-                    }
-                } else {
-                    for (; idx < lines.size(); idx++) {
-                        std::size_t pos = 0;
-                        while ((pos = lines[idx].find(suffix, pos)) != std::string::npos) {
-                            std::string curr_in = lines[idx].substr(0, pos); 
-                            re2::StringPiece input(curr_in);
-                            while (RE2::FindAndConsume(&input, reg_suffix, &sm)) {
-                                if (input.ToString().empty()) {
-                                    count++;
-                                    goto NEXT_LINE_REV2;
-                                } 
-                            }
-                            pos++;
-                        }
-                        NEXT_LINE_REV2:;
-                    }
-                    
-                }
-            } else if (suffix.empty()) {
-                for (; idx < lines.size(); idx++) {
-                    std::size_t pos = 0;
-                    while ((pos = lines[idx].find(prefix, pos)) != std::string::npos) {
-                        // for accuracy, should use line = line.substr(pos+1) next time
-                        std::string curr_in = lines[idx].substr(pos + prefix.length()); 
-                        re2::StringPiece input(curr_in);
-                        if (RE2::Consume(&input, reg_suffix, &sm)) {
-                            count++;
-                            break;
-                        }
-                        pos++;
-                    }                       
-                }   
-            } else {
-                for (; idx < lines.size(); idx++) {
-                    std::size_t pos = 0;
-                    while ((pos = lines[idx].find(suffix, pos)) != std::string::npos) {
-                        std::size_t reg_end_pos = pos;
-                        std::size_t reg_start_pos = 0;
-                        while (reg_start_pos <= reg_end_pos && (reg_start_pos = lines[idx].find(prefix, reg_start_pos)) != std::string::npos) {
-                            if (RE2::FullMatch(lines[idx].substr(reg_start_pos, reg_end_pos - reg_start_pos ), reg_suffix, &sm)) {
-                                count++;
-                                goto NEXT_LINE_REV;
-                            }
-                            reg_start_pos++;
-                        }
-                        pos++;
-                    } 
-                    NEXT_LINE_REV:;                      
-                }
-            }
-            break;
-        }
-        case 3: {
             for (; idx < lines.size(); idx++) {
                 count += RE2::PartialMatch(lines[idx], reg_full, &sm);
             } 
@@ -665,7 +539,7 @@ std::pair<double, int> SplitMatchAll (const std::vector<std::string> & lines, st
                 while ((pos = line.find(suffix, pos)) != std::string::npos) {
                     std::string curr_in = line.substr(0, pos); 
                     re2::StringPiece input(curr_in);
-                    while (RE2::FindAndConsume(&input, reg, &sm)) {
+                    while (RE2::Consume(&input, reg, &sm)) {
                         if (input.ToString().empty()) {
                             count++;
                             goto NEXT_LINE2;
@@ -681,7 +555,6 @@ std::pair<double, int> SplitMatchAll (const std::vector<std::string> & lines, st
         for (const auto & line : lines) {
             std::size_t pos = 0;
             while ((pos = line.find(prefix, pos)) != std::string::npos) {
-                // for accuracy, should use line = line.substr(pos+1) next time
                 std::string curr_in = line.substr(pos + prefix.length()); 
                 re2::StringPiece input(curr_in);
                 if (RE2::Consume(&input, reg, &sm)) {
@@ -714,86 +587,6 @@ std::pair<double, int> SplitMatchAll (const std::vector<std::string> & lines, st
     auto elapsed_seconds = std::chrono::duration_cast<std::chrono::duration<double>>(end - start);
 
     std::cout << "split: " << reg_string << " " << count  << std::endl;
-
-    return std::make_pair(elapsed_seconds.count(), count);
-}
-
-std::pair<double, int> SplitMatchRevAll (const std::vector<std::string> & lines, std::string reg_string) {
-    auto start = std::chrono::high_resolution_clock::now();
-    int count = 0;
-
-    auto r = split_regex(reg_string);
-
-    auto prefix = std::get<0>(r);
-    auto suffix = std::get<2>(r);
-    RE2 reg(std::get<1>(r));
-    std::string sm;
-
-    if (std::get<1>(r).empty()) {
-        for (const auto & line : lines) {
-            count += line.find(prefix) != std::string::npos;
-        }
-    } else if (prefix.empty()) {
-        if (suffix.empty()) {
-            for (const auto & line : lines) {
-                count += RE2::PartialMatch(line, reg, &sm);
-            }
-        } else {
-            for (const auto & line : lines) {
-                std::size_t pos = 0;
-                while ((pos = line.find(suffix, pos)) != std::string::npos) {
-                    std::string curr_in = line.substr(0, pos); 
-                    re2::StringPiece input(curr_in);
-                    while (RE2::FindAndConsume(&input, reg, &sm)) {
-                        if (input.ToString().empty()) {
-                            count++;
-                            goto NEXT_LINE_REV2;
-                        } 
-                    }
-                    pos++;
-                }
-                NEXT_LINE_REV2:;
-            }
-            
-        }
-    } else if (suffix.empty()) {
-        // RE2 reg2("^"+std::get<1>(r));
-        for (const auto & line : lines) {
-            std::size_t pos = 0;
-            while ((pos = line.find(prefix, pos)) != std::string::npos) {
-                // for accuracy, should use line = line.substr(pos+1) next time
-                std::string curr_in = line.substr(pos + prefix.length()); 
-                re2::StringPiece input(curr_in);
-                if (RE2::Consume(&input, reg, &sm)) {
-                    count++;
-                    break;
-                }
-                pos++;
-            }                       
-        }   
-    } else {
-        for (const auto & line : lines) {
-            std::size_t pos = 0;
-            while ((pos = line.find(suffix, pos)) != std::string::npos) {
-                std::size_t reg_end_pos = pos;
-                std::size_t reg_start_pos = 0;
-                while (reg_start_pos <= reg_end_pos && (reg_start_pos = line.find(prefix, reg_start_pos)) != std::string::npos) {
-                    if (RE2::FullMatch(line.substr(reg_start_pos, reg_end_pos - reg_start_pos ), reg, &sm)) {
-                        count++;
-                        goto NEXT_LINE_REV;
-                    }
-                    reg_start_pos++;
-                }
-                pos++;
-            } 
-            NEXT_LINE_REV:;                      
-        }
-    }
-
-    auto end = std::chrono::high_resolution_clock::now();
-    auto elapsed_seconds = std::chrono::duration_cast<std::chrono::duration<double>>(end - start);
-
-    std::cout << "splitRev: " << reg_string << " " << count  << std::endl;
 
     return std::make_pair(elapsed_seconds.count(), count);
 }
@@ -865,7 +658,7 @@ std::pair<double, int> MultiSplitMatchTest (const std::vector<std::string> & lin
                     size_t prev_prefix_end_pos = prev_prefix_pos[reg_idx] + prefixes[reg_idx].size();
                     auto curr = line.substr(prev_prefix_end_pos, prev_prefix_pos[reg_idx+1] - prev_prefix_end_pos);
                     if (!RE2::FullMatch(curr, *(c_regs[reg_idx]), &sm)){
-                        pos = prev_prefix_pos[reg_idx]+1;
+                        pos = prev_prefix_pos[reg_idx+1]+1;
                         prefix_idx = reg_idx;
                         goto MATCH_LOOP;
                     }
@@ -940,7 +733,7 @@ std::vector<std::string> read_sys_y() {
 std::vector<std::string> read_traffic() {
     std::string line;
     std::vector<std::string> lines;
-    std::string data_file = "US_Accidents_Dec21_updated.csv";
+    std::string data_file = "../BLARE_DATA/US_Accidents_Dec21_updated.csv";
     std::ifstream data_in(data_file);
     if (!data_in.is_open()) {
         std::cerr << "Could not open the file - '" << data_file << "'" << std::endl;
@@ -984,14 +777,12 @@ std::vector<std::string> read_db_x() {
     return lines;
 }
 
-
 int main(int argc, char** argv) {
+
     std::string line;
     // read all regexes
     std::vector<std::string> regexes;
-
-    std::string reg_file = "regexes.txt";
-
+    std::string reg_file = "../BLARE_DATA/regexes_traffic.txt";
     std::ifstream reg_in(reg_file);
     if (!reg_in.is_open()) {
         std::cerr << "Could not open the file - '" << reg_file << "'" << std::endl;
@@ -1005,53 +796,43 @@ int main(int argc, char** argv) {
 
 
     // auto lines = read_sys_y();
-    // auto lines = read_traffic();
-    auto lines = read_db_x();
+    auto lines = read_traffic();
+    // auto lines = read_db_x();
 
     std::cout << lines.size() <<  std::endl;
 
     int num_repeat = 10;
-    std::ofstream r_file("/datadrive/newblare_db_x_4arm_all.csv", std::ofstream::out);
-    r_file << "regex\ttrue_strategy\tave_stratey\tmid_ave_strategy\tnum_wrong\t";
-    r_file << "blare_time\tmid_blare_time\tmulti_split_time\tmid_multi_split_time\t";
-    r_file << "sm_time\tmid_sm_time\trev_time\tmid_rev_time\tdirect_time\tmid_direct_time\t";
-    r_file << "match_num_blare\tmatch_num_multi_split\tmatch_num_split\tmatch_num_rev\tmatch_num_direct" << std::endl;
+
+    std::ofstream r_file("re2_traffic.csv", std::ofstream::out);
+    r_file << "regex\ttrue_strategy\tave_stratey\tmid_ave_strategy\tnum_wrong\tblare_time\tmid_blare_time\tmulti_split_time\tmid_multi_split_time\tsm_time\tmid_sm_time\tdirect_time\tmid_direct_time\tmatch_num_blare\tmatch_num_multi_split\tmatch_num_split\tmatch_num_direct" << std::endl;
 
     for (const std::string & r : regexes) {
         std::vector<double> elapsed_time_blare;
         std::vector<double> elapsed_time_direct;
         std::vector<double> elapsed_time_split;
         std::vector<double> elapsed_time_multi;
-        std::vector<double> elapsed_time_rev;
         std::vector<double> strategies;
         int match_count_blare;
         int match_count_direct;
         int match_count_split;
         int match_count_multi;
-        int match_count_rev;
         for (int i = 0; i < num_repeat; i++) {
             std::pair<double, int> result_direct = Re2FullAll(lines, r);
             std::pair<double, int> result_split = SplitMatchAll(lines, r);
-            std::pair<double, int> result_rev = SplitMatchRevAll(lines, r);
             std::tuple<double, int, unsigned int> result_blare = Blare(lines, r);
             std::pair<double, int> result_multi = MultiSplitMatchTest(lines, r);
-            
+
             elapsed_time_blare.push_back(std::get<0>(result_blare));
             strategies.push_back(std::get<2>(result_blare));
             elapsed_time_direct.push_back(result_direct.first);
             elapsed_time_split.push_back(result_split.first);
-            elapsed_time_rev.push_back(result_rev.first);
             elapsed_time_multi.push_back(result_multi.first);
 
             match_count_blare = std::get<1>(result_blare);
             match_count_direct = result_direct.second;
             match_count_split = result_split.second;
-            match_count_rev = result_rev.second;
             match_count_multi = result_multi.second;
         }
-        std::sort(elapsed_time_rev.begin(), elapsed_time_rev.end());
-        auto ave_rev = std::accumulate(elapsed_time_rev.begin(), elapsed_time_rev.end(), 0.0) / elapsed_time_blare.size();
-        auto mid_ave_rev = std::accumulate(elapsed_time_rev.begin()+1, elapsed_time_rev.end()-1, 0.0) / (num_repeat-2);
 
         std::sort(elapsed_time_direct.begin(), elapsed_time_direct.end());
         auto ave_direct = std::accumulate(elapsed_time_direct.begin(), elapsed_time_direct.end(), 0.0) / elapsed_time_blare.size();
@@ -1062,7 +843,7 @@ int main(int argc, char** argv) {
         auto mid_ave_multi = std::accumulate(elapsed_time_multi.begin()+1, elapsed_time_multi.end()-1, 0.0) / (num_repeat-2);
         
         std::sort(elapsed_time_split.begin(), elapsed_time_split.end());
-        auto ave_split = std::accumulate(elapsed_time_split.begin(), elapsed_time_split.end(), 0.0) / elapsed_time_blare.size();        
+        auto ave_split = std::accumulate(elapsed_time_split.begin(), elapsed_time_split.end(), 0.0) / elapsed_time_multi.size();        
         auto mid_ave_split = std::accumulate(elapsed_time_split.begin()+1, elapsed_time_split.end()-1, 0.0) / (num_repeat-2);
         
         std::sort(elapsed_time_blare.begin(), elapsed_time_blare.end());
@@ -1072,24 +853,22 @@ int main(int argc, char** argv) {
 
         auto ave_stratgy =  std::accumulate(strategies.begin(), strategies.end(), 0.0) / strategies.size();
         auto mid_ave_strategy = std::accumulate(strategies.begin()+1, strategies.end()-1, 0.0) / (strategies.size()-2);
-        auto true_strategy = argmin(std::vector<double>{mid_ave_split, mid_ave_multi, mid_ave_rev, mid_ave_direct});
+        auto true_strategy = argmin(std::vector<double>{mid_ave_split, mid_ave_multi, mid_ave_direct});
 
         auto strategy_diff = std::abs(true_strategy-ave_stratgy) * num_repeat;
 
-        std::cout << "Blare: " << ave_blare << std::endl;
-        std::cout << "Direct: " << ave_direct << std::endl;
-        std::cout << "SplitM: " << ave_split << std::endl;
-        std::cout << "SplitMREv: " << ave_rev << std::endl;
-        std::cout << "MultiSplit: " << ave_multi << std::endl;
+        std::cout << "Blare: " << ave_blare << " " << match_count_blare << std::endl;
+        std::cout << "Direct: " << ave_direct << " " << match_count_direct << std::endl;
+        std::cout << "SplitM: " << ave_split << " " << match_count_split << std::endl;
+        std::cout << "MultiSplit: " << ave_multi << " " << match_count_multi << std::endl;
 
         r_file << r << "\t";
         r_file << true_strategy << "\t"  << ave_stratgy << "\t" << mid_ave_strategy << "\t" << strategy_diff << "\t";
         r_file << ave_blare << "\t" << mid_ave_blare << "\t";
         r_file << ave_multi << "\t" << mid_ave_multi << "\t";
         r_file << ave_split << "\t" << mid_ave_split << "\t";
-        r_file << ave_rev << "\t" << mid_ave_rev << "\t";
         r_file << ave_direct << "\t" << mid_ave_direct << "\t";
-        r_file << match_count_blare << "\t" << match_count_multi << "\t" << match_count_split << "\t" << match_count_rev << "\t" << match_count_direct << std::endl;
+        r_file << match_count_blare << "\t" << match_count_multi << "\t" << match_count_split << "\t" << match_count_direct << std::endl;
     }
     r_file.close();    
 }
