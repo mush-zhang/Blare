@@ -12,13 +12,12 @@
 
 using namespace icu_72;
 
-
 std::pair<double, int> SplitMatchMultiWayICU (const std::vector<UnicodeString> & lines, UnicodeString reg_string) {
     auto start = std::chrono::high_resolution_clock::now();
     int count = 0;
     UErrorCode status = U_ZERO_ERROR;
 
-    auto r = split_regex_multi(reg_string);
+    auto r = split_unicode_regex_multi(reg_string);
 
     std::vector<UnicodeString> prefixes = std::get<0>(r);
     std::vector<UnicodeString> regs = std::get<1>(r);

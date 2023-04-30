@@ -159,11 +159,11 @@ std::tuple<double, int, unsigned int> BlareICU (const std::vector<UnicodeString>
     RegexPattern* reg_full = RegexPattern::compile(reg_string, 0, status);
     RegexMatcher* matcher_full = reg_full->matcher(status);
 
-    auto r = split_regex(reg_string);
+    auto r = split_unicode_regex(reg_string);
     RegexPattern* reg_suffix = RegexPattern::compile(std::get<1>(r), 0, status);
     RegexMatcher* matcher_suffix = reg_suffix->matcher(status);
 
-    auto r_multi = split_regex_multi(reg_string);
+    auto r_multi = split_unicode_regex_multi(reg_string);
     std::vector<UnicodeString> prefixes = std::get<0>(r_multi);
     std::vector<UnicodeString> regs_temp = std::get<1>(r_multi);
     auto regs = std::get<1>(r_multi);
@@ -192,7 +192,6 @@ std::tuple<double, int, unsigned int> BlareICU (const std::vector<UnicodeString>
     size_t skip_size = kSkipSize;
     size_t iteration_num = kEnembleNum;
     size_t sample_size = lines.size() / kSampleDivisor;
-
 
     if (sample_size < kSampleSizeLowerBound) {
         if (lines.size() >= 2*kSampleSizeLowerBound) {

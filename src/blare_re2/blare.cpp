@@ -169,7 +169,6 @@ std::tuple<double, int, unsigned int> BlareRe2 (const std::vector<std::string> &
     size_t iteration_num = kEnembleNum;
     size_t sample_size = lines.size() / kSampleDivisor;
 
-
     if (sample_size < kSampleSizeLowerBound) {
         if (lines.size() >= 2*kSampleSizeLowerBound) {
             sample_size = kSampleSizeLowerBound;

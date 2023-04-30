@@ -17,7 +17,7 @@ std::pair<double, int> SplitMatch3WayICU (const std::vector<UnicodeString> & lin
     int count = 0;
     UErrorCode status = U_ZERO_ERROR;
 
-    auto r = split_regex(reg_string);
+    auto r = split_unicode_regex(reg_string);
 
     auto prefix = std::get<0>(r);
     auto suffix = std::get<2>(r);
