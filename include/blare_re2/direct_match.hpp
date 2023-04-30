@@ -7,7 +7,7 @@
 #ifndef BLARE_RE2_DIRECT_MATCH_HPP_
 #define BLARE_RE2_DIRECT_MATCH_HPP_
 
-std::pair<double, int> Re2Direct (const std::vector<std::string> & lines, std::string reg_string) {
+std::pair<double, int> DirectMatchRe2 (const std::vector<std::string> & lines, std::string reg_string) {
     auto start = std::chrono::high_resolution_clock::now();
     int count = 0;
     std::string sm;

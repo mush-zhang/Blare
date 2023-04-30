@@ -1,6 +1,6 @@
 #include <algorithm>
 
-#include "blare/regex_split.hpp"
+#include <misc/regex_split.hpp>
 
 bool char_escaped(const std::string &line, std::size_t pos) {
     auto temp_pos = pos;

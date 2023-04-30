@@ -1,8 +1,8 @@
 #include <algorithm>
 #include <vector>
 
-#ifndef BLARE_MISC_HPP_
-#define BLARE_MISC_HPP_
+#ifndef BLARE_MISC_MISC_HPP_
+#define BLARE_MISC_MISC_HPP_
 
 template<class T>
 size_t argmax(const std::vector<T>& v){
@@ -27,4 +27,4 @@ constexpr size_t kSampleDivisor = 100000;
 constexpr size_t kSampleSizeLowerBound = 200;
 constexpr size_t kSampleSizeUpperBound = 10000;
 
-#endif // BLARE_MISC_HPP_
+#endif // BLARE_MISC_MISC_HPP_

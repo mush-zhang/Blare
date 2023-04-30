@@ -8,7 +8,7 @@
 #ifndef BLARE_PCRE2_DIRECT_MATCH_HPP_
 #define BLARE_PCRE2_DIRECT_MATCH_HPP_
 
-std::pair<double, int> PCRE2Direct (const std::vector<std::string> & lines, std::string reg_string) {
+std::pair<double, int> DirectMatchPCRE2 (const std::vector<std::string> & lines, std::string reg_string) {
     auto start = std::chrono::high_resolution_clock::now();
     int count = 0;
     jp::VecNum vec_num;
