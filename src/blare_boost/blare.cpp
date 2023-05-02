@@ -200,21 +200,15 @@ std::tuple<double, int, unsigned int> BlareBoost (const std::vector<std::string>
     }
 
     for (size_t j = 0; j < iteration_num; j++) {
-        // Number of trials per bandit
         auto trials = std::vector<unsigned int>(arm_num);
-        // Average time per bandit
         auto ave_elapsed = std::vector<double>(arm_num);
-        // Number of wins per bandit
         auto wins = std::vector<unsigned int>(arm_num);
-        // Beta distributions of the priors for each bandit
         std::vector<boost::random::beta_distribution<>> prior_dists;
-        // Initialize the prior distributions with alpha=1 beta=1
         for (size_t i = 0; i < arm_num; i++) {
             prior_dists.push_back(boost::random::beta_distribution<>(1, 1));
         }
         for (size_t k = 0; k < sample_size; k++, idx++) {
             std::vector<double> priors;
-            // Sample a random value from each prior distribution.
             for (auto& dist : prior_dists) {
                 priors.push_back(dist(gen));
             }
