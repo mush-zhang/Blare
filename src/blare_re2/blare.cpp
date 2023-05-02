@@ -134,7 +134,7 @@ bool FullMatchSingle (const std::string & line, RE2 & reg) {
     return RE2::PartialMatch(line, reg, &sm);
 }
 
-std::tuple<double, int, unsigned int> BlareRe2 (const std::vector<std::string> & lines, std::string reg_string) {
+std::tuple<double, int, unsigned int> BlareRE2 (const std::vector<std::string> & lines, std::string reg_string) {
     auto start = std::chrono::high_resolution_clock::now();
     int count = 0;
     unsigned int idx = 0;
@@ -545,7 +545,7 @@ int FullMatchCountAllSingle (const std::string & line, RE2 & reg) {
     return count;
 }
 
-std::tuple<double, int, unsigned int> BlareCountAllRe2 (const std::vector<std::string> & lines, std::string reg_string) {
+std::tuple<double, int, unsigned int> BlareCountAllRE2 (const std::vector<std::string> & lines, std::string reg_string) {
     auto start = std::chrono::high_resolution_clock::now();
     int count = 0;
     unsigned int idx = 0;
@@ -1016,7 +1016,7 @@ bool FullMatchLongestSingle (const std::string & line, RE2 & reg) {
     return false;
 }
 
-std::tuple<double, int, unsigned int> BlareLongestRe2 (const std::vector<std::string> & lines, std::string reg_string) {
+std::tuple<double, int, unsigned int> BlareLongestRE2 (const std::vector<std::string> & lines, std::string reg_string) {
     auto start = std::chrono::high_resolution_clock::now();
     int count = 0;
     unsigned int idx = 0;
@@ -1401,7 +1401,7 @@ bool SplitMatchReverseSingle (const std::string & line, RE2 & reg, const std::tu
     return match;
 }
 
-std::tuple<double, int, unsigned int> Blare4ArmsRe2 (const std::vector<std::string> & lines, std::string reg_string) {
+std::tuple<double, int, unsigned int> Blare4ArmsRE2 (const std::vector<std::string> & lines, std::string reg_string) {
     auto start = std::chrono::high_resolution_clock::now();
     int count = 0;
     unsigned int idx = 0;

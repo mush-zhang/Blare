@@ -21,11 +21,11 @@ enum ARM {
   kReversedSplitMatch
 };
 
-constexpr size_t kSkipSize = 100;
-constexpr size_t kEnembleNum = 10;
+inline constexpr size_t kSkipSize = 100;
+inline constexpr size_t kEnembleNum = 10;
 
-constexpr size_t kSampleDivisor = 100000;
-constexpr size_t kSampleSizeLowerBound = 200;
-constexpr size_t kSampleSizeUpperBound = 10000;
+inline constexpr size_t kSampleDivisor = 100000;
+inline constexpr size_t kSampleSizeLowerBound = 200;
+inline constexpr size_t kSampleSizeUpperBound = 10000;
 
 #endif // BLARE_MISC_MISC_HPP_
