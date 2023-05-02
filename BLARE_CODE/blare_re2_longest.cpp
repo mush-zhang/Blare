@@ -102,7 +102,7 @@ std::tuple<std::vector<std::string>, std::vector<std::string>, bool> split_regex
     return std::tuple<std::vector<std::string>, std::vector<std::string>, bool>(const_strings, regexes, prefix_first);
 }
 
-bool MultiMatchSingle (const std::string & line, std::vector<std::shared_ptr<RE2>> & c_regs, std::shared_ptr<RE2> & reg0, const std::vector<std::string> prefixes, const std::vector<std::string> & regs, bool prefix_first, std::vector<size_t> & prev_prefix_pos) {
+bool MultiMatchLongestSingle (const std::string & line, std::vector<std::shared_ptr<RE2>> & c_regs, std::shared_ptr<RE2> & reg0, const std::vector<std::string> prefixes, const std::vector<std::string> & regs, bool prefix_first, std::vector<size_t> & prev_prefix_pos) {
     std::string sm;
     std::string curr_longest = "";
     bool match = false;
@@ -198,7 +198,7 @@ bool MultiMatchSingle (const std::string & line, std::vector<std::shared_ptr<RE2
     return match;
 }
 
-bool SplitMatchSingle (const std::string & line, RE2 & reg, const std::tuple<std::string, std::string, std::string> & r) {
+bool SplitMatchLongestSingle (const std::string & line, RE2 & reg, const std::tuple<std::string, std::string, std::string> & r) {
     bool match = false;
     std::string sm;
     std::string curr_longest = "";
@@ -276,7 +276,7 @@ bool SplitMatchSingle (const std::string & line, RE2 & reg, const std::tuple<std
     return match;
 }
 
-bool FullMatchSingle (const std::string & line, RE2 & reg) {
+bool FullMatchLongestSingle (const std::string & line, RE2 & reg) {
     std::string sm;
     std::string curr_longest = "";
     re2::StringPiece input(line);
@@ -354,11 +354,10 @@ std::tuple<double, int, unsigned int> Blare (const std::vector<std::string> & li
     auto arm_num = 3;
 
     for (; idx < skip_size; idx++) {
-        // switch(b(rng)) {
         switch(dist(gen)) {
-            case 0: count += SplitMatchSingle(lines[idx], reg_suffix, r); break;
-            case 1: count += MultiMatchSingle(lines[idx], c_regs, reg0, prefixes, regs, prefix_first, prev_prefix_pos); break;
-            case 2: count += FullMatchSingle(lines[idx], reg_full); break;
+            case 0: count += SplitMatchLongestSingle(lines[idx], reg_suffix, r); break;
+            case 1: count += MultiMatchLongestSingle(lines[idx], c_regs, reg0, prefixes, regs, prefix_first, prev_prefix_pos); break;
+            case 2: count += FullMatchLongestSingle(lines[idx], reg_full); break;
         }
     }
 
@@ -387,9 +386,9 @@ std::tuple<double, int, unsigned int> Blare (const std::vector<std::string> & li
             // Pull the lever of the chosen bandit
             auto single_start = std::chrono::high_resolution_clock::now();
             switch(chosen_bandit) {
-                case 0: count += SplitMatchSingle(lines[idx], reg_suffix, r); break;
-                case 1: count += MultiMatchSingle(lines[idx], c_regs, reg0, prefixes, regs, prefix_first, prev_prefix_pos); break;
-                case 2: count += FullMatchSingle(lines[idx], reg_full); break;
+                case 0: count += SplitMatchLongestSingle(lines[idx], reg_suffix, r); break;
+                case 1: count += MultiMatchLongestSingle(lines[idx], c_regs, reg0, prefixes, regs, prefix_first, prev_prefix_pos); break;
+                case 2: count += FullMatchLongestSingle(lines[idx], reg_full); break;
             }
             
             auto single_end = std::chrono::high_resolution_clock::now();
@@ -408,7 +407,6 @@ std::tuple<double, int, unsigned int> Blare (const std::vector<std::string> & li
             prior_dists[chosen_bandit] = boost::random::beta_distribution<>(alpha, beta);
         }
         auto winning_strategy = argmax(std::vector<double>{(wins[0]*1.0)/trials[0], (wins[1]*1.0)/trials[1], (wins[2]*1.0)/trials[2]});
-        // pred_results[j] = winning_strategy;
         pred_results[winning_strategy]++;
         if (pred_results[winning_strategy] >= iteration_num / arm_num) 
             break;

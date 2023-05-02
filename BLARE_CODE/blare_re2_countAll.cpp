@@ -102,7 +102,7 @@ std::tuple<std::vector<std::string>, std::vector<std::string>, bool> split_regex
     return std::tuple<std::vector<std::string>, std::vector<std::string>, bool>(const_strings, regexes, prefix_first);
 }
 
-int MultiMatchSingle (const std::string & line, std::vector<std::shared_ptr<RE2>> & c_regs, std::shared_ptr<RE2> & reg0, const std::vector<std::string> prefixes, const std::vector<std::string> & regs, bool prefix_first, std::vector<size_t> & prev_prefix_pos) {
+int MultiMatchCountAllSingle (const std::string & line, std::vector<std::shared_ptr<RE2>> & c_regs, std::shared_ptr<RE2> & reg0, const std::vector<std::string> prefixes, const std::vector<std::string> & regs, bool prefix_first, std::vector<size_t> & prev_prefix_pos) {
     std::string sm;
     
     int count = 0;
@@ -182,7 +182,7 @@ int MultiMatchSingle (const std::string & line, std::vector<std::shared_ptr<RE2>
     return count;
 }
 
-int SplitMatchSingle (const std::string & line, RE2 & reg, const std::tuple<std::string, std::string, std::string> & r) {
+int SplitMatchCountAllSingle (const std::string & line, RE2 & reg, const std::tuple<std::string, std::string, std::string> & r) {
     int count = 0;
     std::string sm;
     
@@ -244,7 +244,7 @@ int SplitMatchSingle (const std::string & line, RE2 & reg, const std::tuple<std:
     return count;
 }
 
-int FullMatchSingle (const std::string & line, RE2 & reg) {
+int FullMatchCountAllSingle (const std::string & line, RE2 & reg) {
     std::string sm;
     
     re2::StringPiece input(line);
@@ -316,9 +316,9 @@ std::tuple<double, int, unsigned int> Blare (const std::vector<std::string> & li
 
     for (; idx < skip_size; idx++) {
         switch(dist(gen)) {
-            case 0: count += SplitMatchSingle(lines[idx], reg_suffix, r); break;
-            case 1: count += MultiMatchSingle(lines[idx], c_regs, reg0, prefixes, regs, prefix_first, prev_prefix_pos); break;
-            case 2: count += FullMatchSingle(lines[idx], reg_full); break;
+            case 0: count += SplitMatchCountAllSingle(lines[idx], reg_suffix, r); break;
+            case 1: count += MultiMatchCountAllSingle(lines[idx], c_regs, reg0, prefixes, regs, prefix_first, prev_prefix_pos); break;
+            case 2: count += FullMatchCountAllSingle(lines[idx], reg_full); break;
         }
     }
 
@@ -347,9 +347,9 @@ std::tuple<double, int, unsigned int> Blare (const std::vector<std::string> & li
             // Pull the lever of the chosen bandit
             auto single_start = std::chrono::high_resolution_clock::now();
             switch(chosen_bandit) {
-                case 0: count += SplitMatchSingle(lines[idx], reg_suffix, r); break;
-                case 1: count += MultiMatchSingle(lines[idx], c_regs, reg0, prefixes, regs, prefix_first, prev_prefix_pos); break;
-                case 2: count += FullMatchSingle(lines[idx], reg_full); break;
+                case 0: count += SplitMatchCountAllSingle(lines[idx], reg_suffix, r); break;
+                case 1: count += MultiMatchCountAllSingle(lines[idx], c_regs, reg0, prefixes, regs, prefix_first, prev_prefix_pos); break;
+                case 2: count += FullMatchCountAllSingle(lines[idx], reg_full); break;
             }
             
             auto single_end = std::chrono::high_resolution_clock::now();

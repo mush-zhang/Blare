@@ -18,6 +18,7 @@ enum ARM {
   kSplitMatch = 0,
   kMultiMatch,
   kDirectMatch,
+  kReversedSplitMatch
 };
 
 constexpr size_t kSkipSize = 100;
