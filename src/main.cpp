@@ -95,7 +95,7 @@ int main(int argc, char** argv) {
             result = BlareBoost(lines, r);
         }
         std::ostringstream ss;
-        ss << r << "\t" << std::get<0>(result) << "\t" << std::get<1>(result) << age;
+        ss << r << "\t" << std::get<0>(result) << "\t" << std::get<1>(result);
         output_lines.push_back(ss.str());
     }
 
