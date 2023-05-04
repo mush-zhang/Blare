@@ -1,3 +1,8 @@
+add_subdirectory(misc)
+add_subdirectory(blare_re2)
+add_subdirectory(blare_pcre2)
+add_subdirectory(blare_boost)
+
 add_executable(blare main.cpp)
 
 target_compile_features(blare PRIVATE cxx_std_17)

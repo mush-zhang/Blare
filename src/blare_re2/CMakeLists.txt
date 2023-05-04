@@ -34,3 +34,4 @@ source_group(
   TREE "${PROJECT_SOURCE_DIR}/include/blare_re2"
   PREFIX "BLARE RE2 Header Files"
   FILES ${HEADER_LIST})
+
