@@ -6,6 +6,9 @@ project(
   DESCRIPTION "BLARE: a regular expression matching framework"
   LANGUAGES CXX)
 
+list(APPEND CMAKE_PREFIX_PATH "/usr/local/lib")
+
+
 # Only do these if this is the main project, and not if it is included through add_subdirectory
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 
@@ -34,6 +37,8 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     message(STATUS "Doxygen not found, not building docs")
   endif()
 endif()
+
+list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 # FetchContent added in CMake 3.11, downloads during the configure step
 # FetchContent_MakeAvailable was added in CMake 3.14; simpler usage
