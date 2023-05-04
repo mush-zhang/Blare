@@ -13,7 +13,6 @@ file(GLOB HEADER_LIST CONFIGURE_DEPENDS "${BLARE_SOURCE_DIR}/include/blare_pcre2
 
 # Make an automatic library - will be static or dynamic based on user setting
 add_library(blare_pcre2_lib 
-    MODULE
     blare.cpp
     split_match_3way.cpp 
     split_match_multiway.cpp 
