@@ -1,9 +1,10 @@
 # Find the installed re2 library
-find_package(re2 CONFIG REQUIRED)
+# find_package(re2 CONFIG REQUIRED)
 # If you installed the library at a custom location, remember to add that custom location in your CMake prefixes:
 
 # # inside myproject/build
 # cmake .. -DCMAKE_PREFIX_PATH=/path/to/custom/location/of/re2
+find_library(NAMES re2)
 
 # Note that headers are optional, and do not affect add_library, but they will not
 # show up in IDEs unless they are listed in add_library.

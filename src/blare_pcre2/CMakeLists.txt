@@ -1,8 +1,9 @@
 # Find the installed pcre2 library
-find_package(pcre2-8 pcre2-16 pcre2-32 REQUIRED)
+# find_package(pcre2-8 pcre2-16 pcre2-32 REQUIRED)
 # If you installed the library at a custom location, remember to add that custom location in your CMake prefixes:
 # # inside myproject/build
 # cmake .. -DCMAKE_PREFIX_PATH=/path/to/custom/location/of/pcre2
+find_library(NAMES pcre2-8 pcre2-16 pcre2-32)
 
 # Note that headers are optional, and do not affect add_library, but they will not
 # show up in IDEs unless they are listed in add_library.

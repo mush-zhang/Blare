@@ -2,6 +2,8 @@
 # Use of this source code is governed by a BSD-style
 # license that can be found in the LICENSE file.
 
+@PACKAGE_INIT@
+
 include(CMakeFindDependencyMacro)
 
 set_and_check(re2_INCLUDE_DIR ${PACKAGE_PREFIX_DIR}/@CMAKE_INSTALL_INCLUDEDIR@)

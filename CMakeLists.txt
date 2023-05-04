@@ -6,8 +6,9 @@ project(
   DESCRIPTION "BLARE: a regular expression matching framework"
   LANGUAGES CXX)
 
-list(APPEND CMAKE_PREFIX_PATH "/usr/local/lib")
-list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+set(CMAKE_LIBRARY_PATH "/usr/local/lib")
+# list(APPEND CMAKE_PREFIX_PATH "/usr/local/lib")
+# list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 # Only do these if this is the main project, and not if it is included through add_subdirectory
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)

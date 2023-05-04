@@ -1,7 +1,8 @@
-find_package(Boost REQUIRED COMPONENTS regex) 
+# find_package(Boost REQUIRED COMPONENTS regex) 
 # If you installed the library at a custom location, remember to add that custom location in your CMake prefixes:
 # # inside myproject/build
 # cmake .. -DCMAKE_PREFIX_PATH=/path/to/custom/location/of/boost
+find_library(NAMES boost_regex)
 
 # Note that headers are optional, and do not affect add_library, but they will not
 # show up in IDEs unless they are listed in add_library.
