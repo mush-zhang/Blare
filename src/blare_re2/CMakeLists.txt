@@ -1,5 +1,5 @@
 # Find the installed re2 library
-find_package(re2 REQUIRED)
+find_package(re2 CONFIG REQUIRED)
 # If you installed the library at a custom location, remember to add that custom location in your CMake prefixes:
 
 # # inside myproject/build
