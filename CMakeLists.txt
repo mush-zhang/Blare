@@ -55,8 +55,8 @@ FetchContent_MakeAvailable(fmtlib)
 # The compiled library code is here
 add_subdirectory(src)
 
-# The executable code is here
-add_subdirectory(experiments)
+# # The executable code is here
+# add_subdirectory(experiments)
 
 # Testing only available if this is the main app
 if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME) AND BUILD_TESTING)
