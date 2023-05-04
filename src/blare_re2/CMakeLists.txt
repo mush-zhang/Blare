@@ -21,7 +21,7 @@ add_library(blare_re2_lib
     ${HEADER_LIST})
 
 # We need this directory, and users of our library will need it too
-target_include_directories(blare_re2_lib PUBLIC "${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}/include")
+target_include_directories(blare_re2_lib PUBLIC "/usr/local/include" "${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}/include")
 
 # This depends on (header only) boost
 target_link_libraries(blare_re2_lib PRIVATE misc_lib Boost::boost re2::re2)
