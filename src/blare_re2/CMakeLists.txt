@@ -11,7 +11,6 @@ find_library(NAMES re2)
 
 # Optionally glob, but only for CMake 3.12 or later:
 file(GLOB HEADER_LIST CONFIGURE_DEPENDS "${BLARE_SOURCE_DIR}/include/blare_re2/*.hpp")
-# set(HEADER_LIST "${BLARE_SOURCE_DIR}/include/blare_re2/lib.hpp")
 
 # Make an automatic library - will be static or dynamic based on user setting
 add_library(blare_re2_lib 
