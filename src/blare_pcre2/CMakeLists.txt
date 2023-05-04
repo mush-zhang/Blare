@@ -9,7 +9,7 @@ find_library(NAMES pcre2-8 pcre2-16 pcre2-32)
 # show up in IDEs unless they are listed in add_library.
 
 # Optionally glob, but only for CMake 3.12 or later:
-file(GLOB HEADER_LIST CONFIGURE_DEPENDS "${BLARE_SOURCE_DIR}/include/blare_pcre2/*.hpp" "/usr/local/include/jpcre2.hpp")
+file(GLOB HEADER_LIST CONFIGURE_DEPENDS "${BLARE_SOURCE_DIR}/include/blare_pcre2/*.hpp")
 
 # Make an automatic library - will be static or dynamic based on user setting
 add_library(blare_pcre2_lib 
@@ -17,7 +17,8 @@ add_library(blare_pcre2_lib
     blare.cpp
     split_match_3way.cpp 
     split_match_multiway.cpp 
-    ${HEADER_LIST})
+    ${HEADER_LIST}
+    "/usr/local/include/jpcre2.hpp")
 
 # We need this directory, and users of our library will need it too
 target_include_directories(blare_pcre2_lib PUBLIC "/usr/local/include" "${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}/include")
