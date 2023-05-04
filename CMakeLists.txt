@@ -44,6 +44,10 @@ include(FetchContent)
 find_package(Boost REQUIRED)
 # Adds Boost::boost
 
+set(Boost_USE_STATIC_LIBS OFF) 
+set(Boost_USE_MULTITHREADED ON)  
+set(Boost_USE_STATIC_RUNTIME OFF) 
+
 # Formatting library
 FetchContent_Declare(
   fmtlib
