@@ -30,17 +30,29 @@
 typedef boost::mt19937 base_generator;
 using namespace icu_72;
 
+bool char_escaped(const UnicodeString &line, std::size_t pos) {
+    auto temp_pos = pos;
+    int num_escaped = 0;
+    // count number of escape characters before the char
+    while (temp_pos > 0) {
+        if (line.charAt(--temp_pos) != '\\') 
+            break;
+        num_escaped++;
+    }
+    return num_escaped % 2 == 1;
+}
+
 std::tuple<UnicodeString, UnicodeString, UnicodeString> split_regex(const UnicodeString &line) {
     std::size_t pos = 0;
     UnicodeString prefix = line;
     UnicodeString regex = "";
     UnicodeString suffix = "";
     while ((pos = line.indexOf("(", pos)) != -1) {
-        if (pos == 0 || line.charAt(pos - 1) != '\\') {
+        if (!char_escaped(line, pos)) {
             std::size_t reg_start_pos = pos;
             std::size_t reg_end_pos = pos+1;
             while ((pos = line.indexOf(")", pos+1)) != -1) {
-                if (line.charAt(pos - 1) != '\\') {
+                if (!char_escaped(line, pos)) {
                     reg_end_pos = pos;
                 }
                 pos++;
@@ -68,13 +80,13 @@ std::tuple<std::vector<UnicodeString>, std::vector<UnicodeString>, bool> split_r
     UnicodeString suffix = "";
     bool prefix_first = true;
     while ((pos = line.indexOf("(", pos)) != -1) {
-        if (pos == 0 || line.charAt(pos - 1) != '\\') {
+        if (!char_escaped(line, pos)) {
             prefix = line.tempSubString(prev_pos, pos-prev_pos);
             if (prev_pos == 0 && pos == 0) prefix_first = false;
 
             pos2 = pos;
             while ((pos2 = line.indexOf(")", pos2)) != -1) {
-                if (line.charAt(pos2 - 1) != '\\') {
+                if (!char_escaped(line, pos2)) {
                     suffix = line.tempSubString(pos, pos2 + 1 -pos);
                     break;
                 }

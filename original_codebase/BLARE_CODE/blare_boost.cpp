@@ -113,7 +113,6 @@ std::tuple<std::vector<std::string>, std::vector<std::string>, bool> split_regex
     return std::tuple<std::vector<std::string>, std::vector<std::string>, bool>(const_strings, regexes, prefix_first);
 }
 
-
 bool MultiMatchSingle (const std::string & line, std::vector<std::shared_ptr<boost::regex>> & c_regs, std::shared_ptr<boost::regex> & reg0, const std::vector<std::string> prefixes, const std::vector<std::string> & regs, bool prefix_first, std::vector<size_t> & prev_prefix_pos) {
     boost::smatch what;
     bool match = false;

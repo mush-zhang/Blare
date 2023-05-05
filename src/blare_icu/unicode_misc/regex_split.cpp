@@ -19,7 +19,6 @@ bool char_escaped(const UnicodeString &line, std::size_t pos) {
     return num_escaped % 2 == 1;
 }
 
-
 std::tuple<UnicodeString, UnicodeString, UnicodeString> split_regex(const UnicodeString &line) {
     std::size_t pos = 0;
     UnicodeString prefix = line;
