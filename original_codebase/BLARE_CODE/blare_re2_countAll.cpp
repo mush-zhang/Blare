@@ -65,10 +65,10 @@ std::tuple<std::string, std::string, std::string> split_regex(const std::string 
     return std::make_tuple(prefix, regex, suffix);
 }
 
-std::vector<std::string> split_regex_multi(const std::string &line) {
+std::tuple<std::vector<std::string>, std::vector<std::string>, bool> split_regex_multi(const std::string &line) {
     std::size_t pos = 0;
     std::size_t prev_pos = 0;
-    int pos2 = 0;
+    int pos2 = -1;
     std::vector<std::string> const_strings;
     std::vector<std::string> regexes;
     std::string prefix = line;
@@ -78,6 +78,7 @@ std::vector<std::string> split_regex_multi(const std::string &line) {
         if (!char_escaped(line, pos)) {
             prefix = line.substr(prev_pos, pos-prev_pos);
             if (prev_pos == 0 && pos == 0) prefix_first = false;
+
             pos2 = pos;
             while ((pos2 = line.find(")", pos2)) != std::string::npos) {
                 if (!char_escaped(line, pos2)) {
@@ -101,15 +102,15 @@ std::vector<std::string> split_regex_multi(const std::string &line) {
             pos = pos2;
         } else {
             pos++;
+
         }
     }
-
     prefix = line.substr(pos2);
     if (!prefix.empty()) {
         prefix.erase(std::remove(prefix.begin(), prefix.end(), '\\'), prefix.end()); // remove escape (trick method. should only remove single \ and turning \\ to \)
         const_strings.push_back(prefix);
     }
-    return const_strings;
+    return std::tuple<std::vector<std::string>, std::vector<std::string>, bool>(const_strings, regexes, prefix_first);
 }
 
 int MultiMatchCountAllSingle (const std::string & line, std::vector<std::shared_ptr<RE2>> & c_regs, std::shared_ptr<RE2> & reg0, const std::vector<std::string> prefixes, const std::vector<std::string> & regs, bool prefix_first, std::vector<size_t> & prev_prefix_pos) {
