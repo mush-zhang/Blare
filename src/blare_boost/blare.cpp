@@ -1,5 +1,6 @@
 #include <chrono>
 #include <ctime> // seeding random number generators
+#include <memory>
 
 #include <boost/random.hpp>
 #include <boost/regex.hpp>

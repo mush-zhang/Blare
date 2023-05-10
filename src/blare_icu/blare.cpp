@@ -1,5 +1,6 @@
 #include <chrono>
 #include <ctime> // seeding random number generators
+#include <memory>
 
 #include <boost/random.hpp>
 
@@ -197,7 +198,7 @@ std::tuple<double, int, unsigned int> BlareICU (const std::vector<UnicodeString>
     boost::random::uniform_int_distribution<> dist{0, 2};
 
     std::vector<size_t> prev_prefix_pos(prefixes.size(), 0);
-    
+
     if (sample_size < kSampleSizeLowerBound) {
         if (lines.size() >= 2*kSampleSizeLowerBound) {
             sample_size = kSampleSizeLowerBound;

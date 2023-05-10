@@ -1,5 +1,6 @@
 #include <chrono>
 #include <ctime> // seeding random number generators
+#include <memory>
 
 #include <re2/re2.h>
 #include <boost/random.hpp>
@@ -173,7 +174,7 @@ std::tuple<double, int, unsigned int> BlareRE2 (const std::vector<std::string> &
     boost::random::uniform_int_distribution<> dist{0, 2};
 
     std::vector<size_t> prev_prefix_pos(prefixes.size(), 0);
-    
+
     if (sample_size < kSampleSizeLowerBound) {
         if (lines.size() >= 2*kSampleSizeLowerBound) {
             sample_size = kSampleSizeLowerBound;

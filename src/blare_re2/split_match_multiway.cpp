@@ -1,4 +1,5 @@
 #include <chrono>
+#include <memory>
 
 #include <re2/re2.h>
 

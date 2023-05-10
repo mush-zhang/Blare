@@ -1,4 +1,5 @@
 #include <chrono>
+#include <memory>
 
 #include <boost/random.hpp>
 #include <boost/regex.hpp>

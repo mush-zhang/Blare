@@ -1,4 +1,5 @@
 #include <chrono>
+#include <memory>
 
 #include <misc/misc.hpp>
 #include <misc/split_regex.hpp>
