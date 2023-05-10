@@ -18,14 +18,14 @@ inline constexpr const char * kPCRE2 = "PCRE2";
 inline constexpr const char * kICU = "ICU";
 inline constexpr const char * kBoost = "BOOST";
 
-inline constexpr std::string_view kUsage = "usage:  \
-    main.o regex_lib_name input_regex_file input_data_file [output_file] \
-    \t regex_lib_name:   Name of the base regex matching library used by BLARE. \
-    \t                 Options available are 'RE2', 'PCRE2', 'ICU', 'BOOST'. \
-    \t input_regex_file: Path to the list of regex queries. \
-    \t                   Each line of the file is considered a regex query. \
-    \t input_data_file:  Path to the list of data to be queried upon. \
-    \t                   Each line of the file is considered an individual (log) line. \
+inline constexpr std::string_view kUsage = "usage:  \n\
+    main.o regex_lib_name input_regex_file input_data_file [output_file] \n\
+    \t regex_lib_name:   Name of the base regex matching library used by BLARE. \n\
+    \t                 Options available are 'RE2', 'PCRE2', 'ICU', 'BOOST'. \n\
+    \t input_regex_file: Path to the list of regex queries. \n\
+    \t                   Each line of the file is considered a regex query. \n\
+    \t input_data_file:  Path to the list of data to be queried upon. \n\
+    \t                   Each line of the file is considered an individual (log) line. \n\
     \t [output_file]:    Path to output file.";
 
 inline constexpr std::string_view kHeader = "regex\ttime(s)\tnum_match";

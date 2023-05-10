@@ -14,16 +14,16 @@
 inline constexpr const char * kRegexDefault = "../data/regexes_traffic.txt";
 inline constexpr const char * kDataDefault = "../data/US_Accidents_Dec21_updated.csv";
 
-inline constexpr std::string_view kUsage = "usage:  \
-    re2_expr.o output_file [-h] [-n num_repeat] [-r input_regex_file] [-d input_data_file] \
-    \t output_file:           Path to output file. \
-    \t [-h]:                  Print usage, as what we are currently doing. :) \
-    \t [-n num_repeat]:       Number of experiment repititions. Use 10 by default. \
-    \t [-r input_regex_file]: Path to the list of regex queries. \
-    \t                        Each line of the file is considered a regex query. \
-    \t                        Use ../data/regexes_traffic.txt by default. \
-    \t [-d input_data_file]:  Path to the list of data to be queried upon. \
-    \t                        Each line of the file is considered an individual (log) line. \
+inline constexpr std::string_view kUsage = "usage:  \n\
+    re2_expr.o output_file [-h] [-n num_repeat] [-r input_regex_file] [-d input_data_file] \n\
+    \t output_file:           Path to output file. \n\
+    \t [-h]:                  Print usage, as what we are currently doing. :) \n\
+    \t [-n num_repeat]:       Number of experiment repititions. Use 10 by default. \n\
+    \t [-r input_regex_file]: Path to the list of regex queries. \n\
+    \t                        Each line of the file is considered a regex query. \n\
+    \t                        Use ../data/regexes_traffic.txt by default. \n\
+    \t [-d input_data_file]:  Path to the list of data to be queried upon. \n\
+    \t                        Each line of the file is considered an individual (log) line. \n\
     \t                        Use ../data/US_Accidents_Dec21_updated.csv by default.";
 
 inline constexpr std::string_view kHeader = "regex\t\
