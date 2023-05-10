@@ -581,6 +581,11 @@ std::tuple<double, int, unsigned int> BlareCountAllRE2 (const std::vector<std::s
     size_t iteration_num = kEnembleNum;
     size_t sample_size = lines.size() / kSampleDivisor;
 
+    boost::random::mt19937 gen(static_cast<std::uint32_t>(std::time(0)));
+    boost::random::uniform_int_distribution<> dist{0, 2};
+
+    std::vector<size_t> prev_prefix_pos(prefixes.size(), 0);
+
     if (sample_size < kSampleSizeLowerBound) {
         if (lines.size() >= 2*kSampleSizeLowerBound) {
             sample_size = kSampleSizeLowerBound;
@@ -593,11 +598,6 @@ std::tuple<double, int, unsigned int> BlareCountAllRE2 (const std::vector<std::s
     } else if (sample_size > kSampleSizeUpperBound) {
         sample_size = kSampleSizeUpperBound;
     }
-
-    boost::random::mt19937 gen(static_cast<std::uint32_t>(std::time(0)));
-    boost::random::uniform_int_distribution<> dist{0, 2};
-
-    std::vector<size_t> prev_prefix_pos(prefixes.size(), 0);
 
     for (; idx < skip_size; idx++) {
         switch(dist(gen)) {
@@ -1054,6 +1054,11 @@ std::tuple<double, int, unsigned int> BlareLongestRE2 (const std::vector<std::st
     size_t iteration_num = kEnembleNum;
     size_t sample_size = lines.size() / kSampleDivisor;
 
+    boost::random::mt19937 gen(static_cast<std::uint32_t>(std::time(0)));
+    boost::random::uniform_int_distribution<> dist{0, 2};
+
+    std::vector<size_t> prev_prefix_pos(prefixes.size(), 0);
+
     if (sample_size < kSampleSizeLowerBound) {
         if (lines.size() >= 2*kSampleSizeLowerBound) {
             sample_size = kSampleSizeLowerBound;
@@ -1066,11 +1071,6 @@ std::tuple<double, int, unsigned int> BlareLongestRE2 (const std::vector<std::st
     } else if (sample_size > kSampleSizeUpperBound) {
         sample_size = kSampleSizeUpperBound;
     }
-
-    boost::random::mt19937 gen(static_cast<std::uint32_t>(std::time(0)));
-    boost::random::uniform_int_distribution<> dist{0, 2};
-
-    std::vector<size_t> prev_prefix_pos(prefixes.size(), 0);
 
     for (; idx < skip_size; idx++) {
         switch(dist(gen)) {
@@ -1438,6 +1438,11 @@ std::tuple<double, int, unsigned int> Blare4ArmsRE2 (const std::vector<std::stri
     size_t skip_size = kSkipSize;
     size_t iteration_num = kEnembleNum;
     size_t sample_size = lines.size() / kSampleDivisor;
+    
+    boost::random::mt19937 gen(static_cast<std::uint32_t>(std::time(0)));
+    boost::random::uniform_int_distribution<> dist{0, 2};
+
+    std::vector<size_t> prev_prefix_pos(prefixes.size(), 0);
 
     if (sample_size < kSampleSizeLowerBound) {
         if (lines.size() >= 2*kSampleSizeLowerBound) {
@@ -1451,9 +1456,6 @@ std::tuple<double, int, unsigned int> Blare4ArmsRE2 (const std::vector<std::stri
     } else if (sample_size > kSampleSizeUpperBound) {
         sample_size = kSampleSizeUpperBound;
     }
-
-    boost::random::mt19937 gen(static_cast<std::uint32_t>(std::time(0)));
-    boost::random::uniform_int_distribution<> dist{0, 3};
 
     for (; idx < skip_size; idx++) {
         switch(dist(gen)) {
