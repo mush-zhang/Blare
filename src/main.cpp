@@ -6,6 +6,7 @@
 #include <string_view>
 #include <sstream>
 #include <cstring>
+#include <algorithm>
 
 #include <blare_boost/blare.hpp>
 // #include <blare_icu/blare.hpp>
