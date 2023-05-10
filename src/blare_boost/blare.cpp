@@ -243,6 +243,9 @@ std::tuple<double, int, unsigned int> BlareBoost (const std::vector<std::string>
         if (pred_results[winning_strategy] >= iteration_num / arm_num) 
             break;
     }
+
+    ARM_DECIDED:;
+
     auto chosen_bandit = argmax(pred_results);
     boost::smatch what;
     switch(chosen_bandit) {
