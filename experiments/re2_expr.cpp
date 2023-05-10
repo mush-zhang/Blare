@@ -5,7 +5,7 @@
 #include <string>
 #include <string_view>
 #include <sstream>
-#include <blare_re2.hpp>
+#include <blare_re2>
 #include <misc>
 
 inline constexpr std::string_view kRegexDefault = "../data/regexes_traffic.txt"
