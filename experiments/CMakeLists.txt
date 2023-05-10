@@ -1,4 +1,4 @@
-add_subdirectory(src)
+add_subdirectory("${PROJECT_SOURCE_DIR}/src")
 
 add_executable(re2_expr re2_expr.cpp)
 
