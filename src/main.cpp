@@ -12,10 +12,10 @@
 #include <blare_pcre2/blare.hpp>
 #include <blare_re2/blare.hpp>
 
-inline constexpr std::string_view kRE2 = "RE2";
-inline constexpr std::string_view kPCRE2 = "PCRE2";
-inline constexpr std::string_view kICU = "ICU";
-inline constexpr std::string_view kBoost = "BOOST";
+inline constexpr const char * kRE2 = "RE2";
+inline constexpr const char * kPCRE2 = "PCRE2";
+inline constexpr const char * kICU = "ICU";
+inline constexpr const char * kBoost = "BOOST";
 
 inline constexpr std::string_view kUsage = "usage:  \
     main.o regex_lib_name input_regex_file input_data_file [output_file] \
