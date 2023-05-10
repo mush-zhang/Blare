@@ -10,98 +10,79 @@
 
 typedef jpcre2::select<char> jp;
 
-
 std::pair<double, int> SplitMatchMultiWayRe2 (const std::vector<std::string> & lines, std::string reg_string) {
     auto start = std::chrono::high_resolution_clock::now();
     int count = 0;
 
-    auto r = split_regex_multi(reg_string);
+    auto r = split_regex(reg_string);
 
-    std::vector<std::string> prefixes = std::get<0>(r);
-    std::vector<std::string> regs = std::get<1>(r);
-    std::vector<std::string> regs_temp = std::get<1>(r);
+    auto prefix = std::get<0>(r);
+    auto suffix = std::get<2>(r);
+    jp::VecNum vec_num;
 
-    bool prefix_first = std::get<2>(r);
-    std::shared_ptr<RE2> reg0;
-
-
-    if (!prefix_first) {
-        reg0 = std::shared_ptr<RE2>(new RE2(regs_temp[0]+"$"));
-        regs_temp.erase(regs_temp.begin());
-    }
-    std::vector<std::shared_ptr<RE2>> c_regs;
-    for (const auto & reg : regs_temp) {
-        std::shared_ptr<RE2> c_reg(new RE2(reg));
-        c_regs.push_back(c_reg);
-    }
-
-    std::string sm;
-
-    if (regs_temp.empty()) {
+    if (std::get<1>(r).empty()) {
         for (const auto & line : lines) {
-            count += line.find(prefixes[0]) != std::string::npos;
+            count += line.find(prefix) != std::string::npos;
         }
-    } else if (prefixes.empty()) {
-        RE2 reg(regs_temp[0]);
-        for (const auto & line : lines) {
-            count += RE2::PartialMatch(line, reg, &sm);
-        }
-    } else {
-        std::vector<size_t> prev_prefix_pos(prefixes.size(), 0);
-        for (const auto & line : lines) {
-            size_t pos = 0;
-            size_t curr_prefix_pos = 0;
-            size_t prefix_idx = 0;
-            size_t reg_idx = 0;
-            MATCH_LOOP:
-                for (; prefix_idx < prefixes.size(); ) {
-                    // find pos of prefix before reg
-                    if ((curr_prefix_pos = line.find(prefixes[prefix_idx], pos)) == std::string::npos) {
-                        if (prefix_idx == 0 || prev_prefix_pos[prefix_idx] == 0 || reg_idx == 0)
-                            goto CONTINUE_OUTER;
-                        else {
-                            prefix_idx--;
-                            reg_idx--;
-                            pos = prev_prefix_pos[prefix_idx]+1;
-                            continue;
-                        }
-                    }  
-                    pos = curr_prefix_pos + prefixes[prefix_idx].size();
-                    prev_prefix_pos[prefix_idx] = curr_prefix_pos;
-                    if (prefix_idx == prev_prefix_pos.size()-1 || prev_prefix_pos[prefix_idx+1] >= pos) {
+    } else if (prefix.empty()) {
+        if (suffix.empty()) {
+            jp::Regex re(std::get<1>(r), jpcre2::JIT_COMPILE);
+            jp::RegexMatch rm(&re);
+
+            for (const auto & line : lines) {
+                count += rm.setSubject(line).setNumberedSubstringVector(&vec_num).match();
+            }
+        } else {
+            jp::Regex re(std::get<1>(r), PCRE2_ENDANCHORED, jpcre2::JIT_COMPILE);
+            jp::RegexMatch rm(&re);
+            for (const auto & line : lines) {
+                std::size_t pos = 0;
+                while ((pos = line.find(suffix, pos)) != std::string::npos) {
+                    std::string curr_in = line.substr(0, pos); 
+                    if (rm.setSubject(curr_in).setNumberedSubstringVector(&vec_num).match()) {
+                        count++;
                         break;
                     }
-                    prefix_idx++;
+                    pos++;
                 }
-                for (; reg_idx < prev_prefix_pos.size()-1; reg_idx++) {
-                    size_t prev_prefix_end_pos = prev_prefix_pos[reg_idx] + prefixes[reg_idx].size();
-                    auto curr = line.substr(prev_prefix_end_pos, prev_prefix_pos[reg_idx+1] - prev_prefix_end_pos);
-                    if (!RE2::FullMatch(curr, *(c_regs[reg_idx]), &sm)){
-                        pos = prev_prefix_pos[reg_idx+1]+1;
-                        prefix_idx = reg_idx;
-                        goto MATCH_LOOP;
+            }    
+        }
+    } else if (suffix.empty()) {
+        jp::Regex re(std::get<1>(r), PCRE2_ANCHORED, jpcre2::JIT_COMPILE);
+        jp::RegexMatch rm(&re);
+        for (const auto & line : lines) {
+            std::size_t pos = 0;
+            while ((pos = line.find(prefix, pos)) != std::string::npos) {
+                // for accuracy, should use line = line.substr(pos+1) next time
+                std::string curr_in = line.substr(pos + prefix.length()); 
+                if (rm.setSubject(curr_in).setNumberedSubstringVector(&vec_num).match()) {
+                    count++;
+                    break;
+                }
+                pos++;
+            }                       
+        }   
+    } else {
+        jp::Regex re(std::get<1>(r), PCRE2_ANCHORED | PCRE2_ENDANCHORED, jpcre2::JIT_COMPILE);
+        jp::RegexMatch rm(&re);
+        for (const auto & line : lines) {
+            
+            std::size_t pos = 0;
+            while ((pos = line.find(prefix, pos)) != std::string::npos) {
+                std::size_t reg_start_pos = pos + prefix.length();
+                std::size_t reg_end_pos = reg_start_pos;
+                while ((reg_end_pos = line.find(suffix, reg_end_pos)) != std::string::npos) {
+                    std::string curr_in = line.substr(reg_start_pos, reg_end_pos - reg_start_pos ); 
+                    
+                    if (rm.setSubject(curr_in).setNumberedSubstringVector(&vec_num).match()) {
+                        count++;
+                        goto NEXT_LINE;
                     }
+                    reg_end_pos++;
                 }
-                if (prefixes.size() == regs.size() && prefix_first) {
-                    auto curr = line.substr(pos);
-                    re2::StringPiece input(curr);
-                    if (!RE2::Consume(&input, *(c_regs.back()), &sm)) {
-                        prefix_idx = prev_prefix_pos.size() -1;
-                        pos = prev_prefix_pos[prefix_idx]+1;
-                        goto MATCH_LOOP;
-                    } 
-                }
-                if (!prefix_first) {
-                    auto curr = line.substr(0,prev_prefix_pos[0]);
-                    if (!RE2::PartialMatch(curr, *reg0, &sm)){
-                        prefix_idx = 0;
-                        pos = prev_prefix_pos[prefix_idx]+1;
-                        goto MATCH_LOOP;
-                    }
-                }
-                count++;      
-            CONTINUE_OUTER:;
-            std::fill(prev_prefix_pos.begin(), prev_prefix_pos.end(), 0);
+                pos++;
+            }
+            NEXT_LINE:; 
         }
     }
 
