@@ -10,8 +10,8 @@
 #include <blare_re2/split_match_3way.hpp>
 #include <blare_re2/split_match_multiway.hpp>
 
-inline constexpr std::string kRegexDefault = "../data/regexes_traffic.txt";
-inline constexpr std::string kDataDefault = "../data/US_Accidents_Dec21_updated.csv";
+inline constexpr const char * kRegexDefault = "../data/regexes_traffic.txt";
+inline constexpr const char * kDataDefault = "../data/US_Accidents_Dec21_updated.csv";
 
 inline constexpr std::string_view kUsage = "usage:  \
     re2_expr.o output_file [-h] [-n num_repeat] [-r input_regex_file] [-d input_data_file] \
@@ -46,13 +46,14 @@ bool cmdOptionExists(char** begin, char** end, const std::string& option) {
     return std::find(begin, end, option) != end;
 }
 
-std::pair<double, double> getStats(std::vector<double> & arr) {
-    double num_reps = arr.size();
+template<class T>
+std::pair<T, T> getStats(std::vector<T> & arr) {
+    auto num_reps = arr.size();
     std::sort(arr.begin(), arr.end());
-    auto ave= std::accumulate(arr.begin(), arr.end(), 0.0) / num_reps;
-    double trimmed_ave = ave;
+    auto ave= std::accumulate(arr.begin(), arr.end(), 0) / num_reps;
+    auto trimmed_ave = ave;
     if (num_reps > 3) {
-        trimmed_ave = std::accumulate(arr.begin()+1, arr.end()-1, 0.0) / (num_reps-2);
+        trimmed_ave = std::accumulate(arr.begin()+1, arr.end()-1, 0) / (num_reps-2);
     }
     return std::make_pair(ave, trimmed_ave);
 }

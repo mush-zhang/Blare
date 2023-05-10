@@ -14,7 +14,6 @@ bool char_escaped(const std::string &line, std::size_t pos) {
     return num_escaped % 2 == 1;
 }
 
-
 std::tuple<std::string, std::string, std::string> split_regex(const std::string &line) {
     std::size_t pos = 0;
     std::string prefix = line;
