@@ -5,7 +5,7 @@
 file(GLOB HEADER_LIST CONFIGURE_DEPENDS "${BLARE_SOURCE_DIR}/include/misc/*.hpp")
 
 # Make an automatic library - will be static or dynamic based on user setting
-add_library(misc_lib regex_split.cpp ${HEADER_LIST})
+add_library(misc_lib split_regex.cpp ${HEADER_LIST})
 
 # We need this directory, and users of our library will need it too
 target_include_directories(misc_lib PUBLIC "${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}/include")

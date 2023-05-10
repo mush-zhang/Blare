@@ -3,7 +3,7 @@
 #include <unicode/unistr.h>
 #include <unicode/ustream.h>
 
-#include <blare_icu/unicode_misc/regex_split.hpp>
+#include <blare_icu/unicode_misc/split_regex.hpp>
 
 using namespace icu_72;
 
