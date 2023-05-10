@@ -190,7 +190,7 @@ int main(int argc, char** argv) {
         mid_times[ARM::kMultiMatch] = mid_ave_multi;
         mid_times[ARM::kDirectMatch] = mid_ave_direct;
         auto true_strategy = std::distance(mid_times.begin(), std::min_element(mid_times.begin(), mid_times.end()));
-        auto strategy_diff = std::count_if(strategies.begin(), strategies.end(), true_strategy);
+        auto strategy_diff = std::count(strategies.begin(), strategies.end(), true_strategy);
 
         r_file << r << "\t";
         r_file << true_strategy << "\t"  << ave_stratgy << "\t" << mid_ave_strategy << "\t" << strategy_diff << "\t";
