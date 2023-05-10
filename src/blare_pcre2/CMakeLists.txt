@@ -17,6 +17,7 @@ add_library(blare_pcre2_lib
     split_match_3way.cpp 
     split_match_multiway.cpp 
     ${HEADER_LIST}
+    "${BLARE_SOURCE_DIR}/include/misc/*.hpp"
     "/usr/local/include/jpcre2.hpp")
 
 # We need this directory, and users of our library will need it too
