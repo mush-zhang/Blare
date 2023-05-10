@@ -17,13 +17,12 @@ add_library(blare_pcre2_lib
     split_match_3way.cpp 
     split_match_multiway.cpp 
     ${HEADER_LIST}
-    "${BLARE_SOURCE_DIR}/include/misc/*.hpp"
     "/usr/local/include/jpcre2.hpp")
 
 # We need this directory, and users of our library will need it too
 target_include_directories(blare_pcre2_lib PUBLIC "/usr/local/include" "${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}/include")
 
-target_link_libraries(blare_pcre2_lib PRIVATE misc_lib Boost::boost)
+target_link_libraries(blare_pcre2_lib PRIVATE misc_lib Boost::boost -lpthread)
 
 # All users of this library will need at least C++17
 target_compile_features(blare_pcre2_lib PUBLIC cxx_std_17)
