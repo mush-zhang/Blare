@@ -9,7 +9,7 @@
 #include <blare_boost/blare.hpp>
 // #include <blare_icu/blare.hpp>
 #include <blare_pcre2/blare.hpp>
-#include <blare_re2>
+#include <blare_re2/blare.hpp>
 
 inline constexpr std::string_view kRE2 = "RE2";
 inline constexpr std::string_view kPCRE2 = "PCRE2";
