@@ -21,10 +21,9 @@ find_library(ICUIL18N_MAJOR_LIB libicui18n.so.${ICU_MAJOR_VER} PATHS ${CMAKE_LIB
 find_library(ICUUC_MAJOR_LIB libicuuc.so.${ICU_MAJOR_VER} PATHS ${CMAKE_LIBRARY_PATH} NO_DEFAULT_PATH)
 find_library(ICUDATA_MAJOR_LIB libicudata.so.${ICU_MAJOR_VER} PATHS ${CMAKE_LIBRARY_PATH} NO_DEFAULT_PATH)
 
-install(FILES ${ICUIL18N_LIB} ${ICUUC_LIB} ${ICUDATA_LIB}
-              ${ICUIL18N_MAJOR_LIB} ${ICUUC_MAJOR_LIB} ${ICUDATA_MAJOR_LIB}
-        DESTINATION lib)
-
+# install(FILES ${ICUIL18N_LIB} ${ICUUC_LIB} ${ICUDATA_LIB}
+#               ${ICUIL18N_MAJOR_LIB} ${ICUUC_MAJOR_LIB} ${ICUDATA_MAJOR_LIB}
+#         DESTINATION lib)
 
 # Optionally glob, but only for CMake 3.12 or later:
 file(GLOB HEADER_LIST CONFIGURE_DEPENDS "${BLARE_SOURCE_DIR}/include/blare_icu/*.hpp")

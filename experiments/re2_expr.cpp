@@ -5,8 +5,9 @@
 #include <string>
 #include <string_view>
 #include <sstream>
-#include <blare_re2>
-#include <misc>
+#include <blare_re2/blare.hpp>
+#include <blare_re2/split_match_3way.hpp>
+#include <blare_re2/split_match_multiway.hpp>
 
 inline constexpr std::string_view kRegexDefault = "../data/regexes_traffic.txt"
 inline constexpr std::string_view kDataDefault = "../data/US_Accidents_Dec21_updated.csv"

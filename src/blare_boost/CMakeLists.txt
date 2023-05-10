@@ -24,7 +24,6 @@ target_include_directories(blare_boost_lib PUBLIC "${PROJECT_BINARY_DIR}" "${PRO
 # This depends on (header only) boost
 target_link_libraries(blare_boost_lib PRIVATE misc_lib Boost::boost Boost::regex) 
 
-
 # All users of this library will need at least C++17
 target_compile_features(blare_boost_lib PUBLIC cxx_std_17)
 
