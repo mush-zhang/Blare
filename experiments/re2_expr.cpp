@@ -9,6 +9,7 @@
 #include <blare_re2/direct_match.hpp>
 #include <blare_re2/split_match_3way.hpp>
 #include <blare_re2/split_match_multiway.hpp>
+#include <misc/misc.hpp>
 
 inline constexpr const char * kRegexDefault = "../data/regexes_traffic.txt";
 inline constexpr const char * kDataDefault = "../data/US_Accidents_Dec21_updated.csv";
