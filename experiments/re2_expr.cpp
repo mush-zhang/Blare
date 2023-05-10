@@ -138,7 +138,7 @@ int main(int argc, char** argv) {
             line.erase(std::remove(line.begin(), line.end(), '\r'), line.end());
             lines.push_back(line);
         }
-        data_in.close()
+        data_in.close();
     }
 
     std::ofstream r_file(argv[1], std::ofstream::out);
