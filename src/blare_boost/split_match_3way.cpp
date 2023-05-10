@@ -7,7 +7,7 @@
 #include <misc/split_regex.hpp>
 #include <blare_boost/split_match_3way.hpp>
 
-std::pair<double, int> SplitMatch3WayBoost (const std::vector<std::string> & lines, std::string reg_string) 
+std::pair<double, int> SplitMatch3WayBoost (const std::vector<std::string> & lines, std::string reg_string) {
     auto start = std::chrono::high_resolution_clock::now();
     int count = 0;
 
