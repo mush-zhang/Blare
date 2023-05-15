@@ -8,7 +8,7 @@
 
 typedef jpcre2::select<char> jp;
 
-std::pair<double, int> SplitMatch3WayPCRE2 (const std::vector<std::string> & lines, std::string reg_string) {
+std::pair<double, int> SplitMatch3WayPCRE2 (const std::vector<std::string> & lines, const std::string & reg_string) {
     auto start = std::chrono::high_resolution_clock::now();
     int count = 0;
 

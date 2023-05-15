@@ -254,7 +254,7 @@ size_t argmin(const std::vector<T>& v){
   return std::distance(v.begin(), std::min_element(v.begin(), v.end()));
 }
 
-std::tuple<double, int, unsigned int> Blare (const std::vector<std::string> & lines, std::string reg_string) {
+std::tuple<double, int, unsigned int> Blare (const std::vector<std::string> & lines, const std::string & reg_string) {
     auto start = std::chrono::high_resolution_clock::now();
     int count = 0;
     unsigned int idx = 0;
@@ -515,7 +515,7 @@ std::tuple<double, int, unsigned int> Blare (const std::vector<std::string> & li
     return std::make_tuple(elapsed_seconds.count(), count, chosen_bandit);
 }
 
-std::pair<double, int> BoostFullAll (const std::vector<std::string> & lines, std::string reg_string) {
+std::pair<double, int> BoostFullAll (const std::vector<std::string> & lines, const std::string & reg_string) {
     auto start = std::chrono::high_resolution_clock::now();
     int count = 0;
     boost::smatch what;
@@ -529,7 +529,7 @@ std::pair<double, int> BoostFullAll (const std::vector<std::string> & lines, std
     return std::make_pair(elapsed_seconds.count(), count);
 }
 
-std::pair<double, int> SplitMatchAll (const std::vector<std::string> & lines, std::string reg_string) {
+std::pair<double, int> SplitMatchAll (const std::vector<std::string> & lines, const std::string & reg_string) {
     auto start = std::chrono::high_resolution_clock::now();
     int count = 0;
 
@@ -609,7 +609,7 @@ std::pair<double, int> SplitMatchAll (const std::vector<std::string> & lines, st
     return std::make_pair(elapsed_seconds.count(), count);
 }
 
-std::pair<double, int> MultiSplitMatchTest (const std::vector<std::string> & lines, std::string reg_string) {
+std::pair<double, int> MultiSplitMatchTest (const std::vector<std::string> & lines, const std::string & reg_string) {
     std::cout << reg_string << std::endl;
     auto start = std::chrono::high_resolution_clock::now();
     int count = 0;

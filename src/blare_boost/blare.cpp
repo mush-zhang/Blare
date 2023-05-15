@@ -138,7 +138,7 @@ bool FullMatchSingle (const std::string & line, boost::regex & reg) {
     return boost::regex_search(line, what, reg);
 }
 
-std::tuple<double, int, unsigned int> BlareBoost (const std::vector<std::string> & lines, std::string reg_string) {
+std::tuple<double, int, unsigned int> BlareBoost (const std::vector<std::string> & lines, const std::string & reg_string) {
     auto start = std::chrono::high_resolution_clock::now();
     int count = 0;
     unsigned int idx = 0;
