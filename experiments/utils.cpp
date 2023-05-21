@@ -5,6 +5,7 @@
 #include <numeric>
 #include <sstream>
 
+#include <misc/misc.hpp>
 #include <utils.hpp>
 
 char * getCmdOption(char ** begin, char ** end, const std::string & option) {
