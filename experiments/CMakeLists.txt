@@ -5,7 +5,7 @@ target_link_libraries(re2_expr PRIVATE blare_re2_lib)
 
 file(GLOB HEADER_LIST CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/experiments/include/*.hpp")
 add_library(expr_utils_lib utils.cpp ${HEADER_LIST})
-target_include_directories(expr_utils_lib PUBLIC "/usr/local/include" "${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}/include")
+target_include_directories(expr_utils_lib PUBLIC "/usr/local/include" "${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}/include" "${PROJECT_SOURCE_DIR}/experiments/include")
 target_link_libraries(expr_utils_lib PRIVATE Threads::Threads)
 target_compile_features(expr_utils_lib PUBLIC cxx_std_17)
 

@@ -51,3 +51,6 @@ source_group(
   TREE "${PROJECT_SOURCE_DIR}/include/blare_icu"
   PREFIX "BLARE ICU Header Files"
   FILES ${HEADER_LIST})
+
+# include(FindPkgConfig)
+# pkg_search_module(icu-i18n icu-uc icu-io REQUIRED)
