@@ -40,7 +40,7 @@ int main(int argc, char** argv) {
     }
     r_file << kHeader << std::endl;
 
-    expriment(r_file, &regexes, &lines, & SplitMatchMultiWayPCRE2, & BlarePCRE2, & SplitMatch3WayPCRE2, & DirectMatch);
+    expriment(r_file, regexes, lines, num_repeat, & SplitMatchMultiWayPCRE2, & BlarePCRE2, & SplitMatch3WayPCRE2, & DirectMatch);
 
     r_file.close(); 
 }

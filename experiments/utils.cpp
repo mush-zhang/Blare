@@ -104,7 +104,7 @@ std::vector<std::string> readDataIn(const std::string & file_type, const std::st
     return in_strings;
 }
 
-void expriment(std::ofstream & r_file, const std::vector<std::string> & regexes, const std::vector<std::string> &lines,
+void expriment(std::ofstream & r_file, const std::vector<std::string> & regexes, const std::vector<std::string> &lines, int num_repeat,
     std::function<std::pair<double, int>(const std::vector<std::string> &, const std::string &)> SplitMatchMultiWay,
     std::function<std::tuple<double, int, unsigned int>(const std::vector<std::string> &, const std::string &)> Blare,
     std::function<std::pair<double, int>(const std::vector<std::string> &, const std::string &)> SplitMatch3Way,
@@ -123,7 +123,7 @@ void expriment(std::ofstream & r_file, const std::vector<std::string> & regexes,
             auto [dtime, dnum] = DirectMatch(lines, r);
             auto [smtime, smnum] = SplitMatch3Way(lines, r);
             auto [btime, bnum, bstrat] = Blare(lines, r);
-            auto [multime, mulnum] = SplitMatchMultiWayRe2(lines, r);
+            auto [multime, mulnum] = SplitMatchMultiWay(lines, r);
 
             elapsed_time_blare.push_back(btime);
             strategies.push_back(bstrat);
