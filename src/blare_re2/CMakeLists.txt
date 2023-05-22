@@ -24,7 +24,6 @@ add_library(blare_re2_lib
 target_include_directories(blare_re2_lib PUBLIC "/usr/local/include" "${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}/include")
 
 # This depends on (header only) boost
-# target_link_libraries(blare_re2_lib PRIVATE misc_lib Boost::boost "${CMAKE_LIBRARY_PATH}/libre2.a" -pthread)
 target_link_libraries(blare_re2_lib PRIVATE misc_lib Boost::boost re2::re2 Threads::Threads)
 
 # All users of this library will need at least C++17
