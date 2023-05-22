@@ -1,5 +1,6 @@
 #include <string>
 #include <string_view>
+#include <functional>
 
 inline constexpr const char * kRegexDefault = "../data/regexes_traffic.txt";
 inline constexpr const char * kDataDefault = "../data/US_Accidents_Dec21_updated.csv";

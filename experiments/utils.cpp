@@ -1,7 +1,6 @@
 #include <iostream>
 #include <fstream>
 #include <algorithm>
-#include <functional>
 #include <numeric>
 #include <sstream>
 
