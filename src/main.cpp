@@ -83,8 +83,8 @@ int main(int argc, char** argv) {
     }
     while (getline(data_in, line)){
         line.erase(std::remove(line.begin(), line.end(), '\r'), line.end());
-        if () {
-            icu_72::UnicodeString uline = UnicodeString::fromUTF8(StringPiece(line));
+        if (std::strcmp(argv[1], kICU)==0) {
+            icu_72::UnicodeString uline = icu_72::UnicodeString::fromUTF8(icu_72::StringPiece(line));
             ulines.push_back(uline);
         } else {
             lines.push_back(line);
@@ -103,7 +103,7 @@ int main(int argc, char** argv) {
             result = BlarePCRE2(lines, r);
         } else if (std::strcmp(argv[1], kICU)==0) {
             // convert all to unicode string
-            icu_72::UnicodeString ur = UnicodeString::fromUTF8(StringPiece(r));
+            icu_72::UnicodeString ur = icu_72::UnicodeString::fromUTF8(icu_72::StringPiece(r));
             result = BlareICU(ulines, ur);
         } else if (std::strcmp(argv[1], kBoost)==0) {
             result = BlareBoost(lines, r);
