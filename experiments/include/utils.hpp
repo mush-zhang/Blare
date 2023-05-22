@@ -39,9 +39,10 @@ int parseArgs(int argc, char** argv, int * num_repeat, std::string * input_regex
 
 std::vector<std::string> readDataIn(const std::string & file_type, const std::string & infile_name);
 
-void expriment(std::ofstream & r_file, 
-    const std::vector<std::string> & regexes, const std::vector<std::string> &lines, int num_repeat,
-    std::function<std::pair<double, int>(const std::vector<std::string> &, const std::string &)> SplitMatchMultiWay,
-    std::function<std::tuple<double, int, unsigned int>(const std::vector<std::string> &, const std::string &)> Blare,
-    std::function<std::pair<double, int>(const std::vector<std::string> &, const std::string &)> SplitMatch3Way,
-    std::function<std::pair<double, int>(const std::vector<std::string> &, const std::string &)> DirectMatch);
+template<class T>
+void experiment(std::ofstream & r_file, 
+    const std::vector<T> & regexes, const std::vector<T> &lines, int num_repeat,
+    std::function<std::pair<double, int>(const std::vector<T> &, const T &)> SplitMatchMultiWay,
+    std::function<std::tuple<double, int, unsigned int>(const std::vector<T> &, const T &)> Blare,
+    std::function<std::pair<double, int>(const std::vector<T> &, const T &)> SplitMatch3Way,
+    std::function<std::pair<double, int>(const std::vector<T> &, const T &)> DirectMatch);

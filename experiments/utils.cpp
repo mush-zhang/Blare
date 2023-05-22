@@ -111,7 +111,7 @@ std::vector<std::string> readDataIn(const std::string & file_type, const std::st
 }
 
 template<class T>
-void expriment(std::ofstream & r_file, 
+void experiment(std::ofstream & r_file, 
     const std::vector<T> & regexes, const std::vector<T> &lines, int num_repeat,
     std::function<std::pair<double, int>(const std::vector<T> &, const T &)> SplitMatchMultiWay,
     std::function<std::tuple<double, int, unsigned int>(const std::vector<T> &, const T &)> Blare,

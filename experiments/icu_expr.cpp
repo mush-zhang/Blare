@@ -91,7 +91,7 @@ int main(int argc, char** argv) {
     }
     r_file << kHeader << std::endl;
 
-    expriment<icu_72::UnicodeString>(r_file, regexes, lines, num_repeat, & SplitMatchMultiWayICU, & BlareICU, & SplitMatch3WayICU, & DirectMatchICU);
+    experiment<icu_72::UnicodeString>(r_file, regexes, lines, num_repeat, & SplitMatchMultiWayICU, & BlareICU, & SplitMatch3WayICU, & DirectMatchICU);
 
     r_file.close(); 
 }
