@@ -20,7 +20,7 @@ std::vector<icu_72::UnicodeString> readDataInICU(const std::string & file_type, 
         std::string line;
         while (getline(data_in, line)){
             line.erase(std::remove(line.begin(), line.end(), '\r'), line.end());
-            icu_72::UnicodeString uline = UnicodeString::fromUTF8(StringPiece(line));
+            icu_72::UnicodeString uline = icu_72::UnicodeString::fromUTF8(icu_72::StringPiece(line));
             in_strings.push_back(line);
         }
         data_in.close();

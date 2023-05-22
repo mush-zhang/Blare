@@ -12,7 +12,7 @@
 std::pair<double, int> DirectMatchICU (const std::vector<icu_72::UnicodeString> & lines, icu_72::UnicodeString reg_string) {
     auto start = std::chrono::high_resolution_clock::now();
     int count = 0;
-    icu_72::UErrorCode status = icu_72::U_ZERO_ERROR;
+    icu_72::UErrorCode status = U_ZERO_ERROR;
 
     icu_72::RegexPattern* reg = icu_72::RegexPattern::compile(reg_string, 0, status);
     icu_72::RegexMatcher* matcher = reg->matcher(status);
