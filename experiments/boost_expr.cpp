@@ -45,7 +45,9 @@ int main(int argc, char** argv) {
     }
     r_file << kHeader << std::endl;
 
-    expriment(r_file, regexes, lines, num_repeat, & SplitMatchMultiWayBoost, & BlareBoost, & SplitMatch3WayBoost, & DirectMatchBoost);
+    expriment<std::string>(r_file, regexes, lines, num_repeat, 
+        & SplitMatchMultiWayBoost, & BlareBoost, 
+        & SplitMatch3WayBoost, & DirectMatchBoost);
 
     r_file.close(); 
 }
