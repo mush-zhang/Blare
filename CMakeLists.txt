@@ -7,8 +7,18 @@ project(
   LANGUAGES CXX)
 
 set(CMAKE_LIBRARY_PATH "/usr/local/lib")
-# list(APPEND CMAKE_PREFIX_PATH "/usr/local/lib")
-# list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+
+set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g -pthread")
+set(CMAKE_CXX_FLAGS_MINSIZEREL "-Os -pthread")
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g -pthread")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Ofast -march=native -mfma -mavx -fomit-frame-pointer \
+  -ffp-contract=fast -flto -DARMA_NO_DEBUG -pthread")
+
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE "Release" CACHE STRING
+    "Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel."
+    FORCE)
+endif(NOT CMAKE_BUILD_TYPE)
 
 # Only do these if this is the main project, and not if it is included through add_subdirectory
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
@@ -46,7 +56,6 @@ include(FetchContent)
 # Accumulator library
 # This is header only, so could be replaced with git submodules or FetchContent
 find_package(Boost REQUIRED)
-# Adds Boost::boost
 
 set(Boost_USE_STATIC_LIBS OFF) 
 set(Boost_USE_MULTITHREADED ON)  
