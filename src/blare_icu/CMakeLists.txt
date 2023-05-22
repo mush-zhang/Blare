@@ -29,7 +29,7 @@ file(GLOB HEADER_LIST CONFIGURE_DEPENDS "${BLARE_SOURCE_DIR}/include/blare_icu/*
 
 # Make an automatic library - will be static or dynamic based on user setting
 add_library(blare_icu_lib 
-    MODULE
+    EXCLUDE_FROM_ALL
     blare.cpp
     split_match_3way.cpp 
     split_match_multiway.cpp 
