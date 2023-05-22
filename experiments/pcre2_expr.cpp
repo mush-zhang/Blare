@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include <blare_pcre2/blare.hpp>
 #include <blare_pcre2/direct_match.hpp>
 #include <blare_pcre2/split_match_3way.hpp>

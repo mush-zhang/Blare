@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include <blare_boost/blare.hpp>
 #include <blare_boost/direct_match.hpp>
 #include <blare_boost/split_match_3way.hpp>
