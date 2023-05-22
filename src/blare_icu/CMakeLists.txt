@@ -24,7 +24,7 @@ set(ICU_FULL_VERSION "${ICU_MAJOR_VER}.1")
 # find_library(ICUUC_MAJOR_LIB libicuuc.so.${ICU_MAJOR_VER} PATHS ${CMAKE_LIBRARY_PATH} NO_DEFAULT_PATH)
 # find_library(ICUDATA_MAJOR_LIB libicudata.so.${ICU_MAJOR_VER} PATHS ${CMAKE_LIBRARY_PATH} NO_DEFAULT_PATH)
 
-install(unicode_misc_lib)
+add_subdirectory(unicode_misc)
 
 # Optionally glob, but only for CMake 3.12 or later:
 file(GLOB HEADER_LIST CONFIGURE_DEPENDS "${BLARE_SOURCE_DIR}/include/blare_icu/*.hpp")
