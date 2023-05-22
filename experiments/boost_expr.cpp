@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 
 #include <blare_boost/blare.hpp>
 #include <blare_boost/direct_match.hpp>
@@ -44,7 +45,7 @@ int main(int argc, char** argv) {
     }
     r_file << kHeader << std::endl;
 
-    expriment(r_file, regexes, lines, num_repeat, & SplitMatchMultiWayBoost, & BlareBoost, & SplitMatch3WayBoost, & DirectMatch);
+    expriment(r_file, regexes, lines, num_repeat, & SplitMatchMultiWayBoost, & BlareBoost, & SplitMatch3WayBoost, & DirectMatchBoost);
 
     r_file.close(); 
 }

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 
 #include <blare_pcre2/blare.hpp>
 #include <blare_pcre2/direct_match.hpp>
@@ -44,7 +45,7 @@ int main(int argc, char** argv) {
     }
     r_file << kHeader << std::endl;
 
-    expriment(r_file, regexes, lines, num_repeat, & SplitMatchMultiWayPCRE2, & BlarePCRE2, & SplitMatch3WayPCRE2, & DirectMatch);
+    expriment(r_file, regexes, lines, num_repeat, & SplitMatchMultiWayPCRE2, & BlarePCRE2, & SplitMatch3WayPCRE2, & DirectMatchPCRE2);
 
     r_file.close(); 
 }
