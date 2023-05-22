@@ -19,8 +19,14 @@ target_include_directories(boost_expr PUBLIC "${PROJECT_BINARY_DIR}" "${PROJECT_
 target_compile_features(boost_expr PRIVATE cxx_std_17)
 target_link_libraries(boost_expr PRIVATE blare_boost_lib expr_utils_lib)
 
+
+add_library(expr_utils_icu_lib utils.cpp ${HEADER_LIST})
+target_include_directories(expr_utils_icu_lib PUBLIC "/usr/local/include" "${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}/include" "${PROJECT_SOURCE_DIR}/experiments/include")
+target_compile_definitions(expr_utils_icu_lib PRIVATE ICU_FLAG)
+target_link_libraries(expr_utils_icu_lib PRIVATE misc_lib Threads::Threads)
+target_compile_features(expr_utils_icu_lib PUBLIC cxx_std_17)
+
 add_executable(icu_expr icu_expr.cpp)
 target_include_directories(icu_expr PUBLIC "${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}/include")
-target_compile_definitions(icu_expr PRIVATE ICU_FLAG)
 target_compile_features(icu_expr PRIVATE cxx_std_17)
-target_link_libraries(icu_expr PRIVATE blare_icu_lib expr_utils_lib)
+target_link_libraries(icu_expr PRIVATE blare_icu_lib expr_utils_icu_lib)
