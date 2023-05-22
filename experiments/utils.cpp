@@ -21,10 +21,10 @@ bool cmdOptionExists(char** begin, char** end, const std::string& option) {
 
 template<class T>
 std::pair<T, T> getStats(std::vector<T> & arr) {
-    auto num_reps = arr.size();
+    T num_reps = arr.size();
     std::sort(arr.begin(), arr.end());
-    auto ave= std::accumulate(arr.begin(), arr.end(), 0) / num_reps;
-    auto trimmed_ave = ave;
+    T ave= std::accumulate(arr.begin(), arr.end(), 0) / num_reps;
+    T trimmed_ave = ave;
     if (num_reps > 3) {
         trimmed_ave = std::accumulate(arr.begin()+1, arr.end()-1, 0) / (num_reps-2);
     }
