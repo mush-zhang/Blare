@@ -8,6 +8,10 @@
 #include <cstring>
 #include <algorithm>
 
+#include <unicode/utypes.h>
+#include <unicode/unistr.h>
+#include <unicode/ustream.h>
+
 #include <blare_boost/blare.hpp>
 #include <blare_icu/blare.hpp>
 #include <blare_pcre2/blare.hpp>
@@ -70,6 +74,7 @@ int main(int argc, char** argv) {
     reg_in.close();
 
     std::vector<std::string> lines;
+    std::vector<icu_72::UnicodeString> ulines;
     std::ifstream data_in(argv[3]);
     if (!data_in.is_open()) {
         std::cerr << "BLARE: could not open data file '" << argv[3] << "'" << std::endl;
@@ -78,7 +83,12 @@ int main(int argc, char** argv) {
     }
     while (getline(data_in, line)){
         line.erase(std::remove(line.begin(), line.end(), '\r'), line.end());
-        lines.push_back(line);
+        if () {
+            icu_72::UnicodeString uline = UnicodeString::fromUTF8(StringPiece(line));
+            ulines.push_back(uline);
+        } else {
+            lines.push_back(line);
+        }
     }
     data_in.close();    
 
@@ -92,7 +102,9 @@ int main(int argc, char** argv) {
         } else if (std::strcmp(argv[1], kPCRE2)==0) {
             result = BlarePCRE2(lines, r);
         } else if (std::strcmp(argv[1], kICU)==0) {
-            result = BlareICU(lines, r);
+            // convert all to unicode string
+            icu_72::UnicodeString ur = UnicodeString::fromUTF8(StringPiece(r));
+            result = BlareICU(ulines, ur);
         } else if (std::strcmp(argv[1], kBoost)==0) {
             result = BlareBoost(lines, r);
         }
