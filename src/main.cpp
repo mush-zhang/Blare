@@ -9,7 +9,7 @@
 #include <algorithm>
 
 #include <blare_boost/blare.hpp>
-// #include <blare_icu/blare.hpp>
+#include <blare_icu/blare.hpp>
 #include <blare_pcre2/blare.hpp>
 #include <blare_re2/blare.hpp>
 
@@ -91,8 +91,8 @@ int main(int argc, char** argv) {
             result = BlareRE2(lines, r);
         } else if (std::strcmp(argv[1], kPCRE2)==0) {
             result = BlarePCRE2(lines, r);
-        // } else if (std::strcmp(argv[1], kICU)==0) {
-        //     result = BlareICU(lines, r);
+        } else if (std::strcmp(argv[1], kICU)==0) {
+            result = BlareICU(lines, r);
         } else if (std::strcmp(argv[1], kBoost)==0) {
             result = BlareBoost(lines, r);
         }
