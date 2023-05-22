@@ -24,6 +24,8 @@ set(ICU_FULL_VERSION "${ICU_MAJOR_VER}.1")
 # find_library(ICUUC_MAJOR_LIB libicuuc.so.${ICU_MAJOR_VER} PATHS ${CMAKE_LIBRARY_PATH} NO_DEFAULT_PATH)
 # find_library(ICUDATA_MAJOR_LIB libicudata.so.${ICU_MAJOR_VER} PATHS ${CMAKE_LIBRARY_PATH} NO_DEFAULT_PATH)
 
+install(unicode_misc_lib)
+
 # Optionally glob, but only for CMake 3.12 or later:
 file(GLOB HEADER_LIST CONFIGURE_DEPENDS "${BLARE_SOURCE_DIR}/include/blare_icu/*.hpp")
 
@@ -40,7 +42,6 @@ target_include_directories(blare_icu_lib PUBLIC "${PROJECT_BINARY_DIR}" "${PROJE
 
 # This depends on (header only) icu
 target_link_libraries(blare_icu_lib PRIVATE unicode_misc_lib  ICU::uc ICU::i18n ICU::io) 
-
 
 # All users of this library will need at least C++17
 target_compile_features(blare_icu_lib PUBLIC cxx_std_17)
