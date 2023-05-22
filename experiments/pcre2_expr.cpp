@@ -2,6 +2,8 @@
 #include <blare_pcre2/direct_match.hpp>
 #include <blare_pcre2/split_match_3way.hpp>
 #include <blare_pcre2/split_match_multiway.hpp>
+
+#include <utils.hpp>
 #include <misc/misc.hpp>
 
 int main(int argc, char** argv) {

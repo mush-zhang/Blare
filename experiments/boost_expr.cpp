@@ -2,6 +2,8 @@
 #include <blare_boost/direct_match.hpp>
 #include <blare_boost/split_match_3way.hpp>
 #include <blare_boost/split_match_multiway.hpp>
+
+#include <utils.hpp>
 #include <misc/misc.hpp>
 
 int main(int argc, char** argv) {
