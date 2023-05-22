@@ -6,7 +6,6 @@
 
 #ifdef ICU_FLAG
     #include <unicode/utypes.h>
-    #include <unicode/unistr.h>
     #include <unicode/ustream.h>
 #endif
 
@@ -167,3 +166,20 @@ void experiment(std::ofstream & r_file,
         r_file << match_count_blare << "\t" << match_count_multi << "\t" << match_count_split << "\t" << match_count_direct << std::endl;
     }
 }
+
+#ifdef ICU_FLAG
+    template void experiment<icu_72::UnicodeString>(std::ofstream & r_file, 
+        const std::vector<icu_72::UnicodeString> & regexes, const std::vector<icu_72::UnicodeString> &lines, int num_repeat,
+        std::function<std::pair<double, int>(const std::vector<icu_72::UnicodeString> &, const icu_72::UnicodeString &)> SplitMatchMultiWay,
+        std::function<std::tuple<double, int, unsigned int>(const std::vector<icu_72::UnicodeString> &, const icu_72::UnicodeString &)> Blare,
+        std::function<std::pair<double, int>(const std::vector<icu_72::UnicodeString> &, const icu_72::UnicodeString &)> SplitMatch3Way,
+        std::function<std::pair<double, int>(const std::vector<icu_72::UnicodeString> &, const icu_72::UnicodeString &)> DirectMatch);
+#endif
+
+template void experiment<std::string>(std::ofstream & r_file, 
+    const std::vector<std::string> & regexes, const std::vector<std::string> &lines, int num_repeat,
+    std::function<std::pair<double, int>(const std::vector<std::string> &, const std::string &)> SplitMatchMultiWay,
+    std::function<std::tuple<double, int, unsigned int>(const std::vector<std::string> &, const std::string &)> Blare,
+    std::function<std::pair<double, int>(const std::vector<std::string> &, const std::string &)> SplitMatch3Way,
+    std::function<std::pair<double, int>(const std::vector<std::string> &, const std::string &)> DirectMatch);
+

@@ -2,6 +2,10 @@
 #include <string_view>
 #include <functional>
 
+#ifdef ICU_FLAG
+    #include <unicode/unistr.h>
+#endif
+
 inline constexpr const char * kRegexDefault = "../data/regexes_traffic.txt";
 inline constexpr const char * kDataDefault = "../data/US_Accidents_Dec21_updated.csv";
 

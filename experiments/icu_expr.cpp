@@ -2,8 +2,6 @@
 #include <fstream>
 #include <sstream>
 
-#include <unicode/unistr.h>
-
 #include <blare_icu/blare.hpp>
 #include <blare_icu/direct_match.hpp>
 #include <blare_icu/split_match_3way.hpp>
