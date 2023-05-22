@@ -4,6 +4,12 @@
 #include <numeric>
 #include <sstream>
 
+#ifdef ICU_FLAG
+    #include <unicode/utypes.h>
+    #include <unicode/unistr.h>
+    #include <unicode/ustream.h>
+#endif
+
 #include <misc/misc.hpp>
 #include <utils.hpp>
 
@@ -104,13 +110,14 @@ std::vector<std::string> readDataIn(const std::string & file_type, const std::st
     return in_strings;
 }
 
+template<class T>
 void expriment(std::ofstream & r_file, 
-    const std::vector<std::string> & regexes, const std::vector<std::string> &lines, int num_repeat,
-    std::function<std::pair<double, int>(const std::vector<std::string> &, const std::string &)> SplitMatchMultiWay,
-    std::function<std::tuple<double, int, unsigned int>(const std::vector<std::string> &, const std::string &)> Blare,
-    std::function<std::pair<double, int>(const std::vector<std::string> &, const std::string &)> SplitMatch3Way,
-    std::function<std::pair<double, int>(const std::vector<std::string> &, const std::string &)> DirectMatch) {
-    for (const std::string & r : regexes) {
+    const std::vector<T> & regexes, const std::vector<T> &lines, int num_repeat,
+    std::function<std::pair<double, int>(const std::vector<T> &, const T &)> SplitMatchMultiWay,
+    std::function<std::tuple<double, int, unsigned int>(const std::vector<T> &, const T &)> Blare,
+    std::function<std::pair<double, int>(const std::vector<T> &, const T &)> SplitMatch3Way,
+    std::function<std::pair<double, int>(const std::vector<T> &, const T &)> DirectMatch) {
+    for (const T & r : regexes) {
         std::vector<double> elapsed_time_blare;
         std::vector<double> elapsed_time_direct;
         std::vector<double> elapsed_time_split;
@@ -138,11 +145,11 @@ void expriment(std::ofstream & r_file,
             match_count_multi = mulnum;
         }
         
-        auto [ave_direct, mid_ave_direct] = getStats(elapsed_time_direct);
-        auto [ave_multi, mid_ave_multi] = getStats(elapsed_time_multi);
-        auto [ave_split, mid_ave_split] = getStats(elapsed_time_split);
-        auto [ave_blare, mid_ave_blare] = getStats(elapsed_time_blare);
-        auto [ave_stratgy, mid_ave_strategy] = getStats(strategies);
+        auto [ave_direct, mid_ave_direct] = getStats<double>(elapsed_time_direct);
+        auto [ave_multi, mid_ave_multi] = getStats<double>(elapsed_time_multi);
+        auto [ave_split, mid_ave_split] = getStats<double>(elapsed_time_split);
+        auto [ave_blare, mid_ave_blare] = getStats<double>(elapsed_time_blare);
+        auto [ave_stratgy, mid_ave_strategy] = getStats<int>(strategies);
 
         std::vector<double> mid_times(3, 0);
         mid_times[ARM::kSplitMatch] = mid_ave_split;
