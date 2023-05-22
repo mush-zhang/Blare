@@ -19,7 +19,7 @@ bool char_escaped(const UnicodeString &line, std::size_t pos) {
     return num_escaped % 2 == 1;
 }
 
-std::tuple<UnicodeString, UnicodeString, UnicodeString> split_regex(const UnicodeString &line) {
+std::tuple<UnicodeString, UnicodeString, UnicodeString> split_unicode_regex(const UnicodeString &line) {
     std::size_t pos = 0;
     UnicodeString prefix = line;
     UnicodeString regex = "";
@@ -47,7 +47,7 @@ std::tuple<UnicodeString, UnicodeString, UnicodeString> split_regex(const Unicod
     return std::make_tuple(prefix, regex, suffix);
 }
 
-std::tuple<std::vector<UnicodeString>, std::vector<UnicodeString>, bool> split_regex_multi(const UnicodeString &line) {
+std::tuple<std::vector<UnicodeString>, std::vector<UnicodeString>, bool> split_unicode_regex_multi(const UnicodeString &line) {
     std::size_t pos = 0;
     std::size_t prev_pos = 0;
     int pos2 = -1;
