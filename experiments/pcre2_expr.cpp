@@ -18,7 +18,7 @@ int main(int argc, char** argv) {
     int num_repeat;
     std::string input_data_file, input_regex_file;
 
-    int status = parseArgs(argc, argv, & num_repeat, & input_data_file, & input_regex_file);
+    int status = parseArgs(argc, argv, & num_repeat, & input_regex_file, & input_data_file);
     if (status == EXIT_FAILURE) {
         return EXIT_FAILURE;
     }
