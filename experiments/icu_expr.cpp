@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <sstream>
 
 #include <unicode/unistr.h>
 
@@ -28,6 +29,32 @@ std::vector<icu_72::UnicodeString> readDataInICU(const std::string & file_type, 
     return in_strings;
 }
 
+std::vector<icu_72::UnicodeString> readTrafficICU() {
+    std::string line;
+    std::vector<icu_72::UnicodeString> lines;
+    std::ifstream data_in(kDataDefault);
+    if (!data_in.is_open()) {
+        std::cerr << "Could not open data file '" << kDataDefault << "'" << std::endl;
+        std::cerr << "Try downloading it first per instruction in ../data/dataset.txt" << std::endl;
+        return lines;
+    }
+    while (getline(data_in, line)){
+        line.erase(std::remove(line.begin(), line.end(), '\r'), line.end());
+        std::stringstream streamData(line);
+        std::string s; 
+        int i = 0;
+        while (getline(streamData, s, ',')) {
+            if (i++ == 9){
+                icu_72::UnicodeString us = icu_72::UnicodeString::fromUTF8(icu_72::StringPiece(s));
+                lines.push_back(us);
+                break;
+            }
+        }
+    }
+    data_in.close();
+    return lines;
+}
+
 int main(int argc, char** argv) {
     // argument -h for help
     if(cmdOptionExists(argv, argv+argc, "-h")) {
@@ -47,9 +74,9 @@ int main(int argc, char** argv) {
         return EXIT_FAILURE;
     }
 
-    std::vector<std::string> lines;
+    std::vector<icu_72::UnicodeString> lines;
     if (input_data_file.empty()) {
-        lines = readTraffic();
+        lines = readTrafficICU();
     } else {
         lines = readDataInICU("data", input_data_file);
     }
