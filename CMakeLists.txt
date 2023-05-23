@@ -48,6 +48,7 @@ FetchContent_Declare(
   Boost
   GIT_REPOSITORY https://github.com/boostorg/boost.git
   GIT_TAG boost-1.65.1
+  GIT_SHALLOW TRUE
 )
 FetchContent_MakeAvailable(Boost)
 
@@ -55,6 +56,7 @@ FetchContent_Declare(
   re2
   GIT_REPOSITORY https://github.com/google/re2.git
   GIT_TAG 2022-06-01
+  GIT_SHALLOW TRUE
 )
 FetchContent_MakeAvailable(re2)
 
@@ -62,7 +64,9 @@ ExternalProject_Add(
   pcre2
   GIT_REPOSITORY https://github.com/PCRE2Project/pcre2.git
   GIT_TAG pcre2-10.40
-  CONFIGURE_COMMAND "${CMAKE_CURRENT_SOURCE_DIR}/configure        \
+  GIT_SHALLOW TRUE
+  PREFIX ${CMAKE_BINARY_DIR}/_deps/pcre2
+  CONFIGURE_COMMAND "${SOURCE_DIR}/configure        \
     --enable-jit                        \
     --enable-pcre2-16                   \
     --enable-pcre2-32                   \
