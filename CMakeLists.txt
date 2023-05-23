@@ -66,7 +66,7 @@ ExternalProject_Add(
   GIT_TAG pcre2-10.40
   GIT_SHALLOW TRUE
   PREFIX ${CMAKE_BINARY_DIR}/_deps/pcre2
-  CONFIGURE_COMMAND "${SOURCE_DIR}/configure        \
+  CONFIGURE_COMMAND "${CMAKE_BINARY_DIR}/_deps/pcre2/src/pcre2/configure        \
     --enable-jit                        \
     --enable-pcre2-16                   \
     --enable-pcre2-32                   \
