@@ -62,7 +62,7 @@ ExternalProject_Add(
   pcre2
   GIT_REPOSITORY https://github.com/PCRE2Project/pcre2.git
   GIT_TAG pcre2-10.40
-  CONFIGURE_COMMAND "./configure        \
+  CONFIGURE_COMMAND "${CMAKE_CURRENT_SOURCE_DIR}/configure        \
     --enable-jit                        \
     --enable-pcre2-16                   \
     --enable-pcre2-32                   \
