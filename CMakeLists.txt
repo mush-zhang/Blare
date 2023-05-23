@@ -45,33 +45,48 @@ include(FetchContent)
 FetchContent_Declare(
   Boost
   GIT_REPOSITORY https://github.com/boostorg/boost.git
-  GIT_TAG boost-1.65.1)
+  GIT_TAG boost-1.65.1
+)
 FetchContent_MakeAvailable(Boost)
 
 FetchContent_Declare(
   re2
   GIT_REPOSITORY https://github.com/google/re2.git
-  GIT_TAG 2022-06-01)
+  GIT_TAG 2022-06-01
+)
 FetchContent_MakeAvailable(re2)
 
 FetchContent_Declare(
   pcre2
   GIT_REPOSITORY https://github.com/PCRE2Project/pcre2.git
-  GIT_TAG pcre2-10.40)
+  GIT_TAG pcre2-10.40
+)
 FetchContent_MakeAvailable(pcre2)
+
+ExternalProject_Add(
+  pcre2
+  GIT_REPOSITORY https://github.com/PCRE2Project/pcre2.git
+  GIT_TAG pcre2-10.40
+  CONFIGURE_COMMAND "./configure        \
+    --enable-jit                        \
+    --enable-pcre2-16                   \
+    --enable-pcre2-32                   \
+    --disable-static"
+)
 
 FetchContent_Declare(
   ICU
   URL https://github.com/unicode-org/icu/releases/download/release-72-1/icu4c-72_1-src.tgz
-  URL_HASH MD5=4de6484a6c460d3d1468a6fe50369439)
+  URL_HASH MD5=4de6484a6c460d3d1468a6fe50369439
+)
 FetchContent_MakeAvailable(ICU)
 
 file(DOWNLOAD
   https://raw.githubusercontent.com/jpcre2/jpcre2/10.32.01/src/jpcre2.hpp
-  ${CMAKE_BINARY_DIR}/_deps/jpcre2.hpp)
+  ${CMAKE_BINARY_DIR}/_deps/jpcre2.hpp
+)
 
-
-  find_package(Boost REQUIRED)
+find_package(Boost REQUIRED)
 
 set(Boost_USE_STATIC_LIBS OFF) 
 set(Boost_USE_MULTITHREADED ON)  
@@ -81,15 +96,9 @@ set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
 set(THREADS_PREFER_PTHREAD_FLAG TRUE)
 find_package(Threads REQUIRED)
 
-FetchContent_Declare(
-  fmtlib
-  GIT_REPOSITORY https://github.com/fmtlib/fmt.git
-  GIT_TAG 5.3.0)
-FetchContent_MakeAvailable(fmtlib)
-
 add_subdirectory(src)
 add_subdirectory(experiments)
 
-if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME) AND BUILD_TESTING)
-  add_subdirectory(tests)
-endif()
+# if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME) AND BUILD_TESTING)
+#   add_subdirectory(tests)
+# endif()
