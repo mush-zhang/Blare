@@ -10,11 +10,12 @@ add_library(blare_pcre2_lib
     split_match_3way.cpp 
     split_match_multiway.cpp 
     ${HEADER_LIST}
-    "/usr/local/include/jpcre2.hpp")
+    # "/usr/local/include/jpcre2.hpp")
+    ${CMAKE_BINARY_DIR}/_deps/jpcre2.hpp)
 
 target_include_directories(blare_pcre2_lib PUBLIC "/usr/local/include" "${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}/include")
 
-target_link_libraries(blare_pcre2_lib PRIVATE misc_lib Boost::boost Threads::Threads -lpcre2-8)
+target_link_libraries(blare_pcre2_lib PRIVATE misc_lib Boost::boost Threads::Threads -lpcre2-8 -lpcre2-16 -lpcre2-32)
 
 target_compile_features(blare_pcre2_lib PUBLIC cxx_std_17)
 

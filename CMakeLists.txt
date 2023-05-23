@@ -42,7 +42,36 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 endif()
 
 include(FetchContent)
-find_package(Boost REQUIRED)
+FetchContent_Declare(
+  Boost
+  GIT_REPOSITORY https://github.com/boostorg/boost.git
+  GIT_TAG boost-1.65.1)
+FetchContent_MakeAvailable(Boost)
+
+FetchContent_Declare(
+  re2
+  GIT_REPOSITORY https://github.com/google/re2.git
+  GIT_TAG 2022-06-01)
+FetchContent_MakeAvailable(re2)
+
+FetchContent_Declare(
+  pcre2
+  GIT_REPOSITORY https://github.com/PCRE2Project/pcre2.git
+  GIT_TAG pcre2-10.40)
+FetchContent_MakeAvailable(pcre2)
+
+FetchContent_Declare(
+  ICU
+  URL https://github.com/unicode-org/icu/releases/download/release-72-1/icu4c-72_1-src.tgz
+  URL_HASH MD5=4de6484a6c460d3d1468a6fe50369439)
+FetchContent_MakeAvailable(ICU)
+
+file(DOWNLOAD
+  https://raw.githubusercontent.com/jpcre2/jpcre2/10.32.01/src/jpcre2.hpp
+  ${CMAKE_BINARY_DIR}/_deps/jpcre2.hpp)
+
+
+  find_package(Boost REQUIRED)
 
 set(Boost_USE_STATIC_LIBS OFF) 
 set(Boost_USE_MULTITHREADED ON)  
