@@ -60,13 +60,15 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(re2)
 
+set(PCRE_PREFIX ${CMAKE_BINARY_DIR}/_deps/pcre2)
 ExternalProject_Add(
   pcre2
-  GIT_REPOSITORY https://github.com/PCRE2Project/pcre2.git
+  GIT_REPOSITORY https://github.com/PCRE/pcre2.git
   GIT_TAG pcre2-10.40
   GIT_SHALLOW TRUE
-  PREFIX ${CMAKE_BINARY_DIR}/_deps/pcre2
-  CONFIGURE_COMMAND "${CMAKE_BINARY_DIR}/_deps/pcre2/src/pcre2/configure        \
+  PREFIX ${PCRE_PREFIX}
+  CONFIGURE_COMMAND "${PCRE_PREFIX}/autogen.sh && \
+    ${PCRE_PREFIX}/configure        \
     --enable-jit                        \
     --enable-pcre2-16                   \
     --enable-pcre2-32                   \
