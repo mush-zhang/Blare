@@ -42,6 +42,8 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 endif()
 
 include(FetchContent)
+include(ExternalProject)
+
 FetchContent_Declare(
   Boost
   GIT_REPOSITORY https://github.com/boostorg/boost.git
@@ -55,13 +57,6 @@ FetchContent_Declare(
   GIT_TAG 2022-06-01
 )
 FetchContent_MakeAvailable(re2)
-
-FetchContent_Declare(
-  pcre2
-  GIT_REPOSITORY https://github.com/PCRE2Project/pcre2.git
-  GIT_TAG pcre2-10.40
-)
-FetchContent_MakeAvailable(pcre2)
 
 ExternalProject_Add(
   pcre2
