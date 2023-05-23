@@ -28,10 +28,10 @@ template<class T>
 std::pair<T, T> getStats(std::vector<T> & arr) {
     T num_reps = arr.size();
     std::sort(arr.begin(), arr.end());
-    T ave= std::accumulate(arr.begin(), arr.end(), 0) / num_reps;
+    T ave= std::accumulate(arr.begin(), arr.end(), 0.0) / num_reps;
     T trimmed_ave = ave;
     if (num_reps > 3) {
-        trimmed_ave = std::accumulate(arr.begin()+1, arr.end()-1, 0) / (num_reps-2);
+        trimmed_ave = std::accumulate(arr.begin()+1, arr.end()-1, 0.0) / (num_reps-2);
     }
     return std::make_pair(ave, trimmed_ave);
 }
@@ -166,6 +166,9 @@ void experiment(std::ofstream & r_file,
         r_file << match_count_blare << "\t" << match_count_multi << "\t" << match_count_split << "\t" << match_count_direct << std::endl;
     }
 }
+
+template std::pair<int, int> getStats(std::vector<int> & arr);
+template std::pair<double, double> getStats(std::vector<double> & arr);
 
 #ifdef ICU_FLAG
     template void experiment<icu_72::UnicodeString>(std::ofstream & r_file, 
