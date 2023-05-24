@@ -69,8 +69,8 @@ ExternalProject_Add(
   PREFIX ${PCRE_PREFIX}
   CONFIGURE_COMMAND cd ${PCRE_PREFIX} && ./autogen.sh && ./configure --enable-jit --enable-pcre2-16 --enable-pcre2-32  --disable-static
   BUILD_COMMAND cd ${PCRE_PREFIX} && make
-  TEST_COMMAND make check
-  INSTALL_COMMAND sudo make install
+  TEST_COMMAND cd ${PCRE_PREFIX} && make check
+  INSTALL_COMMAND cd ${PCRE_PREFIX} && sudo make install
   command cd ${CMAKE_BINARY_DIR}
 )
 
