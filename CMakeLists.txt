@@ -67,10 +67,10 @@ ExternalProject_Add(
   GIT_TAG pcre2-10.40
   GIT_SHALLOW TRUE
   PREFIX ${PCRE_PREFIX}
-  CONFIGURE_COMMAND cd ${PCRE_PREFIX} && ./autogen.sh && ./configure --enable-jit --enable-pcre2-16 --enable-pcre2-32  --disable-static
-  BUILD_COMMAND cd ${PCRE_PREFIX} && make
-  TEST_COMMAND cd ${PCRE_PREFIX} && make check
-  INSTALL_COMMAND cd ${PCRE_PREFIX} && sudo make install
+  CONFIGURE_COMMAND cd ${PCRE_PREFIX} COMMAND ./autogen.sh COMMAND ./configure --enable-jit --enable-pcre2-16 --enable-pcre2-32  --disable-static
+  BUILD_COMMAND cd ${PCRE_PREFIX} COMMAND make
+  TEST_COMMAND cd ${PCRE_PREFIX} COMMAND make check
+  INSTALL_COMMAND cd ${PCRE_PREFIX} COMMAND sudo make install
   COMMAND cd ${CMAKE_BINARY_DIR}
 )
 
