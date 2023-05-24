@@ -18,13 +18,7 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
   set(CMAKE_CXX_EXTENSIONS OFF)
   set(CMAKE_CXX_STANDARD 17)
   set(CMAKE_CXX_STANDARD_REQUIRED True)
-  set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g -pthread")
-  set(CMAKE_CXX_FLAGS_MINSIZEREL "-Os -pthread")
-  set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g -pthread")
-  set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Ofast -march=native -mfma -mavx -fomit-frame-pointer \
-    -ffp-contract=fast -flto -DARMA_NO_DEBUG -pthread")
-  set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} "-O3 -Ofast -march=native -mfma -mavx -fomit-frame-pointer \
-    -ffp-contract=fast -flto -DARMA_NO_DEBUG -pthread")
+
   set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
   set(THREADS_PREFER_PTHREAD_FLAG TRUE)
   find_package(Threads REQUIRED)
@@ -62,7 +56,6 @@ FetchContent_Declare(
   GIT_TAG 2022-06-01
   GIT_SHALLOW TRUE
 )
-target_compile_options(re2 PUBLIC -O3 -pthread)
 FetchContent_MakeAvailable(re2)
 
 set(PCRE_PREFIX ${CMAKE_BINARY_DIR}/_deps/pcre2)
@@ -98,6 +91,14 @@ find_package(Boost REQUIRED)
 set(Boost_USE_STATIC_LIBS OFF) 
 set(Boost_USE_MULTITHREADED ON)  
 set(Boost_USE_STATIC_RUNTIME OFF) 
+
+set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g -pthread")
+set(CMAKE_CXX_FLAGS_MINSIZEREL "-Os -pthread")
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g -pthread")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Ofast -march=native -mfma -mavx -fomit-frame-pointer \
+  -ffp-contract=fast -flto -DARMA_NO_DEBUG -pthread")
+set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} "-O3 -Ofast -march=native -mfma -mavx -fomit-frame-pointer \
+  -ffp-contract=fast -flto -DARMA_NO_DEBUG -pthread")
 
 add_subdirectory(src)
 add_subdirectory(experiments)
