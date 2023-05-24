@@ -29,7 +29,6 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
   set(THREADS_PREFER_PTHREAD_FLAG TRUE)
   find_package(Threads REQUIRED)
   
-
   set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
   # Testing only available if this is the main app
@@ -45,6 +44,21 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     message(STATUS "Doxygen not found, not building docs")
   endif()
 endif()
+
+
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g -pthread")
+set(CMAKE_CXX_FLAGS_MINSIZEREL "-Os -pthread")
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g -pthread")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Ofast -march=native -mfma -mavx -fomit-frame-pointer \
+  -ffp-contract=fast -flto -DARMA_NO_DEBUG -pthread")
+set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} "-O3 -Ofast -march=native -mfma -mavx -fomit-frame-pointer \
+  -ffp-contract=fast -flto -DARMA_NO_DEBUG -pthread")
+set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
+set(THREADS_PREFER_PTHREAD_FLAG TRUE)
+find_package(Threads REQUIRED)
 
 include(FetchContent)
 include(ExternalProject)
