@@ -60,18 +60,19 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(re2)
 
-set(PCRE_PREFIX ${CMAKE_BINARY_DIR}/_deps/pcre2/src/pcre2)
+set(PCRE_PREFIX ${CMAKE_BINARY_DIR}/_deps/pcre2)
+set(PCRE_SRC ${PCRE_PREFIX}/src/pcre2)
 ExternalProject_Add(
   pcre2
   GIT_REPOSITORY https://github.com/PCRE2Project/pcre2
   GIT_TAG pcre2-10.40
   GIT_SHALLOW TRUE
   PREFIX ${PCRE_PREFIX}
-  CONFIGURE_COMMAND cd ${PCRE_PREFIX} COMMAND ./autogen.sh COMMAND ./configure --enable-jit --enable-pcre2-16 --enable-pcre2-32  --disable-static
-  BUILD_COMMAND cd ${PCRE_PREFIX} COMMAND make
-  TEST_COMMAND cd ${PCRE_PREFIX} COMMAND make check
-  INSTALL_COMMAND cd ${PCRE_PREFIX} COMMAND sudo make install
-  COMMAND cd ${CMAKE_BINARY_DIR}
+  DOWNLOAD_COMMAND cd ${PCRE_SRC} && ${PCRE_SRC}/autogen.sh
+  CONFIGURE_COMMAND ${PCRE_SRC}/configure --srcdir=${PCRE_SRC} --prefix=${PCRE_SRC} --enable-jit --enable-pcre2-16 --enable-pcre2-32  --disable-static
+  BUILD_COMMAND make
+  TEST_COMMAND make check
+  INSTALL_COMMAND sudo make install
 )
 
 FetchContent_Declare(
