@@ -63,7 +63,7 @@ FetchContent_MakeAvailable(re2)
 set(PCRE_PREFIX ${CMAKE_BINARY_DIR}/_deps/pcre2)
 ExternalProject_Add(
   pcre2
-  GIT_REPOSITORY https://github.com/PCRE/pcre2.git
+  GIT_REPOSITORY https://github.com/PCRE2Project/pcre2
   GIT_TAG pcre2-10.40
   GIT_SHALLOW TRUE
   PREFIX ${PCRE_PREFIX}
