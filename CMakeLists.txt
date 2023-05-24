@@ -60,7 +60,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(re2)
 
-set(PCRE_PREFIX ${CMAKE_BINARY_DIR}/_deps/pcre2)
+set(PCRE_PREFIX ${CMAKE_BINARY_DIR}/_deps/pcre2/src/pcre2)
 ExternalProject_Add(
   pcre2
   GIT_REPOSITORY https://github.com/PCRE2Project/pcre2
