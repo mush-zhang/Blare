@@ -71,7 +71,7 @@ ExternalProject_Add(
   BUILD_COMMAND cd ${PCRE_PREFIX} && make
   TEST_COMMAND cd ${PCRE_PREFIX} && make check
   INSTALL_COMMAND cd ${PCRE_PREFIX} && sudo make install
-  command cd ${CMAKE_BINARY_DIR}
+  COMMAND cd ${CMAKE_BINARY_DIR}
 )
 
 FetchContent_Declare(
