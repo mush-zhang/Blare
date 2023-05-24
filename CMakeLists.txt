@@ -68,7 +68,8 @@ ExternalProject_Add(
   GIT_TAG pcre2-10.40
   GIT_SHALLOW TRUE
   PREFIX ${PCRE_PREFIX}
-  DOWNLOAD_COMMAND cd ${PCRE_SRC} && ${PCRE_SRC}/autogen.sh
+  DOWNLOAD_COMMAND git clone --branch pcre2-10.40 --depth 1 https://github.com/PCRE2Project/pcre2
+  && cd ${PCRE_SRC} && ${PCRE_SRC}/autogen.sh
   CONFIGURE_COMMAND ${PCRE_SRC}/configure --srcdir=${PCRE_SRC} --prefix=${PCRE_SRC} --enable-jit --enable-pcre2-16 --enable-pcre2-32  --disable-static
   BUILD_COMMAND make
   TEST_COMMAND make check
