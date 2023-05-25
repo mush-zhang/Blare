@@ -6,8 +6,6 @@ project(
   DESCRIPTION "BLARE: a regular expression matching framework"
   LANGUAGES CXX)
 
-set(CMAKE_LIBRARY_PATH "/usr/local/lib")
-
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Release" CACHE STRING
     "Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel."
@@ -60,6 +58,7 @@ FetchContent_MakeAvailable(re2)
 
 set(PCRE_PREFIX ${CMAKE_BINARY_DIR}/_deps/pcre2)
 set(PCRE_SRC ${PCRE_PREFIX}/src/pcre2)
+set(PCRE2_TARGET ${CMAKE_BINARY_DIR}/_deps/pcre2-build)
 ExternalProject_Add(
   pcre2
   GIT_REPOSITORY https://github.com/PCRE2Project/pcre2
@@ -68,11 +67,13 @@ ExternalProject_Add(
   PREFIX ${PCRE_PREFIX}
   DOWNLOAD_COMMAND git clone --branch pcre2-10.40 --depth 1 https://github.com/PCRE2Project/pcre2
   && cd ${PCRE_SRC} && ${PCRE_SRC}/autogen.sh
-  CONFIGURE_COMMAND ${PCRE_SRC}/configure --srcdir=${PCRE_SRC} --prefix=${PCRE_SRC} --enable-jit --enable-pcre2-16 --enable-pcre2-32  --disable-static
+  CONFIGURE_COMMAND ${PCRE_SRC}/configure --srcdir=${PCRE_SRC} --prefix=${PCRE2_TARGET} --enable-jit --enable-pcre2-16 --enable-pcre2-32  --disable-static
   BUILD_COMMAND make
   TEST_COMMAND make check
   INSTALL_COMMAND sudo make install
 )
+
+set(CMAKE_LIBRARY_PATH /usr/local/lib ${PCRE2_TARGET})
 
 FetchContent_Declare(
   ICU
@@ -83,7 +84,7 @@ FetchContent_MakeAvailable(ICU)
 
 file(DOWNLOAD
   https://raw.githubusercontent.com/jpcre2/jpcre2/10.32.01/src/jpcre2.hpp
-  ${CMAKE_BINARY_DIR}/_deps/jpcre2.hpp
+  ${CMAKE_BINARY_DIR}/_deps/include/jpcre2.hpp
 )
 
 find_package(Boost REQUIRED)
