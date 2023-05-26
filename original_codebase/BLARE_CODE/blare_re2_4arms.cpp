@@ -636,7 +636,7 @@ std::tuple<double, int, unsigned int> Blare (const std::vector<std::string> & li
     return std::make_tuple(elapsed_seconds.count(), count, chosen_bandit);
 }
 
-std::pair<double, int> Re2FullAll (const std::vector<std::string> & lines, const std::string & reg_string) {
+std::pair<double, int> RE2FullAll (const std::vector<std::string> & lines, const std::string & reg_string) {
     auto start = std::chrono::high_resolution_clock::now();
     int count = 0;
     std::string sm;
@@ -1040,7 +1040,7 @@ int main(int argc, char** argv) {
         int match_count_multi;
         int match_count_rev;
         for (int i = 0; i < num_repeat; i++) {
-            std::pair<double, int> result_direct = Re2FullAll(lines, r);
+            std::pair<double, int> result_direct = RE2FullAll(lines, r);
             std::pair<double, int> result_split = SplitMatchAll(lines, r);
             std::pair<double, int> result_rev = SplitMatchRevAll(lines, r);
             std::tuple<double, int, unsigned int> result_blare = Blare(lines, r);

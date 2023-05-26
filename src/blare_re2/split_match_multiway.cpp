@@ -7,7 +7,7 @@
 #include <misc/split_regex.hpp>
 #include <blare_re2/split_match_multiway.hpp>
 
-std::pair<double, int> SplitMatchMultiWayRe2 (const std::vector<std::string> & lines, const std::string & reg_string) {
+std::pair<double, int> SplitMatchMultiWayRE2 (const std::vector<std::string> & lines, const std::string & reg_string) {
     auto start = std::chrono::high_resolution_clock::now();
     int count = 0;
 
