@@ -24,11 +24,11 @@ target_include_directories(blare_pcre2_lib
 
 target_link_libraries(blare_pcre2_lib PRIVATE misc_lib Boost::boost Threads::Threads -lpcre2-8)
 
-find_package(pcre2-16)
+find_package(pcre2 COMPONENTS pcre2-16)
 if (${pcre2-16_FOUND})
     target_link_libraries(blare_pcre2_lib PRIVATE -lpcre2-16)
 endif(${pcre2-16_FOUND})
-find_package(pcre2-32)
+find_package(pcre2 COMPONENTS pcre2-32)
 if (${pcre2-32_FOUND})
     target_link_libraries(blare_pcre2_lib PRIVATE -lpcre2-32)
 endif(${pcre2-32_FOUND})
