@@ -72,8 +72,8 @@ ExternalProject_Add(
   TEST_COMMAND make check
   INSTALL_COMMAND sudo make install
 )
-
-set(CMAKE_PREFIX_PATH /usr/local ${PCRE2_TARGET})
+# set(CMAKE_PREFIX_PATH /usr/local ${PCRE2_TARGET})
+set(CMAKE_PREFIX_PATH ${PCRE2_TARGET})
 
 FetchContent_Declare(
   ICU
