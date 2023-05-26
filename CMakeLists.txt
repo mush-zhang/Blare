@@ -38,7 +38,6 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 endif()
 
 include(FetchContent)
-include(ExternalProject)
 
 FetchContent_Declare(
   Boost
@@ -56,26 +55,26 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(re2)
 
+set(PCRE2_PROJECT pcre2)
 set(PCRE_PREFIX ${CMAKE_BINARY_DIR}/_deps/pcre2)
 set(PCRE_SRC ${PCRE_PREFIX}/src/pcre2)
 set(PCRE2_TARGET ${CMAKE_BINARY_DIR}/_deps/pcre2-build)
-ExternalProject_Add(
-  pcre2
-  GIT_REPOSITORY https://github.com/PCRE2Project/pcre2
-  GIT_TAG pcre2-10.40
-  GIT_SHALLOW TRUE
-  PREFIX ${PCRE_PREFIX}
-  DOWNLOAD_COMMAND git clone --branch pcre2-10.40 --depth 1 https://github.com/PCRE2Project/pcre2
-  && cd ${PCRE_SRC} && ${PCRE_SRC}/autogen.sh
-  CONFIGURE_COMMAND ${PCRE_SRC}/configure --srcdir=${PCRE_SRC} --prefix=${PCRE2_TARGET} --enable-jit --enable-pcre2-16 --enable-pcre2-32  --disable-static
-  BUILD_COMMAND make
-  TEST_COMMAND make check
-  INSTALL_COMMAND sudo make install
-)
-set(CMAKE_PREFIX_PATH /usr/local ${PCRE2_TARGET})
-# set(CMAKE_PREFIX_PATH ${PCRE2_TARGET})
+set(PCRE2_LIB_DIR ${PCRE2_TARGET}/lib)
+set(PCRE2_INC_DIR ${PCRE2_TARGET}/include)
 
-# ExternalProject_Get_Property(pcre2 ${PCRE2_TARGET})
+add_library (pcre2-8 SHARED IMPORTED)
+set_target_properties (pcre2-8 PROPERTIES IMPORTED_LOCATION ${PCRE2_LIB_DIR}/libpcre2-8.so)
+target_include_directories(pcre2-8 INTERFACE ${PCRE2_INC_DIR})
+
+add_library (pcre2-16 SHARED IMPORTED)
+set_target_properties (pcre2-16 PROPERTIES IMPORTED_LOCATION ${PCRE2_LIB_DIR}/libpcre2-16.so)
+target_include_directories(pcre2-16 INTERFACE ${PCRE2_INC_DIR})
+
+add_library (pcre2-32 SHARED IMPORTED)
+set_target_properties (pcre2-32 PROPERTIES IMPORTED_LOCATION ${PCRE2_LIB_DIR}/libpcre2-32.so)
+target_include_directories(pcre2-32 INTERFACE ${PCRE2_INC_DIR})
+
+set(PCRE2_LIBRARIES pcre2-8 pcre2-16 pcre2-32)
 
 FetchContent_Declare(
   ICU
@@ -103,6 +102,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Ofast -march=native -mfma -mavx -fomit-frame-p
 set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} "-O3 -Ofast -march=native -mfma -mavx -fomit-frame-pointer \
   -ffp-contract=fast -flto -DARMA_NO_DEBUG -pthread")
 
+add_subdirectory(external)
 add_subdirectory(src)
 add_subdirectory(experiments)
 
