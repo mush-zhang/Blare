@@ -1,4 +1,4 @@
-find_package(pcre2 REQUIRED)
+find_package(pcre2 COMPONENTS pcre2-8 REQUIRED)
 
 # If you installed the library at a custom location, remember to add that custom location in your CMake prefixes:
 # cmake .. -DCMAKE_PREFIX_PATH=/path/to/custom/location/of/pcre2
