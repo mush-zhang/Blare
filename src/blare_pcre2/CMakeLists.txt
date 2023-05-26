@@ -1,4 +1,5 @@
-find_package(pcre2-8 pcre2-16 pcre2-32 REQUIRED)
+find_package(pcre2-8 REQUIRED)
+
 # If you installed the library at a custom location, remember to add that custom location in your CMake prefixes:
 # cmake .. -DCMAKE_PREFIX_PATH=/path/to/custom/location/of/pcre2
 find_library(NAMES pcre2-8 pcre2-16 pcre2-32)
@@ -21,7 +22,16 @@ target_include_directories(blare_pcre2_lib
     "${CMAKE_BINARY_DIR}/_deps/include"
     "${CMAKE_LIBRARY_PATH}/include")
 
-target_link_libraries(blare_pcre2_lib PRIVATE misc_lib Boost::boost Threads::Threads -lpcre2-8 -lpcre2-16 -lpcre2-32)
+target_link_libraries(blare_pcre2_lib PRIVATE misc_lib Boost::boost Threads::Threads -lpcre2-8)
+
+find_package(pcre2-16)
+if (${pcre2-16_FOUND})
+    target_link_libraries(blare_pcre2_lib PRIVATE -lpcre2-16)
+endif(${pcre2-16_FOUND})
+find_package(pcre2-32)
+if (${pcre2-32_FOUND})
+    target_link_libraries(blare_pcre2_lib PRIVATE -lpcre2-32)
+endif(${pcre2-32_FOUND})
 
 target_compile_features(blare_pcre2_lib PUBLIC cxx_std_17)
 
