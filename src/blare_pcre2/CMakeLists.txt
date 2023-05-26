@@ -1,7 +1,7 @@
 # find_package(pcre2-8 pcre2-16 pcre2-32 REQUIRED)
 # If you installed the library at a custom location, remember to add that custom location in your CMake prefixes:
 # cmake .. -DCMAKE_PREFIX_PATH=/path/to/custom/location/of/pcre2
-find_library(NAMES pcre2-8 pcre2-16 pcre2-32)
+find_library(NAMES pcre2-8 pcre2-16 pcre2-32 REQUIRED)
 
 file(GLOB HEADER_LIST CONFIGURE_DEPENDS "${BLARE_SOURCE_DIR}/include/blare_pcre2/*.hpp")
 
