@@ -1,4 +1,4 @@
-find_package(pcre2 COMPONENTS pcre2-8)
+find_package(pcre2 CONFIG COMPONENTS 8BIT 16BIT 32BIT)
 
 if(NOT ${pcre2_FOUND})
     # rerun cmake in initial build
@@ -22,7 +22,6 @@ add_library(blare_pcre2_lib
     split_match_3way.cpp 
     split_match_multiway.cpp 
     ${HEADER_LIST}
-    # "/usr/local/include/jpcre2.hpp")
     ${CMAKE_BINARY_DIR}/_deps/include/jpcre2.hpp)
 
 target_include_directories(blare_pcre2_lib 
@@ -39,14 +38,14 @@ if(${pcre2_FOUND})
 endif()
 target_link_libraries(blare_pcre2_lib PRIVATE misc_lib Boost::boost Threads::Threads -lpcre2-8)
 
-find_package(pcre2 COMPONENTS pcre2-16)
-if (${pcre2-16_FOUND})
-    target_link_libraries(blare_pcre2_lib PRIVATE -lpcre2-16)
-endif(${pcre2-16_FOUND})
-find_package(pcre2 COMPONENTS pcre2-32)
-if (${pcre2-32_FOUND})
-    target_link_libraries(blare_pcre2_lib PRIVATE -lpcre2-32)
-endif(${pcre2-32_FOUND})
+# find_package(pcre2 COMPONENTS pcre2-16)
+# if (${pcre2-16_FOUND})
+#     target_link_libraries(blare_pcre2_lib PRIVATE -lpcre2-16)
+# endif(${pcre2-16_FOUND})
+# find_package(pcre2 COMPONENTS pcre2-32)
+# if (${pcre2-32_FOUND})
+#     target_link_libraries(blare_pcre2_lib PRIVATE -lpcre2-32)
+# endif(${pcre2-32_FOUND})
 
 target_compile_features(blare_pcre2_lib PUBLIC cxx_std_17)
 
