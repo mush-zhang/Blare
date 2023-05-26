@@ -25,7 +25,7 @@ add_dependencies(blare_pcre2_lib pcre2)
 # cmake .. -DCMAKE_PREFIX_PATH=/path/to/custom/location/of/pcre2
 # find_library(NAMES pcre2-8 pcre2-16 pcre2-32)
 
-target_link_libraries(blare_pcre2_lib PRIVATE misc_lib Boost::boost Threads::Threads -lpcre2-8)
+target_link_libraries(blare_pcre2_lib PRIVATE misc_lib Boost::boost Threads::Threads -L{$PCRE2_TARGET}/lib -lpcre2-8)
 
 # find_package(pcre2 COMPONENTS pcre2-16)
 # if (${pcre2-16_FOUND})
