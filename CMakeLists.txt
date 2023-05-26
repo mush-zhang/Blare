@@ -75,6 +75,8 @@ ExternalProject_Add(
 # set(CMAKE_PREFIX_PATH /usr/local ${PCRE2_TARGET})
 set(CMAKE_PREFIX_PATH ${PCRE2_TARGET})
 
+ExternalProject_Get_Property(pcre2 ${PCRE2_TARGET})
+
 FetchContent_Declare(
   ICU
   URL https://github.com/unicode-org/icu/releases/download/release-72-1/icu4c-72_1-src.tgz
