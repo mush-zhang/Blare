@@ -23,12 +23,6 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
   
   set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-  # Testing only available if this is the main app
-  # Note this needs to be done in the main CMakeLists
-  # since it calls enable_testing, which must be in the
-  # main CMakeLists.
-  # include(CTest)
-
   find_package(Doxygen)
   if(Doxygen_FOUND)
     add_subdirectory(docs)
@@ -108,7 +102,3 @@ set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} "-O3 -Ofast -march=native -mfma -mavx -fomit-
 add_subdirectory(external)
 add_subdirectory(src)
 add_subdirectory(experiments)
-
-# if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME) AND BUILD_TESTING)
-#   add_subdirectory(tests)
-# endif()
