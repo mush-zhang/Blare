@@ -73,7 +73,7 @@ ExternalProject_Add(
   INSTALL_COMMAND sudo make install
 )
 
-set(CMAKE_LIBRARY_PATH /usr/local/lib ${PCRE2_TARGET}/lib)
+set(CMAKE_PREFIX_PATH /usr/local ${PCRE2_TARGET})
 
 FetchContent_Declare(
   ICU
