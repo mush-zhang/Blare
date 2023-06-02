@@ -16,7 +16,7 @@ add_library(blare_icu_lib
 
 target_include_directories(blare_icu_lib PUBLIC "${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}/include")
 
-target_link_libraries(blare_icu_lib PRIVATE unicode_misc_lib  ICU4C::uc ICU4C::i18n ICU4C::io) 
+target_link_libraries(blare_icu_lib PRIVATE unicode_misc_lib  ${ICU_LIBRARIES}) 
 
 target_compile_features(blare_icu_lib PUBLIC cxx_std_17)
 
