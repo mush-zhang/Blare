@@ -34,7 +34,16 @@ User can install the base regular expression matching library and adapt BLARE co
   - PCRE2 library
 
     ```bash
-    sudo apt-get install pcre2-utils
+    git clone --branch pcre2-10.40 --depth 1 https://github.com/PCRE2Project/pcre2
+    autogen.sh
+    ./configure --prefix=/usr/local             \
+            --enable-unicode                    \
+            --enable-jit                        \
+            --enable-pcre2-16                   \
+            --enable-pcre2-32                   \
+            --disable-static                    &&
+    make
+    make install
     ```
 
   - jPCRE2 (a C++ wrapper of PCRE2)
@@ -44,7 +53,7 @@ User can install the base regular expression matching library and adapt BLARE co
 - Boost.Regex should have already been installed.
 - ICU Regex
   
-    Please download [ICU4C 72 release](https://github.com/unicode-org/icu/releases/tag/release-72-1).
+    Please download [ICU4C 72 release](https://github.com/unicode-org/icu/releases/tag/release-72-1), and follow the [installation instructions](https://unicode-org.github.io/icu/userguide/icu4c/build.html#how-to-build-and-install-on-unix).
 
     ```bash
     tar xvfz icu4c-64_2-src.tgz
