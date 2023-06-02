@@ -89,6 +89,10 @@ file(MAKE_DIRECTORY ${ICU_LIB_DIR})
 set(ICU_INC_DIR ${ICU_TARGET}/include)
 file(MAKE_DIRECTORY ${ICU_INC_DIR})
 
+add_library (ICU SHARED IMPORTED)
+set_target_properties (ICU PROPERTIES IMPORTED_LOCATION ${ICU_LIB_DIR}/libICU.so)
+target_include_directories(ICU INTERFACE ${ICU_INC_DIR})
+
 find_package(Boost REQUIRED)
 
 set(Boost_USE_STATIC_LIBS OFF) 
