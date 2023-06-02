@@ -24,7 +24,7 @@ sudo apt update && sudo apt upgrade
     sudo apt install cmake
     ```
 
-Make sure to check if the version satifies the requirement by 
+Make sure to check if the version satifies the requirement by
 
 ```bash
 cmake --version
@@ -36,7 +36,6 @@ g++ --version
 We evaluate the performance of BLARE on two production workloads and one open-sourced workload. We have included the open-source workload: [US Accident Dataset](https://www.kaggle.com/datasets/sobhanmoosavi/us-accidents) and the regular expressions in the repository.
 
 The code in the root directory is under continuous developement, and may not produce results identical to that in the BLARE paper. To reproduce most accurate results in the paper, compile and run the original experiment code in [**BLARE_CODE** folder](https://github.com/mush-zhang/Blare/tree/main/original_codebase/BLARE_CODE). The instruction for compilation and running is in the [**original_codebase** folder](https://github.com/mush-zhang/Blare/tree/main/original_codebase)
-
 
 To build BLARE and experiments that can be run on customized workloads, follow the commands below:
 
