@@ -79,7 +79,7 @@ file(DOWNLOAD
   ${CMAKE_BINARY_DIR}/_deps/include/jpcre2.hpp
 )
 
-set(ICU_PROJECT ICU)
+set(ICU_PROJECT ICU4C)
 set(ICU_PREFIX ${CMAKE_BINARY_DIR}/_deps/ICU)
 set(ICU_SRC ${ICU_PREFIX}/src/ICU)
 set(ICU_TARGET ${CMAKE_BINARY_DIR}/_deps/ICU-build)
