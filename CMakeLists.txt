@@ -74,17 +74,20 @@ target_include_directories(pcre2-32 INTERFACE ${PCRE2_INC_DIR})
 
 set(PCRE2_LIBRARIES pcre2-8 pcre2-16 pcre2-32)
 
-FetchContent_Declare(
-  ICU
-  URL https://github.com/unicode-org/icu/releases/download/release-72-1/icu4c-72_1-src.tgz
-  URL_HASH MD5=4de6484a6c460d3d1468a6fe50369439
-)
-FetchContent_MakeAvailable(ICU)
-
 file(DOWNLOAD
   https://raw.githubusercontent.com/jpcre2/jpcre2/10.32.01/src/jpcre2.hpp
   ${CMAKE_BINARY_DIR}/_deps/include/jpcre2.hpp
 )
+
+set(ICU_PROJECT ICU)
+set(ICU_PREFIX ${CMAKE_BINARY_DIR}/_deps/ICU)
+set(ICU_SRC ${ICU_PREFIX}/src/ICU)
+set(ICU_TARGET ${CMAKE_BINARY_DIR}/_deps/ICU-build)
+file(MAKE_DIRECTORY ${ICU_TARGET})
+set(ICU_LIB_DIR ${ICU_TARGET}/lib)
+file(MAKE_DIRECTORY ${ICU_LIB_DIR})
+set(ICU_INC_DIR ${ICU_TARGET}/include)
+file(MAKE_DIRECTORY ${ICU_INC_DIR})
 
 find_package(Boost REQUIRED)
 
