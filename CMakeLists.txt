@@ -89,10 +89,10 @@ file(MAKE_DIRECTORY ${ICU_LIB_DIR})
 set(ICU_INC_DIR ${ICU_TARGET}/include)
 file(MAKE_DIRECTORY ${ICU_INC_DIR})
 
-add_library (ICU SHARED IMPORTED)
-set_target_properties (ICU PROPERTIES IMPORTED_LOCATION ${ICU_LIB_DIR}/libICU.so)
-target_include_directories(ICU INTERFACE ${ICU_INC_DIR})
-set(ICU_LIBRARIES ICU)
+add_library(icu4c SHARED IMPORTED)
+set_target_properties (icu4c PROPERTIES IMPORTED_LOCATION ${ICU_LIB_DIR}/libICU.so)
+target_include_directories(icu4c INTERFACE ${ICU_INC_DIR})
+set(ICU_LIBRARIES icu4c)
 
 # ICU::uc ICU::i18n ICU::io
 
