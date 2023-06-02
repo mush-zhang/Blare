@@ -80,18 +80,18 @@ file(DOWNLOAD
 )
 
 set(ICU_PROJECT ICU4C)
-set(ICU_PREFIX ${CMAKE_BINARY_DIR}/_deps/ICU)
-set(ICU_SRC ${ICU_PREFIX}/src/ICU)
-set(ICU_TARGET ${CMAKE_BINARY_DIR}/_deps/ICU-build)
+set(ICU_PREFIX ${CMAKE_BINARY_DIR}/_deps/ICU4C)
+set(ICU_SRC ${ICU_PREFIX}/src/ICU4C)
+set(ICU_TARGET ${CMAKE_BINARY_DIR}/_deps/ICU4C-build)
 file(MAKE_DIRECTORY ${ICU_TARGET})
 set(ICU_LIB_DIR ${ICU_TARGET}/lib)
 file(MAKE_DIRECTORY ${ICU_LIB_DIR})
 set(ICU_INC_DIR ${ICU_TARGET}/include)
 file(MAKE_DIRECTORY ${ICU_INC_DIR})
 
-add_library (ICU SHARED IMPORTED)
-set_target_properties (ICU PROPERTIES IMPORTED_LOCATION ${ICU_LIB_DIR}/libICU.so)
-target_include_directories(ICU INTERFACE ${ICU_INC_DIR})
+add_library (ICU4C SHARED IMPORTED)
+set_target_properties (ICU4C PROPERTIES IMPORTED_LOCATION ${ICU_LIB_DIR}/libICU4C.so)
+target_include_directories(ICU4C INTERFACE ${ICU_INC_DIR})
 
 find_package(Boost REQUIRED)
 
