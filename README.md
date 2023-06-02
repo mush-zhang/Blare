@@ -17,6 +17,7 @@ sudo apt update && sudo apt upgrade
     ```bash
     sudo apt install build-essential
     ```
+
 - cmake (version 3.12 or higher)
 
     ```bash
@@ -48,11 +49,13 @@ make
 Run BLARE with
 
 ```bash
+cd src
 ./blare regex_lib_name input_regex_file input_data_file [output_file]
 ```
 
 Run specific experiments comparing BLARE with underlying regex libraries, use
 
 ```bash
-./[base_regex_library]_expr output_file [-h] [-n num_repeat] [-r input_regex_file] [-d input_data_file]
+cd experiments
+./[base_regex_library]_expr output_file [-n num_repeat] [-r input_regex_file] [-d input_data_file]
 ```

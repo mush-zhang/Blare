@@ -10,7 +10,7 @@ inline constexpr const char * kRegexDefault = "../data/regexes_traffic.txt";
 inline constexpr const char * kDataDefault = "../data/US_Accidents_Dec21_updated.csv";
 
 inline constexpr std::string_view kUsage = "usage:  \n\
-    [base_regex_library]_expr.o output_file [-h] [-n num_repeat] [-r input_regex_file] [-d input_data_file] \n\
+    [base_regex_library]_expr output_file [-h] [-n num_repeat] [-r input_regex_file] [-d input_data_file] \n\
     \t output_file:           Path to output file. \n\
     \t [-h]:                  Print usage, as what we are currently doing. :) \n\
     \t [-n num_repeat]:       Number of experiment repititions. Use 10 by default. \n\
