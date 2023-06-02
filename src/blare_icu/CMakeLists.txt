@@ -1,7 +1,7 @@
-find_package(ICU 72 COMPONENTS uc i18n io REQUIRED)
+# find_package(ICU 72 COMPONENTS uc i18n io REQUIRED)
 
-set(ICU_MAJOR_VER "72")
-set(ICU_FULL_VERSION "${ICU_MAJOR_VER}.1")
+# set(ICU_MAJOR_VER "72")
+# set(ICU_FULL_VERSION "${ICU_MAJOR_VER}.1")
 
 add_subdirectory(unicode_misc)
 
