@@ -6,116 +6,53 @@ BLARE is modular and can be built on top of any existing regex library. Currentl
 
 ## Prerequisites
 
-BLARE is implemented in C++. We use the Boost Random Number Library for random number generating support in BLARE. These 2 are the only dependencies of BLARE framework.
+BLARE is implemented in C++, and we provide cmake file for building the project with other external dependencies. Make sure you have `g++` and `cmake` in you system. For Ubuntu as an example, you can do
+
+```bash
+sudo apt update && sudo apt upgrade
+```
 
 - g++ (version 8.4.0 or higher)
   
     ```bash
     sudo apt install build-essential
     ```
-
-- Boost Library
-  
-    ```bash
-    sudo apt-get install libboost-all-dev
-    ```
-
-- Base Regex Libraries
-  
-User can install the base regular expression matching library and adapt BLARE code on top of it. We included implementation of BLARE on top of several popular regex libraries. To run the sample experiment scripts with desired base regex library, you can install the regex libraries as followed:
-
-- Google-RE2
-
-    Please follow the instruction in [RE2 Github Repository](https://github.com/google/re2).
-
-- PCRE2
-  - PCRE2 library
+- cmake (version 3.12 or higher)
 
     ```bash
-    sudo apt-get install pcre2-utils
+    sudo apt install cmake
     ```
 
-  - jPCRE2 (a C++ wrapper of PCRE2)
+Make sure to check if the version satifies the requirement by 
 
-    Please follow the instruction in [jPCRE2 Github Repository](https://github.com/jpcre2/jpcre2).
-
-- Boost.Regex should have already been installed.
-- ICU Regex
-  
-    Please download [ICU4C 72 release](https://github.com/unicode-org/icu/releases/tag/release-72-1).
-
-    ```bash
-    tar xvfz icu4c-64_2-src.tgz
-    cd icu/source
-    ./configure --prefix=/usr/local/icu4c/64_2 --enable-icu-config
-    make
-    make install
-    ```
+```bash
+cmake --version
+g++ --version
+```
 
 ## Instruction
 
 We evaluate the performance of BLARE on two production workloads and one open-sourced workload. We have included the open-source workload: [US Accident Dataset](https://www.kaggle.com/datasets/sobhanmoosavi/us-accidents) and the regular expressions in the repository.
 
-**[TODO] Will add Makefile soon**
+To reproduce most accurate results in the paper, compile and run the original experiment code in [**BLARE_CODE** folder](https://github.com/mush-zhang/Blare/tree/main/original_codebase/BLARE_CODE). The instruction for compilation and running is in the [**original_codebase** folder](https://github.com/mush-zhang/Blare/tree/main/original_codebase)
 
-Compile and run the original experiment scripts in [**BLARE_CODE** folder](https://github.com/mush-zhang/Blare/tree/main/BLARE_CODE) for the paper with the following commands:
 
-- BLARE on Google-RE2
-  
-    ```bash
-    g++ -O3 -std=c++17 -Ofast -march=native -mfma -mavx -fomit-frame-pointer \
-        -ffp-contract=fast -flto -DARMA_NO_DEBUG -pthread \
-        blare_re2.cpp -L/usr/local/lib/ -lre2 -lstdc++fs -o blare_re2.o
-    ./blare_re2.o
-    ```
+To build BLARE and experiments that can be run on customized workloads, follow the commands below:
 
-    ```bash
-    g++ -O3 -std=c++17 -Ofast -march=native -mfma -mavx -fomit-frame-pointer \
-        -ffp-contract=fast -flto -DARMA_NO_DEBUG -pthread \
-        blare_re2_longest.cpp -L/usr/local/lib/ -lre2 -lstdc++fs -o blare_re2_longest.o
-    ./blare_re2_longest.o
-    ```
+```bash
+mkdir build && cd build
+cmake ..
+make
+```
 
-    ```bash
-    g++ -O3 -std=c++17 -Ofast -march=native -mfma -mavx -fomit-frame-pointer \
-        -ffp-contract=fast -flto -DARMA_NO_DEBUG -pthread \
-        blare_re2_countAll.cpp -L/usr/local/lib/ -lre2 -lstdc++fs -o blare_re2_countAll.o
-    ./blare_re2_countAll.o
-    ```
+Run BLARE with
 
-    ```bash
-    g++ -O3 -std=c++17 -Ofast -march=native -mfma -mavx -fomit-frame-pointer \
-        -ffp-contract=fast -flto -DARMA_NO_DEBUG -pthread \
-        blare_re2_4arms.cpp -L/usr/local/lib/ -lre2 -lstdc++fs -o blare_re2_4arms.o
-    ./blare_re2_4arms.o
-    ```
+```bash
+./blare regex_lib_name input_regex_file input_data_file [output_file]
+```
 
-- BLARE on PCRE2
+Run specific experiments comparing BLARE with underlying regex libraries, use
 
-    ```bash
-    g++ -O3 -std=c++17 -Ofast -march=native -mfma -mavx -fomit-frame-pointer \
-        -ffp-contract=fast -flto -DARMA_NO_DEBUG -pthread \
-        blare_pcre2.cpp -L/usr/local/lib/ -lstdc++fs \
-        -lpcre2-8 -lpcre2-16 -lpcre2-32 -o blare_pcre2.o
-    ./blare_pcre2.o
-    ```
-
-- BLARE on Boost.Regex
-
-    ```bash
-    g++ -O3 -std=c++17 -Ofast -march=native -mfma -mavx -fomit-frame-pointer \
-        -ffp-contract=fast -flto -DARMA_NO_DEBUG -pthread \
-        blare_boost.cpp -L/usr/local/lib/ -lstdc++fs -lboost_regex -o blare_boost.o
-    ./blare_boost.o
-    ```
-
-- BLARE on ICU Regex
-
-    ```bash
-    ulimit -s unlimited
-    g++ -O3 -std=c++17 -Ofast -march=native -mfma -mavx -fomit-frame-pointer \
-        -ffp-contract=fast -flto -DARMA_NO_DEBUG -pthread \
-        blare_icu.cpp -L/usr/local/lib/ -lstdc++fs \
-        `pkg-config --libs --cflags icu-i18n icu-uc icu-io` -o blare_icu.o
-    ./blare_icu.o
-    ```
+```bash
+./[base_regex_library]_expr output_file [-h] [-n num_repeat] [-r input_regex_file] [-d input_data_file]
+```

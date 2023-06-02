@@ -807,7 +807,6 @@ int main(int argc, char** argv) {
     }
     reg_in.close();
 
-
     // auto lines = read_sys_y();
     auto lines = read_traffic();
     // auto lines = read_db_x();

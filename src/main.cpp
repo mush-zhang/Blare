@@ -23,7 +23,7 @@ inline constexpr const char * kICU = "ICU";
 inline constexpr const char * kBoost = "BOOST";
 
 inline constexpr std::string_view kUsage = "usage:  \n\
-    main.o regex_lib_name input_regex_file input_data_file [output_file] \n\
+    ./blare regex_lib_name input_regex_file input_data_file [output_file] \n\
     \t regex_lib_name:   Name of the base regex matching library used by BLARE. \n\
     \t                 Options available are 'RE2', 'PCRE2', 'ICU', 'BOOST'. \n\
     \t input_regex_file: Path to the list of regex queries. \n\
