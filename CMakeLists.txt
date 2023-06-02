@@ -48,6 +48,7 @@ FetchContent_Declare(
   GIT_SHALLOW TRUE
 )
 FetchContent_MakeAvailable(re2)
+list(APPEND CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}/_deps/re2-build")
 
 set(PCRE2_PROJECT pcre2)
 set(PCRE_PREFIX ${CMAKE_BINARY_DIR}/_deps/pcre2)
