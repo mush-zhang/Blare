@@ -4,7 +4,7 @@ ExternalProject_Add(
   URL https://github.com/unicode-org/icu/releases/download/release-72-1/icu4c-72_1-src.tgz
   URL_HASH MD5=4de6484a6c460d3d1468a6fe50369439
   PREFIX ${ICU_PREFIX}
-  CONFIGURE_COMMAND chmod +x ${ICU_SRC}/runConfigureICU ${ICU_SRC}/configure ${ICU_SRC}/install-sh && ${ICU_SRC}/runConfigureICU --srcdir=${ICU_SRC} --prefix=${ICU_TARGET}
+  CONFIGURE_COMMAND chmod +x ${ICU_SRC}/runConfigureICU ${ICU_SRC}/configure ${ICU_SRC}/install-sh && ${ICU_SRC}/runConfigureICU Linux --srcdir=${ICU_SRC} --prefix=${ICU_TARGET}
   BUILD_COMMAND make
   TEST_COMMAND make check
   INSTALL_COMMAND sudo make install
