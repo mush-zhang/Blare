@@ -15,7 +15,7 @@ target_include_directories(blare_pcre2_lib
     "${CMAKE_BINARY_DIR}/_deps/include"
     "${CMAKE_LIBRARY_PATH}/include")
 
-target_link_libraries(blare_pcre2_lib PRIVATE misc_lib Boost::boost Threads::Threads ${PCRE2_LIBRARIES})
+target_link_libraries(blare_pcre2_lib PUBLIC misc_lib Boost::boost Threads::Threads ${PCRE2_LIBRARIES})
 
 target_compile_features(blare_pcre2_lib PUBLIC cxx_std_17)
 

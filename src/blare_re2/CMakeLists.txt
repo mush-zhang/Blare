@@ -14,7 +14,7 @@ add_library(blare_re2_lib
 
 target_include_directories(blare_re2_lib PUBLIC "/usr/local/include" "${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}/include")
 
-target_link_libraries(blare_re2_lib PRIVATE misc_lib Boost::boost re2::re2 Threads::Threads)
+target_link_libraries(blare_re2_lib PUBLIC misc_lib Boost::boost re2::re2 Threads::Threads)
 
 target_compile_features(blare_re2_lib PUBLIC cxx_std_17)
 

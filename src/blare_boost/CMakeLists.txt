@@ -13,7 +13,7 @@ add_library(blare_boost_lib
 
 target_include_directories(blare_boost_lib PUBLIC "${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}/include")
 
-target_link_libraries(blare_boost_lib PRIVATE misc_lib Boost::boost Boost::regex) 
+target_link_libraries(blare_boost_lib PUBLIC misc_lib Boost::boost Boost::regex) 
 
 target_compile_features(blare_boost_lib PUBLIC cxx_std_17)
 
