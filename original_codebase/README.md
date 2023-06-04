@@ -8,19 +8,7 @@ This folder contains the original experiment scripts for the paper.
 
 ## Prerequisites
 
-BLARE is implemented in C++. We use the Boost Random Number Library for random number generating support in BLARE. These 2 are the only dependencies of BLARE framework.
-
-- g++ (version 8.4.0 or higher)
-  
-    ```bash
-    sudo apt install build-essential
-    ```
-
-- Boost Library
-  
-    ```bash
-    sudo apt-get install libboost-all-dev
-    ```
+Besides `g++`, `cmake`, and `Boost`, other dependencies can be automatically installed by the root level CMake file. If you would like to manually install the dependencies (like what the author did for the original experiments), follow the below instructions.
 
 - Base Regex Libraries
   

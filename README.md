@@ -6,7 +6,7 @@ BLARE is modular and can be built on top of any existing regex library. Currentl
 
 ## Prerequisites
 
-BLARE is implemented in C++, and we provide cmake file for building the project with other external dependencies. Make sure you have `g++` and `cmake` in you system. For Ubuntu as an example, you can do
+BLARE is implemented in C++, and we provide cmake file for building the project with the external dependencies excluding `g++`, `cmake`, and `Boost`. Make sure you have `g++` and `cmake` in you system. For Ubuntu as an example, you can do
 
 ```bash
 sudo apt update && sudo apt upgrade
@@ -18,17 +18,24 @@ sudo apt update && sudo apt upgrade
     sudo apt install build-essential
     ```
 
-- cmake (version 3.12 or higher)
+- cmake (version 3.14 or higher)
 
     ```bash
     sudo apt install cmake
     ```
 
+- Boost Library (version 1.65.1.0 or higher)
+  
+    ```bash
+    sudo apt-get install libboost-all-dev
+    ```
+
 Make sure to check if the version satifies the requirement by
 
 ```bash
-cmake --version
 g++ --version
+cmake --version
+dpkg -s libboost-all-dev | grep 'Version'
 ```
 
 ## Instruction
@@ -57,4 +64,11 @@ Run specific experiments comparing BLARE with underlying regex libraries, use
 ```bash
 cd experiments
 ./[base_regex_library]_expr output_file [-n num_repeat] [-r input_regex_file] [-d input_data_file]
+```
+
+Run original code comparing BLARE, 3-Way-Split, Multi-Way-Split, with underlying regex libraries on the US-Accident dataset, use
+
+```bash
+cd original_codebase/BLARE_CODE
+./blare_[base_regex_library]
 ```

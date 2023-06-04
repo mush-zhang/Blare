@@ -1,1 +1,3 @@
 add_subdirectory(BLARE_CODE)
+set(ORI_DATA_DIR ${CMAKE_BINARY_DIR}/original_codebase/BLARE_DATA)
+file(CREATE_LINK ${CMAKE_SOURCE_DIR}/data/ ${ORI_DATA_DIR} SYMBOLIC)

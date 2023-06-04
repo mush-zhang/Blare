@@ -1,4 +1,0 @@
-At (.+)Exit (.+)
-(.+) on (.+) at Exit (.+)
-on (.+) at (.+)
-Ramp to (.+)

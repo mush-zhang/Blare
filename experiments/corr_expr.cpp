@@ -60,8 +60,8 @@ int main(int argc, char** argv) {
             std::cout << l << std::endl;
             break;
         }
-        std::cout << "Done" << std::endl;
     }
+    std::cout << "Done" << std::endl;
 
     r_file.close(); 
 }
