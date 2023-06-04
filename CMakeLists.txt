@@ -118,8 +118,11 @@ set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} "-O3 -Ofast -march=native -mfma -mavx -fomit-
   -ffp-contract=fast -flto -DARMA_NO_DEBUG -pthread")
   
 if(NOT CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
-  file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/data/)
-  file(CREATE_LINK ${CMAKE_SOURCE_DIR}/data/ ${CMAKE_BINARY_DIR}/data/ SYMBOLIC)
+  set(DATA_DIR ${CMAKE_BINARY_DIR}/data/)
+  if (NOT EXISTS DATA_DIR)
+    file(MAKE_DIRECTORY ${DATA_DIR})
+  endif()
+  file(CREATE_LINK ${CMAKE_SOURCE_DIR}/data/ ${DATA_DIR} SYMBOLIC)
 endif()
 
 add_subdirectory(external)
