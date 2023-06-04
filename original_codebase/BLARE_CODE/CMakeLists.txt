@@ -15,6 +15,7 @@ target_include_directories(blare_pcre2 PUBLIC HEADER_LIST)
 target_compile_features(blare_pcre2 PRIVATE cxx_std_17)
 target_link_libraries(blare_pcre2 PRIVATE Boost Threads::Threads ${PCRE2_LIBRARIES})
 
+find_package(Boost REQUIRED COMPONENTS regex) 
 
 add_executable(blare_boost blare_boost.cpp)
 target_include_directories(blare_boost PUBLIC HEADER_LIST)
