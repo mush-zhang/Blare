@@ -103,8 +103,6 @@ target_include_directories(ICU::io INTERFACE ${ICU_INC_DIR})
 
 set(ICU_LIBRARIES ICU::uc ICU::i18n ICU::io)
 
-# ICU::uc ICU::i18n ICU::io
-
 find_package(Boost REQUIRED)
 
 set(Boost_USE_STATIC_LIBS OFF) 
@@ -121,4 +119,5 @@ set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} "-O3 -Ofast -march=native -mfma -mavx -fomit-
 
 add_subdirectory(external)
 add_subdirectory(src)
+add_subdirectory(data)
 add_subdirectory(experiments)
