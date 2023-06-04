@@ -56,6 +56,7 @@ int main(int argc, char** argv) {
         auto [btime, bnum, bstrat] = BlareRE2(lines, r);
 
         if ((mulnum != smnum) || (smnum != bnum)) {
+            std::cout << smnum << " " << mulnum << " " << bnum << std::endl;
             std::cout << l << std::endl;
             break;
         }
