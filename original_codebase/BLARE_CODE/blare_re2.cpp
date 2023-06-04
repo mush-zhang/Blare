@@ -618,7 +618,6 @@ std::pair<double, int> MultiSplitMatchTest (const std::vector<std::string> & lin
     bool prefix_first = std::get<2>(r);
     std::shared_ptr<RE2> reg0;
 
-
     if (!prefix_first) {
         reg0 = std::shared_ptr<RE2>(new RE2(regs_temp[0]+"$"));
         regs_temp.erase(regs_temp.begin());

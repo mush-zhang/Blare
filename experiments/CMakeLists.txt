@@ -9,6 +9,11 @@ target_include_directories(re2_expr PUBLIC "${PROJECT_BINARY_DIR}" "${PROJECT_SO
 target_compile_features(re2_expr PRIVATE cxx_std_17)
 target_link_libraries(re2_expr PRIVATE blare_re2_lib expr_utils_lib)
 
+add_executable(corr_expr corr_expr.cpp)
+target_include_directories(corr_expr PUBLIC "${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}/include")
+target_compile_features(corr_expr PRIVATE cxx_std_17)
+target_link_libraries(corr_expr PRIVATE blare_re2_lib expr_utils_lib)
+
 add_executable(pcre2_expr pcre2_expr.cpp)
 target_include_directories(pcre2_expr PUBLIC "${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}/include")
 target_compile_features(pcre2_expr PRIVATE cxx_std_17)
