@@ -55,7 +55,7 @@ int main(int argc, char** argv) {
         auto [multime, mulnum] = SplitMatchMultiWayRE2(curr_lines, r);
         auto [btime, bnum, bstrat] = BlareRE2(lines, r);
 
-        if ((mulnum != smnum) || (smnum != bnum) {
+        if ((mulnum != smnum) || (smnum != bnum)) {
             std::cout << l << std::endl;
             break;
         }
