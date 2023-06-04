@@ -173,7 +173,7 @@ bool MultiMatchLongestSingle (const std::string & line, std::vector<std::shared_
                     }
                     if (!match_result){
                         pos = prev_prefix_pos[reg_idx]+1;
-                        prefix_idx = reg_idx;
+                        prefix_idx = reg_idx+1;
                         goto MATCH_LOOP_SINGLE;
                     }
                 }
@@ -578,7 +578,7 @@ std::tuple<double, int, unsigned int> Blare (const std::vector<std::string> & li
                                 }
                                 if (!match_result){
                                     pos = prev_prefix_pos[reg_idx]+1;
-                                    prefix_idx = reg_idx;
+                                    prefix_idx = reg_idx+1;
                                     goto MATCH_LOOP_BLARE;
                                 }
                             }
@@ -864,7 +864,7 @@ std::pair<double, int> MultiSplitMatchTest (const std::vector<std::string> & lin
                         }
                         if (!match_result){
                             pos = prev_prefix_pos[reg_idx]+1;
-                            prefix_idx = reg_idx;
+                            prefix_idx = reg_idx+1;
                             goto MATCH_LOOP;
                         }
                     }

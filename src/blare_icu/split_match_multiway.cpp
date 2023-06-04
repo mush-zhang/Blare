@@ -91,7 +91,7 @@ std::pair<double, int> SplitMatchMultiWayICU (const std::vector<UnicodeString> &
                     matchers[reg_idx]->reset(curr);
                     if (!matchers[reg_idx]->matches(status)){
                         pos = prev_prefix_pos[reg_idx+1]+1;
-                        prefix_idx = reg_idx;
+                        prefix_idx = reg_idx+1;
                         goto MATCH_LOOP;
                     }
                 }

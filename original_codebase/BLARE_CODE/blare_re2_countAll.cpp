@@ -159,7 +159,7 @@ int MultiMatchCountAllSingle (const std::string & line, std::vector<std::shared_
                     auto curr = line.substr(prev_prefix_end_pos, prev_prefix_pos[reg_idx+1] - prev_prefix_end_pos);
                     if (!RE2::FullMatch(curr, *(c_regs[reg_idx]), &sm)){
                         pos = prev_prefix_pos[reg_idx]+1;
-                        prefix_idx = reg_idx;
+                        prefix_idx = reg_idx+1;
                         goto MATCH_LOOP_SINGLE;
                     }
                 }
@@ -510,7 +510,7 @@ std::tuple<double, int, unsigned int> Blare (const std::vector<std::string> & li
                                 auto curr = line.substr(prev_prefix_end_pos, prev_prefix_pos[reg_idx+1] - prev_prefix_end_pos);
                                 if (!RE2::FullMatch(curr, *(c_regs[reg_idx]), &sm)){
                                     pos = prev_prefix_pos[reg_idx]+1;
-                                    prefix_idx = reg_idx;
+                                    prefix_idx = reg_idx+1;
                                     goto MATCH_LOOP_BLARE;
                                 }
                             }
@@ -741,7 +741,7 @@ std::pair<double, int> MultiSplitMatchTest (const std::vector<std::string> & lin
                         auto curr = line.substr(prev_prefix_end_pos, prev_prefix_pos[reg_idx+1] - prev_prefix_end_pos);
                         if (!RE2::FullMatch(curr, *(c_regs[reg_idx]), &sm)){
                             pos = prev_prefix_pos[reg_idx]+1;
-                            prefix_idx = reg_idx;
+                            prefix_idx = reg_idx+1;
                             goto MATCH_LOOP;
                         }
                     }

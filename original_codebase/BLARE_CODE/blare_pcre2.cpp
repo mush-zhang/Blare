@@ -211,7 +211,7 @@ bool MultiMatchSingle (const std::string & line, jp::VecNum* vec_num, std::vecto
                 jp::RegexMatch rm_temp(&c_regs[reg_idx]);
                 if (!rm_temp.setSubject(curr).setNumberedSubstringVector(vec_num).match()){
                     pos = prev_prefix_pos[reg_idx]+1;
-                    prefix_idx = reg_idx;
+                    prefix_idx = reg_idx+1;
                     goto MATCH_LOOP_SINGLE;
                 }
             }
@@ -475,7 +475,7 @@ std::tuple<double, int, unsigned int> Blare (const std::vector<std::string> & li
                             jp::RegexMatch rm_temp(&c_regs[reg_idx]);
                             if (!rm_temp.setSubject(curr).setNumberedSubstringVector(&vec_num).match()){
                                 pos = prev_prefix_pos[reg_idx]+1;
-                                prefix_idx = reg_idx;
+                                prefix_idx = reg_idx+1;
                                 goto MATCH_LOOP_BLARE;
                             }
                         }
@@ -687,7 +687,7 @@ std::pair<double, int> MultiSplitMatchTest (const std::vector<std::string> & lin
                     jp::RegexMatch rm_temp(&c_regs[reg_idx]);
                     if (!rm_temp.setSubject(curr).setNumberedSubstringVector(&vec_num).match()){
                         pos = prev_prefix_pos[reg_idx]+1;
-                        prefix_idx = reg_idx;
+                        prefix_idx = reg_idx+1;
                         goto MATCH_LOOP;
                     }
                 }

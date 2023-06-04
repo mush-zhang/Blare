@@ -29,7 +29,14 @@ int main(int argc, char** argv) {
     }
 
     std::vector<std::string> lines;
-    lines.push_back("At Exit 51/Exit 61 - Accident.");
+    if (input_data_file.empty()) {
+        lines = readTraffic();
+    } else {
+        lines = readDataIn("data", input_data_file);
+    }
+    if (lines.empty()) {
+        return EXIT_FAILURE;
+    }
 
     std::ofstream r_file(argv[1], std::ofstream::out);
     if (!r_file.is_open()) {

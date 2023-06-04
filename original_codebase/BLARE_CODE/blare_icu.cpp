@@ -160,7 +160,7 @@ bool MultiMatchSingle (const UnicodeString & line, const std::vector<std::shared
                 matchers[reg_idx]->reset(curr);
                 if (!matchers[reg_idx]->matches(status)){
                     pos = prev_prefix_pos[reg_idx]+1;
-                    prefix_idx = reg_idx;
+                    prefix_idx = reg_idx+1;
                     goto MATCH_LOOP_SINGLE;
                 }
             }
@@ -501,7 +501,7 @@ std::tuple<double, int, unsigned int> Blare (const std::vector<UnicodeString> & 
                             matchers[reg_idx]->reset(curr);
                             if (!matchers[reg_idx]->matches(status)){
                                 pos = prev_prefix_pos[reg_idx]+1;
-                                prefix_idx = reg_idx;
+                                prefix_idx = reg_idx+1;
                                 goto MATCH_LOOP_BLARE;
                             }
                         }
@@ -737,7 +737,7 @@ std::pair<double, int> MultiSplitMatchTest (const std::vector<UnicodeString> & l
                     matchers[reg_idx]->reset(curr);
                     if (!matchers[reg_idx]->matches(status)){
                         pos = prev_prefix_pos[reg_idx+1]+1;
-                        prefix_idx = reg_idx;
+                        prefix_idx = reg_idx+1;
                         goto MATCH_LOOP;
                     }
                 }

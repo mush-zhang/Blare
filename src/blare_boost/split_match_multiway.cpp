@@ -75,7 +75,7 @@ std::pair<double, int> SplitMatchMultiWayBoost (const std::vector<std::string> &
                     auto curr = line.substr(prev_prefix_end_pos, prev_prefix_pos[reg_idx+1] - prev_prefix_end_pos);
                     if (!boost::regex_match(curr, what, *(c_regs[reg_idx]))){
                         pos = prev_prefix_pos[reg_idx+1]+1;
-                        prefix_idx = reg_idx;
+                        prefix_idx = reg_idx+1;
                         goto MATCH_LOOP;
                     }
                 }
