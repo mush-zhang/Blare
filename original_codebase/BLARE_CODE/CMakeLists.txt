@@ -18,7 +18,7 @@ target_link_libraries(blare_pcre2 PRIVATE Boost Threads::Threads ${PCRE2_LIBRARI
 add_executable(blare_boost blare_boost.cpp)
 target_include_directories(blare_boost PUBLIC HEADER_LIST)
 target_compile_features(blare_boost PRIVATE cxx_std_17)
-target_link_libraries(blare_boost PRIVATE Boost Boost::regex)
+target_link_libraries(blare_boost PRIVATE Boost)
 
 add_executable(blare_icu blare_icu.cpp)
 target_include_directories(blare_icu PUBLIC HEADER_LIST)
