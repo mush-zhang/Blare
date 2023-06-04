@@ -116,8 +116,10 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Ofast -march=native -mfma -mavx -fomit-frame-p
   -ffp-contract=fast -flto -DARMA_NO_DEBUG -pthread")
 set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} "-O3 -Ofast -march=native -mfma -mavx -fomit-frame-pointer \
   -ffp-contract=fast -flto -DARMA_NO_DEBUG -pthread")
-
-file(CREATE_LINK ${CMAKE_SOURCE_DIR}/data/ ${CMAKE_BINARY_DIR}/data/ SYMBOLIC)
+  
+if(NOT CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
+  file(CREATE_LINK ${CMAKE_SOURCE_DIR}/data/ ${CMAKE_BINARY_DIR}/data/ SYMBOLIC)
+endif()
 
 add_subdirectory(external)
 add_subdirectory(src)
