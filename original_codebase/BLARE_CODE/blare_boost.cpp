@@ -149,7 +149,7 @@ bool MultiMatchSingle (const std::string & line, std::vector<std::shared_ptr<boo
                 size_t prev_prefix_end_pos = prev_prefix_pos[reg_idx] + prefixes[reg_idx].size();
                 auto curr = line.substr(prev_prefix_end_pos, prev_prefix_pos[reg_idx+1] - prev_prefix_end_pos);
                 if (!boost::regex_match(curr, what, *(c_regs[reg_idx]))){
-                    pos = prev_prefix_pos[reg_idx]+1;
+                    pos = prev_prefix_pos[reg_idx+1]+1;
                     prefix_idx = reg_idx+1;
                     goto MATCH_LOOP_SINGLE;
                 }
@@ -471,7 +471,7 @@ std::tuple<double, int, unsigned int> Blare (const std::vector<std::string> & li
                             size_t prev_prefix_end_pos = prev_prefix_pos[reg_idx] + prefixes[reg_idx].size();
                             auto curr = line.substr(prev_prefix_end_pos, prev_prefix_pos[reg_idx+1] - prev_prefix_end_pos);
                             if (!boost::regex_match(curr, what, *(c_regs[reg_idx]))){
-                                pos = prev_prefix_pos[reg_idx]+1;
+                                pos = prev_prefix_pos[reg_idx+1]+1;
                                 prefix_idx = reg_idx+1;
                                 goto MATCH_LOOP_BLARE;
                             }

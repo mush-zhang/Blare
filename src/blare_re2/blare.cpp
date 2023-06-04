@@ -45,7 +45,7 @@ bool MultiMatchSingle (const std::string & line, std::vector<std::shared_ptr<RE2
                 size_t prev_prefix_end_pos = prev_prefix_pos[reg_idx] + prefixes[reg_idx].size();
                 auto curr = line.substr(prev_prefix_end_pos, prev_prefix_pos[reg_idx+1] - prev_prefix_end_pos);
                 if (!RE2::FullMatch(curr, *(c_regs[reg_idx]), &sm)){
-                    pos = prev_prefix_pos[reg_idx]+1;
+                    pos = prev_prefix_pos[reg_idx+1]+1;
                     prefix_idx = reg_idx;
                     goto MATCH_LOOP_SINGLE;
                 }
@@ -241,9 +241,7 @@ std::tuple<double, int, unsigned int> BlareRE2 (const std::vector<std::string> &
             break;
     }
                                                     
-    ARM_DECIDED:;
-    std::cout << "here1" << std::endl;
-    
+    ARM_DECIDED:;    
     auto chosen_bandit = argmax(pred_results);
     std::string sm;
     switch(chosen_bandit) {
@@ -321,7 +319,6 @@ std::tuple<double, int, unsigned int> BlareRE2 (const std::vector<std::string> &
                     count += RE2::PartialMatch(lines[idx], reg, &sm);
                 }
             } else {
-                std::cout << "herer3" << std::endl;
                 for (; idx < lines.size(); idx++) {
                     auto line = lines[idx];
                     size_t pos = 0;
@@ -348,13 +345,11 @@ std::tuple<double, int, unsigned int> BlareRE2 (const std::vector<std::string> &
                             }
                             prefix_idx++;
                         }
-                        std::cout << "Find both" << std::endl;
-
                         for (; reg_idx < prev_prefix_pos.size()-1; reg_idx++) {
                             size_t prev_prefix_end_pos = prev_prefix_pos[reg_idx] + prefixes[reg_idx].size();
                             auto curr = line.substr(prev_prefix_end_pos, prev_prefix_pos[reg_idx+1] - prev_prefix_end_pos);
                             if (!RE2::FullMatch(curr, *(c_regs[reg_idx]), &sm)){
-                                pos = prev_prefix_pos[reg_idx]+1;
+                                pos = prev_prefix_pos[reg_idx+1]+1;
                                 prefix_idx = reg_idx+1;
                                 goto MATCH_LOOP_BLARE;
                             }
@@ -441,7 +436,7 @@ int MultiMatchCountAllSingle (const std::string & line, std::vector<std::shared_
                     size_t prev_prefix_end_pos = prev_prefix_pos[reg_idx] + prefixes[reg_idx].size();
                     auto curr = line.substr(prev_prefix_end_pos, prev_prefix_pos[reg_idx+1] - prev_prefix_end_pos);
                     if (!RE2::FullMatch(curr, *(c_regs[reg_idx]), &sm)){
-                        pos = prev_prefix_pos[reg_idx]+1;
+                        pos = prev_prefix_pos[reg_idx+1]+1;
                         prefix_idx = reg_idx+1;
                         goto MATCH_LOOP_SINGLE_COUNTALL;
                     }
@@ -781,7 +776,7 @@ std::tuple<double, int, unsigned int> BlareCountAllRE2 (const std::vector<std::s
                                 size_t prev_prefix_end_pos = prev_prefix_pos[reg_idx] + prefixes[reg_idx].size();
                                 auto curr = line.substr(prev_prefix_end_pos, prev_prefix_pos[reg_idx+1] - prev_prefix_end_pos);
                                 if (!RE2::FullMatch(curr, *(c_regs[reg_idx]), &sm)){
-                                    pos = prev_prefix_pos[reg_idx]+1;
+                                    pos = prev_prefix_pos[reg_idx+1]+1;
                                     prefix_idx = reg_idx+1;
                                     goto MATCH_LOOP_BLARE_COUNTALL;
                                 }
@@ -891,7 +886,7 @@ bool MultiMatchLongestSingle (const std::string & line, std::vector<std::shared_
                         match_result = RE2::FullMatch(curr, *(c_regs[reg_idx]), &sm);
                     }
                     if (!match_result){
-                        pos = prev_prefix_pos[reg_idx]+1;
+                        pos = prev_prefix_pos[reg_idx+1]+1;
                         prefix_idx = reg_idx+1;
                         goto MATCH_LOOP_SINGLE_LONGEST;
                     }
@@ -1285,7 +1280,7 @@ std::tuple<double, int, unsigned int> BlareLongestRE2 (const std::vector<std::st
                                     match_result = RE2::FullMatch(curr, *(c_regs[reg_idx]), &sm);
                                 }
                                 if (!match_result){
-                                    pos = prev_prefix_pos[reg_idx]+1;
+                                    pos = prev_prefix_pos[reg_idx+1]+1;
                                     prefix_idx = reg_idx+1;
                                     goto MATCH_LOOP_BLARE_LONGEST;
                                 }
@@ -1625,7 +1620,7 @@ std::tuple<double, int, unsigned int> Blare4ArmsRE2 (const std::vector<std::stri
                             size_t prev_prefix_end_pos = prev_prefix_pos[reg_idx] + prefixes[reg_idx].size();
                             auto curr = line.substr(prev_prefix_end_pos, prev_prefix_pos[reg_idx+1] - prev_prefix_end_pos);
                             if (!RE2::FullMatch(curr, *(c_regs[reg_idx]), &sm)){
-                                pos = prev_prefix_pos[reg_idx]+1;
+                                pos = prev_prefix_pos[reg_idx+1]+1;
                                 prefix_idx = reg_idx+1;
                                 goto MATCH_LOOP_BLARE_REVERSED;
                             }

@@ -172,7 +172,7 @@ bool MultiMatchLongestSingle (const std::string & line, std::vector<std::shared_
                         match_result = RE2::FullMatch(curr, *(c_regs[reg_idx]), &sm);
                     }
                     if (!match_result){
-                        pos = prev_prefix_pos[reg_idx]+1;
+                        pos = prev_prefix_pos[reg_idx+1]+1;
                         prefix_idx = reg_idx+1;
                         goto MATCH_LOOP_SINGLE;
                     }
@@ -577,7 +577,7 @@ std::tuple<double, int, unsigned int> Blare (const std::vector<std::string> & li
                                     match_result = RE2::FullMatch(curr, *(c_regs[reg_idx]), &sm);
                                 }
                                 if (!match_result){
-                                    pos = prev_prefix_pos[reg_idx]+1;
+                                    pos = prev_prefix_pos[reg_idx+1]+1;
                                     prefix_idx = reg_idx+1;
                                     goto MATCH_LOOP_BLARE;
                                 }
@@ -863,7 +863,7 @@ std::pair<double, int> MultiSplitMatchTest (const std::vector<std::string> & lin
                             match_result = RE2::FullMatch(curr, *(c_regs[reg_idx]), &sm);
                         }
                         if (!match_result){
-                            pos = prev_prefix_pos[reg_idx]+1;
+                            pos = prev_prefix_pos[reg_idx+1]+1;
                             prefix_idx = reg_idx+1;
                             goto MATCH_LOOP;
                         }

@@ -55,7 +55,7 @@ bool MultiMatchSingle (const UnicodeString & line, const std::vector<std::shared
                 auto curr = line.tempSubString(prev_prefix_end_pos, prev_prefix_pos[reg_idx+1] - prev_prefix_end_pos);
                 matchers[reg_idx]->reset(curr);
                 if (!matchers[reg_idx]->matches(status)){
-                    pos = prev_prefix_pos[reg_idx]+1;
+                    pos = prev_prefix_pos[reg_idx+1]+1;
                     prefix_idx = reg_idx+1;
                     goto MATCH_LOOP_SINGLE;
                 }
@@ -381,7 +381,7 @@ std::tuple<double, int, unsigned int> BlareICU (const std::vector<UnicodeString>
                             auto curr = line.tempSubString(prev_prefix_end_pos, prev_prefix_pos[reg_idx+1] - prev_prefix_end_pos);
                             matchers[reg_idx]->reset(curr);
                             if (!matchers[reg_idx]->matches(status)){
-                                pos = prev_prefix_pos[reg_idx]+1;
+                                pos = prev_prefix_pos[reg_idx+1]+1;
                                 prefix_idx = reg_idx+1;
                                 goto MATCH_LOOP_BLARE;
                             }
