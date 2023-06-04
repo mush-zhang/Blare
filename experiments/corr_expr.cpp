@@ -53,7 +53,7 @@ int main(int argc, char** argv) {
         curr_lines.push_back(l);
         auto [smtime, smnum] = SplitMatch3WayRE2(curr_lines, r);
         auto [multime, mulnum] = SplitMatchMultiWayRE2(curr_lines, r);
-        auto [btime, bnum, bstrat] = BlareRE2(lines, r);
+        auto [btime, bnum, bstrat] = BlareRE2(curr_lines, r);
 
         if ((mulnum != smnum) || (smnum != bnum)) {
             std::cout << smnum << " " << mulnum << " " << bnum << std::endl;
