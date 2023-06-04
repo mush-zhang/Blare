@@ -33,13 +33,11 @@ endif()
 
 include(FetchContent)
 
-FetchContent_Declare(
-  Boost
-  GIT_REPOSITORY https://github.com/boostorg/boost.git
-  GIT_TAG boost-1.65.1
-  GIT_SHALLOW TRUE
-)
-FetchContent_MakeAvailable(Boost)
+find_package(Boost REQUIRED COMPONENTS regex) 
+
+set(Boost_USE_STATIC_LIBS OFF) 
+set(Boost_USE_MULTITHREADED ON)  
+set(Boost_USE_STATIC_RUNTIME OFF) 
 
 FetchContent_Declare(
   re2
@@ -107,12 +105,6 @@ set_target_properties (ICU::io PROPERTIES IMPORTED_LOCATION ${ICU_LIB_DIR}/libic
 target_include_directories(ICU::io INTERFACE ${ICU_INC_DIR})
 
 set(ICU_LIBRARIES ICU::uc ICU::i18n ICU::io)
-
-find_package(Boost REQUIRED)
-
-set(Boost_USE_STATIC_LIBS OFF) 
-set(Boost_USE_MULTITHREADED ON)  
-set(Boost_USE_STATIC_RUNTIME OFF) 
 
 set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g -pthread")
 set(CMAKE_CXX_FLAGS_MINSIZEREL "-Os -pthread")
