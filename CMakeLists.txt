@@ -47,8 +47,13 @@ FetchContent_Declare(
   GIT_TAG 2022-06-01
   GIT_SHALLOW TRUE
 )
+if (EXISTS BUILD_SHARED_LIBS)
+  set(ORIGIN_BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS})
+endif()
+option(BUILD_SHARED_LIBS "build shared libraries" ON)
 FetchContent_MakeAvailable(re2)
 list(APPEND CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}/_deps/re2-build")
+set(BUILD_SHARED_LIBS ORIGIN_BUILD_SHARED_LIBS)
 
 set(PCRE2_PROJECT pcre2)
 set(PCRE_PREFIX ${CMAKE_BINARY_DIR}/_deps/pcre2)
