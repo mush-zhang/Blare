@@ -517,7 +517,8 @@ std::tuple<double, int, unsigned int> Blare (const std::vector<std::string> & li
                             if (prefixes.size() == regs.size() && prefix_first) {
                                 auto curr = line.substr(pos);
                                 re2::StringPiece input(curr);
-                                if (!RE2::Consume(&input, *(c_regs[reg_idx]), &sm)) {
+                                if (!RE2::Consume(&input, *(c_regs.back()), &sm)) {
+                                // if (!RE2::Consume(&input, *(c_regs[reg_idx]), &sm)) {
                                     prefix_idx = prev_prefix_pos.size() -1;
                                     pos = prev_prefix_pos[prefix_idx]+1;
                                     goto MATCH_LOOP_BLARE;
