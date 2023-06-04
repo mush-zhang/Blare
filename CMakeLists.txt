@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.14)
 
 project(
   BLARE
@@ -117,7 +117,8 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Ofast -march=native -mfma -mavx -fomit-frame-p
 set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} "-O3 -Ofast -march=native -mfma -mavx -fomit-frame-pointer \
   -ffp-contract=fast -flto -DARMA_NO_DEBUG -pthread")
 
+file(CREATE_LINK ${CMAKE_SOURCE_DIR}/data/ ${CMAKE_BINARY_DIR}/data/ SYMBOLIC)
+
 add_subdirectory(external)
 add_subdirectory(src)
-add_subdirectory(data)
 add_subdirectory(experiments)
