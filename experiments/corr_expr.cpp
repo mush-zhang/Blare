@@ -47,6 +47,8 @@ int main(int argc, char** argv) {
 
     for (const auto & l : lines) {
         auto r = regexes[0];
+        std::cout << l << std::endl;
+
         std::vector<std::string> curr_lines;
         curr_lines.push_back(l);
         auto [smtime, smnum] = SplitMatch3WayRE2(curr_lines, r);
