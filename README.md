@@ -4,6 +4,8 @@ BLARE is a regular expression matching framework that decomposes regular express
 
 BLARE is modular and can be built on top of any existing regex library. Currently we have example BLARE implementation on 4 commonly used regex libraries: RE2, PCRE2, Boost Regex, and ICU Regex.
 
+The paper is available: [**BLARE**](https://github.com/mush-zhang/Blare/tree/main/BLARE.pdf)
+
 ## Prerequisites
 
 BLARE is implemented in C++, and we provide cmake file for building the project with the external dependencies excluding `g++`, `cmake`, and `Boost`. Make sure you have `g++` and `cmake` in you system. For Ubuntu as an example, you can do
