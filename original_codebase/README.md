@@ -53,7 +53,13 @@ User can install the base regular expression matching library and adapt BLARE co
 
 ## Instruction
 
-We evaluate the performance of BLARE on two production workloads and one open-sourced workload. We have included the December 21st version of the open-source workload: [US Accident Dataset](https://www.kaggle.com/datasets/sobhanmoosavi/us-accidents) and the regular expressions in the repository. (The newest version of the dataset has different format and may not work with the hard-coded csv parsing logic in the original codebase; consider modifiy the `read_traffic` function in the code that you will be running.)
+We evaluate the performance of BLARE on two production workloads and one open-sourced workload. We have included the December 21st version of the open-source workload: [US Accident Dataset](https://www.kaggle.com/datasets/sobhanmoosavi/us-accidents) and the regular expressions in the repository. The newest version of the dataset has different format and may not work with the hard-coded csv parsing logic in the original codebase; consider modifiy the `read_traffic` function in the code that you will be running. To use the original version of the dataset, install `git lfs` then run
+
+```bash
+git lfs pull
+```
+
+to retrieve the dataset.
 
 Compile and run the original experiment scripts for the paper with the following commands:
 
