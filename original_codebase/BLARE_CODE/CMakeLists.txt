@@ -11,7 +11,7 @@ target_compile_features(blare_re2 PRIVATE cxx_std_17)
 target_link_libraries(blare_re2 PRIVATE Boost::boost Threads::Threads re2::re2 Threads::Threads)
 
 add_executable(blare_pcre2 blare_pcre2.cpp)
-target_include_directories(blare_pcre2 PUBLIC HEADER_LIST  ${CMAKE_BINARY_DIR}/_deps/include/jpcre2.hpp)
+target_include_directories(blare_pcre2 PUBLIC HEADER_LIST ${CMAKE_BINARY_DIR}/_deps/include)
 target_compile_features(blare_pcre2 PRIVATE cxx_std_17)
 target_link_libraries(blare_pcre2 PRIVATE Boost::boost Threads::Threads ${PCRE2_LIBRARIES})
 
