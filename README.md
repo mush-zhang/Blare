@@ -65,6 +65,7 @@ mkdir build && cd build
 cmake ..
 make
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${PWD}/_deps/ICU-build/lib
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${PWD}/_deps/pcre2-build/lib
 ```
 
 Run BLARE with
