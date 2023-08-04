@@ -18,7 +18,6 @@
 #include <boost/random/discrete_distribution.hpp>
 #include <boost/random/mersenne_twister.hpp>
 
-
 // #include <unicode/uregex.h>
 #include <unicode/regex.h>
 #include <unicode/utypes.h>
