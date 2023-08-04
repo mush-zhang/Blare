@@ -82,7 +82,7 @@ cd experiments
 ./[base_regex_library]_expr output_file [-n num_repeat] [-r input_regex_file] [-d input_data_file]
 ```
 
-Run original code comparing BLARE, 3-Way-Split, Multi-Way-Split, with underlying regex libraries on the US-Accident dataset, use
+The paper contains results from 2 Microsoft-internal workloads and 1 public workload. To run original code comparing BLARE, 3-Way-Split, Multi-Way-Split, with underlying regex libraries on the public US-Accident dataset, use
 
 ```bash
 cd original_codebase/BLARE_CODE
