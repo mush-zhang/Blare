@@ -64,7 +64,7 @@ To build BLARE and experiments that can be run on customized workloads, follow t
 mkdir build && cd build
 cmake ..
 make
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/datadrive/Blare/build/_deps/ICU-build/lib
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${PWD}/_deps/ICU-build/lib
 ```
 
 Run BLARE with
