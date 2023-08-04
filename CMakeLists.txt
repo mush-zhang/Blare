@@ -104,7 +104,11 @@ add_library(ICU::io SHARED IMPORTED)
 set_target_properties (ICU::io PROPERTIES IMPORTED_LOCATION ${ICU_LIB_DIR}/libicuio.so)
 target_include_directories(ICU::io INTERFACE ${ICU_INC_DIR})
 
-set(ICU_LIBRARIES ICU::uc ICU::i18n ICU::io)
+add_library(ICU::data SHARED IMPORTED)
+set_target_properties (ICU::data PROPERTIES IMPORTED_LOCATION ${ICU_LIB_DIR}/libicudata.so)
+target_include_directories(ICU::data INTERFACE ${ICU_INC_DIR})
+
+set(ICU_LIBRARIES ICU::uc ICU::i18n ICU::io ICU::data)
 
 set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g -pthread")
 set(CMAKE_CXX_FLAGS_MINSIZEREL "-Os -pthread")
