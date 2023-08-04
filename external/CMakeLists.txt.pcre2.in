@@ -12,5 +12,3 @@ ExternalProject_Add(
   TEST_COMMAND make check
   INSTALL_COMMAND sudo make install
 )
-
-list(APPEND CMAKE_PREFIX_PATH /usr/local "${PCRE2_TARGET}")
