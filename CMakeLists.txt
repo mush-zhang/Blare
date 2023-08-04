@@ -94,7 +94,7 @@ set(ICU_SRC ${ICU_PREFIX}/src/ICU/source)
 # set(ICU_INC_DIR ${ICU_TARGET}/include)
 # file(MAKE_DIRECTORY ${ICU_INC_DIR})
 
-find_package(ICU 72.1 COMPONENTS uc i18n REQUIRED)
+# find_package(ICU 72.1 COMPONENTS uc i18n REQUIRED)
 
 # add_library(ICU::data SHARED IMPORTED)
 # set_target_properties (ICU::data PROPERTIES IMPORTED_LOCATION ${ICU_LIB_DIR}/libicudata.so)
