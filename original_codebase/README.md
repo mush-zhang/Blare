@@ -44,9 +44,9 @@ User can install the base regular expression matching library and adapt BLARE co
     Please download [ICU4C 72 release](https://github.com/unicode-org/icu/releases/tag/release-72-1), and follow the [installation instructions](https://unicode-org.github.io/icu/userguide/icu4c/build.html#how-to-build-and-install-on-unix).
 
     ```bash
-    tar xvfz icu4c-64_2-src.tgz
+    tar xvfz icu4c-72_1-src.tgz
     cd icu/source
-    ./configure --prefix=/usr/local/icu4c/64_2 --enable-icu-config
+    ./configure --prefix=/usr/local/icu4c/72_1 --enable-icu-config
     make
     make install
     ```
