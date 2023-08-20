@@ -1,4 +1,4 @@
-# BLAzingly Regular Expression
+# BLAzingly Fast Regular Expression
 
 BLARE is a regular expression matching framework that decomposes regular expressions into components and uses an adaptive runtime evaluation plan to speed up the evaluation.
 
