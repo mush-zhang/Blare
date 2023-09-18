@@ -67,7 +67,7 @@ std::tuple<std::string, std::string, std::string> split_regex(const std::string 
 std::tuple<std::vector<std::string>, std::vector<std::string>, bool> split_regex_multi(const std::string &line) {
     std::size_t pos = 0;
     std::size_t prev_pos = 0;
-    int pos2 = -1;
+    int pos2 = 0;
     std::vector<std::string> const_strings;
     std::vector<std::string> regexes;
     std::string prefix = line;

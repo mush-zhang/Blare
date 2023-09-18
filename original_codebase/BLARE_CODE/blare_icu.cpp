@@ -72,7 +72,7 @@ std::tuple<UnicodeString, UnicodeString, UnicodeString> split_regex(const Unicod
 std::tuple<std::vector<UnicodeString>, std::vector<UnicodeString>, bool> split_regex_multi(const UnicodeString &line) {
     std::size_t pos = 0;
     std::size_t prev_pos = 0;
-    int pos2 = -1;
+    int pos2 = 0;
     std::vector<UnicodeString> const_strings;
     std::vector<UnicodeString> regexes;
     UnicodeString prefix = line;
