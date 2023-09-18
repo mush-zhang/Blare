@@ -1,10 +1,10 @@
-# BLAzingly Regular Expression
+# BLAzingly Fast Regular Expression
 
 BLARE is a regular expression matching framework that decomposes regular expressions into components and uses an adaptive runtime evaluation plan to speed up the evaluation.
 
 BLARE is modular and can be built on top of any existing regex library. Currently we have example BLARE implementation on 4 commonly used regex libraries: RE2, PCRE2, Boost Regex, and ICU Regex.
 
-The paper is available: [**BLARE**](https://github.com/mush-zhang/Blare/tree/main/BLARE.pdf)
+The paper is available: [**BLARE**](https://dl.acm.org/doi/10.1145/3589297)
 
 ## Prerequisites
 
