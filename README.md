@@ -32,7 +32,7 @@ sudo apt update && sudo apt upgrade
   sudo apt-get -y install pkg-config
   ```
 
-- Abseil
+- Abseil (might not be necessary)
 
   ```bash
   git clone https://github.com/abseil/abseil-cpp.git && cd abseil-cpp
