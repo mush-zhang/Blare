@@ -26,6 +26,22 @@ sudo apt update && sudo apt upgrade
     sudo apt install cmake
     ```
 
+- pkg-config
+
+  ```bash
+  sudo apt-get -y install pkg-config
+  ```
+
+- Abseil
+
+  ```bash
+  git clone https://github.com/abseil/abseil-cpp.git && cd abseil-cpp
+  mkdir build && cd build
+  cmake ..
+  cmake --build . --target all
+  make install
+  ```
+
 - Boost Library (version 1.65.1.0 or higher)
   
     ```bash
