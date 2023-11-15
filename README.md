@@ -11,7 +11,7 @@ The paper is available: [**BLARE**](https://dl.acm.org/doi/10.1145/3589297)
 BLARE is implemented in C++, and we provide cmake file for building the project with the external dependencies excluding `g++`, `cmake`, and `Boost`. Make sure you have `g++` and `cmake` in you system. For Ubuntu as an example, you can do
 
 ```bash
-sudo apt update && sudo apt upgrade
+sudo apt update && sudo apt upgrade && sudo apt-get update
 ```
 
 - g++ (version 8.4.0 or higher)
@@ -32,14 +32,14 @@ sudo apt update && sudo apt upgrade
   sudo apt-get -y install pkg-config
   ```
 
-- Abseil (might not be necessary)
+- Abseil
 
   ```bash
   git clone https://github.com/abseil/abseil-cpp.git && cd abseil-cpp
   mkdir build && cd build
   cmake ..
   cmake --build . --target all
-  make install
+  sudo make install
   ```
 
 - Boost Library (version 1.65.1.0 or higher)
