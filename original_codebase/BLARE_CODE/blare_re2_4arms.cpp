@@ -1000,8 +1000,7 @@ int main(int argc, char** argv) {
     std::string line;
     // read all regexes
     std::vector<std::string> regexes;
-    std::string data_file = "../BLARE_DATA/US_Accidents_Dec21_updated.csv";
-
+    std::string reg_file = "../BLARE_DATA/regexes_traffic.txt";
     std::ifstream reg_in(reg_file);
     if (!reg_in.is_open()) {
         std::cerr << "Could not open the file - '" << reg_file << "'" << std::endl;
